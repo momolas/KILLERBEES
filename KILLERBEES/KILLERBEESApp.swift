@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import GroundSdk
 
 @main
 struct KILLERBEESApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+	let groundSdk = GroundSdk()
+	
+	var body: some Scene {
+		WindowGroup {
+			ContentView()
+				.environmentObject(DroneManager(groundSdk: groundSdk))
+		}
+	}
 }

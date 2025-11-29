@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C30C77C4B32F003BA55ED8A3 /* Pods_KILLERBEES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */; };
 		CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575929F580970092FAC0 /* KILLERBEESApp.swift */; };
 		CD00575C29F580970092FAC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575B29F580970092FAC0 /* ContentView.swift */; };
 		CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00575D29F580990092FAC0 /* Assets.xcassets */; };
@@ -14,6 +15,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KILLERBEES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		272C3DA880FFD5418C8D7305 /* Pods-KILLERBEES.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KILLERBEES.debug.xcconfig"; path = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES.debug.xcconfig"; sourceTree = "<group>"; };
+		7FE1226F47BBFB3D4B177F2C /* Pods-KILLERBEES.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KILLERBEES.release.xcconfig"; path = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES.release.xcconfig"; sourceTree = "<group>"; };
 		CD00575629F580970092FAC0 /* KILLERBEES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KILLERBEES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD00575929F580970092FAC0 /* KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KILLERBEESApp.swift; sourceTree = "<group>"; };
 		CD00575B29F580970092FAC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -27,17 +31,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C30C77C4B32F003BA55ED8A3 /* Pods_KILLERBEES.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		45EFB14C229B7F658AB3D0A2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8CC72690EAE8A82B53DE4D1A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				272C3DA880FFD5418C8D7305 /* Pods-KILLERBEES.debug.xcconfig */,
+				7FE1226F47BBFB3D4B177F2C /* Pods-KILLERBEES.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		CD00574D29F580970092FAC0 = {
 			isa = PBXGroup;
 			children = (
 				CD00575829F580970092FAC0 /* KILLERBEES */,
 				CD00575729F580970092FAC0 /* Products */,
+				8CC72690EAE8A82B53DE4D1A /* Pods */,
+				45EFB14C229B7F658AB3D0A2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +103,7 @@
 				CD00575229F580970092FAC0 /* Sources */,
 				CD00575329F580970092FAC0 /* Frameworks */,
 				CD00575429F580970092FAC0 /* Resources */,
+				4D7A30343F0FCF5574AD6C8A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -97,7 +122,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					CD00575529F580970092FAC0 = {
 						CreatedOnToolsVersion = 14.3;
@@ -113,6 +138,9 @@
 				Base,
 			);
 			mainGroup = CD00574D29F580970092FAC0;
+			packageReferences = (
+				CDFBC66D2CFB298900D44A1E /* XCRemoteSwiftPackageReference "groundsdk-ios" */,
+			);
 			productRefGroup = CD00575729F580970092FAC0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -133,6 +161,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4D7A30343F0FCF5574AD6C8A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CD00575229F580970092FAC0 /* Sources */ = {
@@ -180,9 +232,12 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = X8SJ59XXC8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -197,9 +252,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -238,9 +296,12 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = X8SJ59XXC8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -249,8 +310,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -258,16 +322,19 @@
 		};
 		CD00576629F580990092FAC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 272C3DA880FFD5418C8D7305 /* Pods-KILLERBEES.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = KILLERBEES/KILLERBEES.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"KILLERBEES/Preview Content\"";
-				DEVELOPMENT_TEAM = X8SJ59XXC8;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -279,7 +346,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -287,7 +354,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.momolas.KILLERBEES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -296,16 +365,19 @@
 		};
 		CD00576729F580990092FAC0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7FE1226F47BBFB3D4B177F2C /* Pods-KILLERBEES.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = KILLERBEES/KILLERBEES.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"KILLERBEES/Preview Content\"";
-				DEVELOPMENT_TEAM = X8SJ59XXC8;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -317,7 +389,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -325,7 +397,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.momolas.KILLERBEES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -354,6 +428,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CDFBC66D2CFB298900D44A1E /* XCRemoteSwiftPackageReference "groundsdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Parrot-Developers/groundsdk-ios.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = CD00574E29F580970092FAC0 /* Project object */;
 }
