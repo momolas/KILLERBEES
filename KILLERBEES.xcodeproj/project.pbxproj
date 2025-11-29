@@ -12,6 +12,10 @@
 		CD00575C29F580970092FAC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575B29F580970092FAC0 /* ContentView.swift */; };
 		CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00575D29F580990092FAC0 /* Assets.xcassets */; };
 		CD00576229F580990092FAC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00576129F580990092FAC0 /* Preview Assets.xcassets */; };
+		CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */; };
+		CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B12EDB54280053DDD9 /* VideoController.swift */; };
+		CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */; };
+		CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B02EDB54280053DDD9 /* DroneManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,10 @@
 		CD00575D29F580990092FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KILLERBEES.entitlements; sourceTree = "<group>"; };
 		CD00576129F580990092FAC0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneControlView.swift; sourceTree = "<group>"; };
+		CD35B5B02EDB54280053DDD9 /* DroneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneManager.swift; sourceTree = "<group>"; };
+		CD35B5B12EDB54280053DDD9 /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
+		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +84,10 @@
 		CD00575829F580970092FAC0 /* KILLERBEES */ = {
 			isa = PBXGroup;
 			children = (
+				CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */,
+				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
+				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
+				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
 				CD00575929F580970092FAC0 /* KILLERBEESApp.swift */,
 				CD00575B29F580970092FAC0 /* ContentView.swift */,
 				CD00575D29F580990092FAC0 /* Assets.xcassets */,
@@ -191,6 +203,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */,
+				CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */,
+				CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */,
+				CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */,
 				CD00575C29F580970092FAC0 /* ContentView.swift in Sources */,
 				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
 			);
