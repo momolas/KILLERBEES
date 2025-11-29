@@ -1,4 +1,4 @@
-# KILLERBEES 🐝
+# KILLERBEES
 
 KILLERBEES est une application iOS développée en SwiftUI permettant de contrôler des drones Parrot via le **GroundSdk**.
 
