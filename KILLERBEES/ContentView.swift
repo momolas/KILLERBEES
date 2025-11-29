@@ -61,7 +61,7 @@ struct DroneRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(drone.name ?? "Drone Inconnu")
+                Text(drone.name.isEmpty ? "Drone Inconnu" : drone.name)
                     .font(.headline)
                 Text("UID: \(drone.uid)")
                     .font(.caption)
