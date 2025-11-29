@@ -10,6 +10,7 @@ import GroundSdk
 
 struct DroneControlView: View {
     let drone: Drone
+    @EnvironmentObject var droneManager: DroneManager
     @StateObject private var videoController = VideoController()
 
     var body: some View {
@@ -31,7 +32,7 @@ struct DroneControlView: View {
 
             HStack {
                 Button(action: {
-                    videoController.takeOff()
+                    droneManager.takeOff()
                 }) {
                     Text("Décoller")
                         .fontWeight(.bold)
@@ -43,7 +44,7 @@ struct DroneControlView: View {
                 }
 
                 Button(action: {
-                    videoController.land()
+                    droneManager.land()
                 }) {
                     Text("Atterrir")
                         .fontWeight(.bold)

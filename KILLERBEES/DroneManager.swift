@@ -55,4 +55,27 @@ class DroneManager: ObservableObject {
         connectedDrone = nil
         droneStateRef = nil
     }
+
+    // MARK: - Pilotage
+
+    func takeOff() {
+        guard let drone = connectedDrone else { return }
+        // On récupère l'interface de pilotage (PilotingItf)
+        // Note: GroundSdk gère le cache des références, mais pour une action ponctuelle
+        // on peut le récupérer directement si on ne surveille pas l'état en continu ici.
+        // Cependant, getPeripheral renvoie une Ref qui doit être gardée si on veut observer.
+        // Pour une action "fire and forget", on peut juste accéder à l'interface si elle est connue,
+        // mais le pattern sûr est via getPeripheral.
+
+        _ = drone.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
+            pilotingItf?.takeOff()
+        }
+    }
+
+    func land() {
+        guard let drone = connectedDrone else { return }
+        _ = drone.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
+            pilotingItf?.land()
+        }
+    }
 }

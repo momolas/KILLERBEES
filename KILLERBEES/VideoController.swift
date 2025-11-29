@@ -52,18 +52,6 @@ class VideoController: ObservableObject {
         }
     }
 
-    func takeOff() {
-        drone?.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
-            pilotingItf?.takeOff()
-        }
-    }
-
-    func land() {
-        drone?.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
-            pilotingItf?.land()
-        }
-    }
-
     func cleanup() {
         // Libération des références
         cameraLiveRef = nil
