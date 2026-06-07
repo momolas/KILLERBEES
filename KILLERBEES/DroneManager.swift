@@ -43,7 +43,7 @@ class DroneManager {
 
         // Surveillance de l'état de connexion
         droneStateRef = drone.getState { [weak self] state in
-            guard let self = self else { return }
+			guard self != nil else { return }
             print("Drone state: \(String(describing: state?.connectionState))")
             // Ici, on pourrait gérer des erreurs ou mettre à jour l'UI plus finement
         }
