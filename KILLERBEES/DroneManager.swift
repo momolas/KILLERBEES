@@ -15,6 +15,8 @@ class DroneManager {
     var drones: [Drone] = []
     var connectedDrone: Drone?
 
+    var connectionError: String?
+
     private var droneListRef: Ref<[Drone]>?
     private var droneStateRef: Ref<DeviceState>?
 
@@ -30,6 +32,8 @@ class DroneManager {
     }
 
     func connectToDrone(_ drone: Drone) {
+        connectionError = nil
+
         // Si on change de drone, on déconnecte l'ancien
         if let current = connectedDrone, current.uid != drone.uid {
             disconnect()
@@ -47,7 +51,7 @@ class DroneManager {
         // Connexion explicite
         let success = drone.connect()
         if !success {
-            print("Échec de la demande de connexion au drone")
+            connectionError = "Impossible de se connecter au drone."
         }
     }
 
@@ -55,6 +59,7 @@ class DroneManager {
         connectedDrone?.disconnect()
         connectedDrone = nil
         droneStateRef = nil
+        connectionError = nil
     }
 
     // MARK: - Pilotage
