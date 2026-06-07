@@ -9,10 +9,11 @@ import Foundation
 import GroundSdk
 import SwiftUI
 
-class DroneManager: ObservableObject {
+@Observable @MainActor
+class DroneManager {
     private let groundSdk: GroundSdk
-    @Published var drones: [Drone] = []
-    @Published var connectedDrone: Drone?
+    var drones: [Drone] = []
+    var connectedDrone: Drone?
 
     private var droneListRef: Ref<[Drone]>?
     private var droneStateRef: Ref<DeviceState>?

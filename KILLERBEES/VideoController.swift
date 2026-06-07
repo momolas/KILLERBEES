@@ -8,8 +8,9 @@
 import GroundSdk
 import SwiftUI
 
-class VideoController: ObservableObject {
-    @Published var streamView: StreamView?
+@Observable @MainActor
+class VideoController {
+    var streamView: StreamView?
     private var drone: Drone?
     private var streamServerRef: Ref<StreamServer>?
     private var cameraLiveRef: Ref<CameraLive>?

@@ -15,7 +15,7 @@ struct KILLERBEESApp: App {
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
-				.environmentObject(DroneManager(groundSdk: groundSdk))
+				.environment(DroneManager(groundSdk: groundSdk))
 		}
 	}
 }

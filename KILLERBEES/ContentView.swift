@@ -9,7 +9,7 @@ import GroundSdk
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var droneManager: DroneManager
+    @Environment(DroneManager.self) var droneManager: DroneManager
     @State private var navigationPath = NavigationPath()
 
     var body: some View {
@@ -39,8 +39,8 @@ struct ContentView: View {
                 }
             }
             // Gestion du retour arrière automatique si déconnexion
-            .onChange(of: droneManager.connectedDrone) {
-                if droneManager.connectedDrone == nil {
+            .onChange(of: droneManager.connectedDrone) { _, newValue in
+                if newValue == nil {
                     navigationPath = NavigationPath()
                 }
             }
@@ -65,15 +65,15 @@ struct DroneRow: View {
                     .font(.headline)
                 Text("UID: \(drone.uid)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
             Spacer()
             if isConnected {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.blue)
+                    .foregroundStyle(.blue)
             } else {
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .font(.caption)
             }
         }

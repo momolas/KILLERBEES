@@ -10,8 +10,8 @@ import GroundSdk
 
 struct DroneControlView: View {
     let drone: Drone
-    @EnvironmentObject var droneManager: DroneManager
-    @StateObject private var videoController = VideoController()
+    @Environment(DroneManager.self) var droneManager: DroneManager
+    @State private var videoController = VideoController()
 
     var body: some View {
         VStack {
@@ -23,7 +23,7 @@ struct DroneControlView: View {
                 ZStack {
                     Color.black
                     Text("Connexion au flux vidéo...")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                 }
                 .frame(height: 300)
             }
@@ -35,24 +35,24 @@ struct DroneControlView: View {
                     droneManager.takeOff()
                 }) {
                     Text("Décoller")
-                        .fontWeight(.bold)
+                        .bold()
                         .padding()
                         .frame(minWidth: 100)
                         .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .foregroundStyle(.white)
+                        .clipShape(.rect(cornerRadius: 10))
                 }
 
                 Button(action: {
                     droneManager.land()
                 }) {
                     Text("Atterrir")
-                        .fontWeight(.bold)
+                        .bold()
                         .padding()
                         .frame(minWidth: 100)
                         .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .foregroundStyle(.white)
+                        .clipShape(.rect(cornerRadius: 10))
                 }
             }
             .padding(.bottom, 50)
