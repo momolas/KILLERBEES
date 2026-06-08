@@ -49,7 +49,7 @@ class VideoController {
                 if self.streamView == nil {
                     self.streamView = StreamView(frame: .zero)
                 }
-                self.streamView?.setStream(stream: live.stream)
+                self.streamView?.setStream(stream: live)
             }
         }
     }
