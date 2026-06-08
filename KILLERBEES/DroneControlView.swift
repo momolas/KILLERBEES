@@ -16,47 +16,14 @@ struct DroneControlView: View {
 
     var body: some View {
         VStack {
-            if let streamView = videoController.streamView {
-                VideoPlayerView(streamView: streamView)
-                    .frame(height: 300)
-                    .background(.black)
-            } else {
-                ZStack {
-                    Color.black
-                    Text("Connexion au flux vidéo...")
-                        .foregroundStyle(.white)
-                }
-                .frame(height: 300)
-            }
+            VideoSection(streamView: videoController.streamView)
 
             Spacer()
 
-            HStack {
-                Button(action: {
-                    droneManager.takeOff()
-                }) {
-                    Text("Décoller")
-                        .bold()
-                        .padding()
-                        .frame(minWidth: 120)
-                        .background(.green)
-                        .foregroundStyle(.white)
-                        .clipShape(.rect(cornerRadius: 12))
-                }
-
-                Button(action: {
-                    droneManager.land()
-                }) {
-                    Text("Atterrir")
-                        .bold()
-                        .padding()
-                        .frame(minWidth: 120)
-                        .background(.red)
-                        .foregroundStyle(.white)
-                        .clipShape(.rect(cornerRadius: 12))
-                }
-            }
-            .padding(.bottom)
+            ControlButtonsSection(
+                onTakeOff: { droneManager.takeOff() },
+                onLand: { droneManager.land() }
+            )
         }
         .padding()
         .navigationTitle(drone.name ?? "Drone")
@@ -79,5 +46,44 @@ struct DroneControlView: View {
         .onDisappear {
             videoController.cleanup()
         }
+    }
+}
+
+struct VideoSection: View {
+    let streamView: StreamView?
+
+    var body: some View {
+        if let streamView {
+            VideoPlayerView(streamView: streamView)
+                .frame(height: 300)
+                .background(.black)
+        } else {
+            ZStack {
+                Color.black
+                Text("Connexion au flux vidéo...")
+                    .foregroundStyle(.white)
+            }
+            .frame(height: 300)
+        }
+    }
+}
+
+struct ControlButtonsSection: View {
+    let onTakeOff: () -> Void
+    let onLand: () -> Void
+
+    var body: some View {
+        HStack(spacing: 20) {
+            Button("Décoller", systemImage: "arrow.up.circle.fill", action: onTakeOff)
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .controlSize(.large)
+
+            Button("Atterrir", systemImage: "arrow.down.circle.fill", action: onLand)
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
+                .controlSize(.large)
+        }
+        .padding(.bottom)
     }
 }
