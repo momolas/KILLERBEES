@@ -17,7 +17,7 @@ class DroneManager {
 
     var connectionError: String?
 
-    private var droneListRef: Ref<[Drone]>?
+    private var droneListRef: Ref<[DroneListEntry]>?
     private var droneStateRef: Ref<DeviceState>?
 
     init(groundSdk: GroundSdk) {
@@ -26,8 +26,9 @@ class DroneManager {
     }
 
     private func scanForDrones() {
-        droneListRef = groundSdk.getFacility(Facilities.droneList) { [weak self] droneList in
-            self?.drones = droneList ?? []
+        droneListRef = groundSdk.getDroneList { [weak self] droneList in
+            guard let self = self else { return }
+            self.drones = (droneList ?? []).compactMap { self.groundSdk.getDrone(uid: $0.uid) }
         }
     }
 
@@ -73,14 +74,14 @@ class DroneManager {
         // Pour une action "fire and forget", on peut juste accéder à l'interface si elle est connue,
         // mais le pattern sûr est via getPeripheral.
 
-        _ = drone.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
+        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { pilotingItf in
             pilotingItf?.takeOff()
         }
     }
 
     func land() {
         guard let drone = connectedDrone else { return }
-        _ = drone.getPeripheral(Peripherals.pilotingItf) { pilotingItf in
+        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { pilotingItf in
             pilotingItf?.land()
         }
     }

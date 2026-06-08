@@ -46,15 +46,17 @@ class VideoController {
                 }
 
                 // Mise à jour de la vue si nécessaire
-                if self.streamView?.stream != live.stream {
-                    self.streamView = StreamView(stream: live.stream)
+                if self.streamView == nil {
+                    self.streamView = StreamView(frame: .zero)
                 }
+                self.streamView?.setStream(stream: live.stream)
             }
         }
     }
 
     func cleanup() {
         // Libération des références
+        streamView?.setStream(stream: nil)
         cameraLiveRef = nil
         streamServerRef = nil
         streamView = nil

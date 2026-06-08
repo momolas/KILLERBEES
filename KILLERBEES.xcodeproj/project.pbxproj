@@ -118,6 +118,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD00576529F580990092FAC0 /* Build configuration list for PBXNativeTarget "KILLERBEES" */;
 			buildPhases = (
+				2EF0DDEF9227690801B2474A /* [CP] Check Pods Manifest.lock */,
 				CD00575229F580970092FAC0 /* Sources */,
 				CD00575329F580970092FAC0 /* Frameworks */,
 				CD00575429F580970092FAC0 /* Resources */,
@@ -156,9 +157,6 @@
 				Base,
 			);
 			mainGroup = CD00574D29F580970092FAC0;
-			packageReferences = (
-				CDFBC66D2CFB298900D44A1E /* XCRemoteSwiftPackageReference "groundsdk-ios" */,
-			);
 			productRefGroup = CD00575729F580970092FAC0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -181,6 +179,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2EF0DDEF9227690801B2474A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-KILLERBEES-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4D7A30343F0FCF5574AD6C8A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -189,13 +209,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -452,17 +468,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		CDFBC66D2CFB298900D44A1E /* XCRemoteSwiftPackageReference "groundsdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Parrot-Developers/groundsdk-ios.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = CD00574E29F580970092FAC0 /* Project object */;
 }

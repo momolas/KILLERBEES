@@ -10,7 +10,7 @@ import GroundSdk
 
 struct DroneControlView: View {
     let drone: Drone
-    @Environment(DroneManager.self) var droneManager: DroneManager
+    @SwiftUI.Environment(DroneManager.self) var droneManager: DroneManager
     @State private var videoController = VideoController()
     @State private var showErrorAlert = false
 

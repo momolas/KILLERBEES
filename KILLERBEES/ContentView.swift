@@ -9,7 +9,7 @@ import GroundSdk
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(DroneManager.self) var droneManager: DroneManager
+    @SwiftUI.Environment(DroneManager.self) var droneManager: DroneManager
     @State private var navigationPath = NavigationPath()
 
     var body: some View {
@@ -17,10 +17,11 @@ struct ContentView: View {
             List {
                 Section(header: Text("Appareils à proximité")) {
                     ForEach(droneManager.drones) { drone in
+                        let isConnected = drone.uid == droneManager.connectedDrone?.uid
                         Button {
                             selectDrone(drone)
                         } label: {
-                            DroneRow(drone: drone, isConnected: drone.uid == droneManager.connectedDrone?.uid)
+                            DroneRow(drone: drone, isConnected: isConnected)
                         }
                     }
                 }

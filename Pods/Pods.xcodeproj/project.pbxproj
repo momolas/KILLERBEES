@@ -15,7 +15,6 @@
 			dependencies = (
 			);
 			name = SdkCore;
-			productName = SdkCore;
 		};
 /* End PBXAggregateTarget section */
 
@@ -1004,7 +1003,7 @@
 		0AEA08614971590FC7A8D6C8FB456F3A /* StreamCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StreamCore.swift; path = GroundSdk/Internal/Stream/StreamCore.swift; sourceTree = "<group>"; };
 		0B264EE3C05C6A4F76D5F09785402882 /* HorizontalRevealAnimationCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HorizontalRevealAnimationCore.swift; path = GroundSdk/Internal/Device/PilotingItf/Animation/HorizontalRevealAnimationCore.swift; sourceTree = "<group>"; };
 		0B78348DA929AD31D68449694412B136 /* MountControlCommand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MountControlCommand.swift; path = GroundSdk/Mavlink/standard/MountControlCommand.swift; sourceTree = "<group>"; };
-		0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ArsdkEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ArsdkEngine; path = ArsdkEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B7C9D6204305D50357DAE7F48211DC2 /* Arsdk.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Arsdk.swift; path = ArsdkEngine/Arsdk.swift; sourceTree = "<group>"; };
 		0C927A1211014F29B827A7E099388B13 /* Google_Protobuf_ListValue+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Google_Protobuf_ListValue+Extensions.swift"; path = "Sources/SwiftProtobuf/Google_Protobuf_ListValue+Extensions.swift"; sourceTree = "<group>"; };
 		0CB5F0D1617AA325B4312AD1BB0DB678 /* FlightLogConverterEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightLogConverterEngine.swift; path = GroundSdk/Internal/Engine/FlightLogConverterEngine.swift; sourceTree = "<group>"; };
@@ -1219,7 +1218,7 @@
 		4510CF087268B980C4A25311100C1D77 /* WifiStationSecuritySettingCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WifiStationSecuritySettingCore.swift; path = GroundSdk/Internal/Device/Peripheral/WifiAccessPointCore/WifiStationSecuritySettingCore.swift; sourceTree = "<group>"; };
 		45159D6AE50AAC3C6EDB32737D9E3B75 /* FlightCameraRecorderController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightCameraRecorderController.swift; path = ArsdkEngine/Peripheral/FlightCameraRecorderController.swift; sourceTree = "<group>"; };
 		45DB41ED7875DF8E640F5714C11A4F7A /* SkyCtrl3AxisEvent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SkyCtrl3AxisEvent.swift; path = GroundSdk/Device/Peripheral/SkyCtrl3Gamepad/SkyCtrl3AxisEvent.swift; sourceTree = "<group>"; };
-		45EF98F538AE655EBADD9ECB2CB8A8FC /* distortionShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = distortionShader.fsh; path = GroundSdk/Hmd/internal/Shaders/distortionShader.fsh; sourceTree = "<group>"; };
+		45EF98F538AE655EBADD9ECB2CB8A8FC /* distortionShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; name = distortionShader.fsh; path = GroundSdk/Hmd/internal/Shaders/distortionShader.fsh; sourceTree = "<group>"; };
 		45FF6C9C32D87F8BEDBD5B266123281E /* SystemEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SystemEngine.swift; path = GroundSdk/Internal/Engine/SystemEngine.swift; sourceTree = "<group>"; };
 		460E12A5905B3C1F087A74B6551D6CB8 /* Gps.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Gps.swift; path = GroundSdk/Device/Instrument/Gps.swift; sourceTree = "<group>"; };
 		46163CCC34A2C99D4E044F14C5A921FE /* PoiPilotingItfCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PoiPilotingItfCore.swift; path = GroundSdk/Internal/Device/PilotingItf/PoiPilotingItfCore.swift; sourceTree = "<group>"; };
@@ -1234,7 +1233,7 @@
 		485D3FA16FB45659BE04B39CC229559D /* SwiftProtobuf-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SwiftProtobuf-prefix.pch"; sourceTree = "<group>"; };
 		48AF38EF26E527A99423E0640C81295B /* AnafiDevToolbox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnafiDevToolbox.swift; path = ArsdkEngine/Peripheral/AnafiDevToolbox.swift; sourceTree = "<group>"; };
 		48F9CB56CE8DFE0D2F2B81BF6594F795 /* PreciseHome.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreciseHome.swift; path = GroundSdk/Device/Peripheral/PreciseHome.swift; sourceTree = "<group>"; };
-		491EB166295F95CE64C86ED045DDD999 /* textureShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = textureShader.vsh; path = GroundSdk/Hmd/internal/Shaders/textureShader.vsh; sourceTree = "<group>"; };
+		491EB166295F95CE64C86ED045DDD999 /* textureShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; name = textureShader.vsh; path = GroundSdk/Hmd/internal/Shaders/textureShader.vsh; sourceTree = "<group>"; };
 		498AD2BFCA0D6AC5F2D320D231FF0B2D /* BlackBoxRecorder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BlackBoxRecorder.swift; path = ArsdkEngine/BlackBox/BlackBoxRecorder.swift; sourceTree = "<group>"; };
 		498CDDB92E992F40E86A8523E74588B1 /* BatteryGaugeUpdaterCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BatteryGaugeUpdaterCore.swift; path = GroundSdk/Internal/Device/Peripheral/BatteryGaugeUpdaterCore.swift; sourceTree = "<group>"; };
 		49C6EB7DB3E79D1403773197B07424D2 /* MediaItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = GroundSdk/Device/Peripheral/MediaStore/MediaItem.swift; sourceTree = "<group>"; };
@@ -1503,7 +1502,7 @@
 		92E93D21304C8B90ED7B20D29604489E /* DebugShell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DebugShell.swift; path = GroundSdk/Device/Peripheral/DebugShell.swift; sourceTree = "<group>"; };
 		935082ED198050047C80530F8B1A708B /* CameraTriggerIntervalCommand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraTriggerIntervalCommand.swift; path = GroundSdk/Mavlink/standard/CameraTriggerIntervalCommand.swift; sourceTree = "<group>"; };
 		9435B68A58F86947753ED2FE6BBF4F08 /* AnafiCopterMotors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnafiCopterMotors.swift; path = ArsdkEngine/Peripheral/AnafiCopterMotors.swift; sourceTree = "<group>"; };
-		943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftProtobuf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftProtobuf; path = SwiftProtobuf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		945CAC2E156B8A5BBA2475E1C56D11AF /* MappableAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MappableAction.swift; path = GroundSdk/Device/Peripheral/Gamepad/MappableAction.swift; sourceTree = "<group>"; };
 		9496D46585B8427DBFD54BB081323486 /* NoAckCmdEncoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NoAckCmdEncoder.swift; path = ArsdkEngine/DeviceControllers/NoAckCmdEncoder.swift; sourceTree = "<group>"; };
 		94A81B74E6B40C71E5A64E6CC7998E41 /* JSONDecodingOptions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSONDecodingOptions.swift; path = Sources/SwiftProtobuf/JSONDecodingOptions.swift; sourceTree = "<group>"; };
@@ -1535,15 +1534,15 @@
 		9AC77ED9840D678B7606AD6D756F4AE0 /* ArsdkEngine-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ArsdkEngine-prefix.pch"; sourceTree = "<group>"; };
 		9AF2B0263EB746AE5B09A5F8E91DCECC /* SkyCtrl3Gamepad.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SkyCtrl3Gamepad.swift; path = GroundSdk/Device/Peripheral/SkyCtrl3Gamepad.swift; sourceTree = "<group>"; };
 		9B6D63E7AD1CA1296E7F624E59ABFA00 /* FlightCameraRecordUploader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightCameraRecordUploader.swift; path = GroundSdk/Internal/Engine/FlightCameraRecord/FlightCameraRecordUploader.swift; sourceTree = "<group>"; };
-		9B9C0F8982C92E0F302ED2DBCF6536D9 /* streamShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = streamShader.fsh; path = GroundSdk/Hmd/internal/Shaders/streamShader.fsh; sourceTree = "<group>"; };
+		9B9C0F8982C92E0F302ED2DBCF6536D9 /* streamShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; name = streamShader.fsh; path = GroundSdk/Hmd/internal/Shaders/streamShader.fsh; sourceTree = "<group>"; };
 		9BF2E3F1E5178E2C276C38F89D209DF9 /* StereoVisionSensorCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StereoVisionSensorCore.swift; path = GroundSdk/Internal/Device/Peripheral/StereoVisionSensorCore.swift; sourceTree = "<group>"; };
 		9C7BD7248CD5A9A876AC56FFBAE81F3E /* JSONEncodingVisitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSONEncodingVisitor.swift; path = Sources/SwiftProtobuf/JSONEncodingVisitor.swift; sourceTree = "<group>"; };
 		9D11970D9AE55E6D6FEC37F09FEDC3BC /* LogControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LogControl.swift; path = GroundSdk/Device/Peripheral/LogControl.swift; sourceTree = "<group>"; };
 		9D89187A7CCEEC0FC62C1EC5DF7AD8EB /* NavigateToWaypointCommandV1.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigateToWaypointCommandV1.swift; path = GroundSdk/Mavlink/legacy/NavigateToWaypointCommandV1.swift; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9DD94C8E3F3459E7932038CFF41B8705 /* streamShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = streamShader.vsh; path = GroundSdk/Hmd/internal/Shaders/streamShader.vsh; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9DD94C8E3F3459E7932038CFF41B8705 /* streamShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; name = streamShader.vsh; path = GroundSdk/Hmd/internal/Shaders/streamShader.vsh; sourceTree = "<group>"; };
 		9E35B8C968F892F89C61BFE987B2F889 /* WifiAccessPoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WifiAccessPoint.swift; path = GroundSdk/Device/Peripheral/WifiAccessPoint.swift; sourceTree = "<group>"; };
-		9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GroundSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = GroundSdk; path = GroundSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E496CDBE6E75C75CAC4152F8FE6325F /* SetStillCaptureModeCommand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SetStillCaptureModeCommand.swift; path = GroundSdk/Mavlink/standard/SetStillCaptureModeCommand.swift; sourceTree = "<group>"; };
 		9F97A7859FABC15E91A5237CE2B7E6CA /* DoubleParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DoubleParser.swift; path = Sources/SwiftProtobuf/DoubleParser.swift; sourceTree = "<group>"; };
 		9F9E6624BA77C06D96CA503462F93B28 /* NameRefCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NameRefCore.swift; path = GroundSdk/Internal/Device/NameRefCore.swift; sourceTree = "<group>"; };
@@ -1557,7 +1556,7 @@
 		A2EE9E019B424B186AF2FF0A1BA6CD23 /* BlendedThermalCamera.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BlendedThermalCamera.swift; path = GroundSdk/Device/Peripheral/BlendedThermalCamera.swift; sourceTree = "<group>"; };
 		A31082720FB24D2A26E8E22DA51F178D /* CameraExposureSettingsCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraExposureSettingsCore.swift; path = GroundSdk/Internal/Device/Peripheral/CameraCore/CameraExposureSettingsCore.swift; sourceTree = "<group>"; };
 		A3194FBADEF130457EA965729FDDE298 /* Camera2ConfigCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Camera2ConfigCore.swift; path = GroundSdk/Internal/Device/Peripheral/Camera2Core/Camera2ConfigCore.swift; sourceTree = "<group>"; };
-		A3577A399724FA0F539320B688D901D9 /* Pods_KILLERBEES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KILLERBEES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3577A399724FA0F539320B688D901D9 /* Pods-KILLERBEES */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-KILLERBEES"; path = Pods_KILLERBEES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A378C488D35D507E1AC4FB840F9CAEA3 /* FlightCameraRecordStorageCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightCameraRecordStorageCore.swift; path = GroundSdk/Internal/Utility/FlightCameraRecordStorageCore.swift; sourceTree = "<group>"; };
 		A3BB9A6D181F1F68BBAF369FB19BC25A /* Instrument.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Instrument.swift; path = GroundSdk/Device/Instrument/Instrument.swift; sourceTree = "<group>"; };
 		A3C1DD1A2D1F5729C8024B1AFE94D1AE /* FlightLogStorageCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightLogStorageCore.swift; path = GroundSdk/Internal/Utility/FlightLogStorageCore.swift; sourceTree = "<group>"; };
@@ -1630,7 +1629,7 @@
 		B6CD3F9A0C4984D3E443ACB7E76F0F85 /* MainCamera2Core.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MainCamera2Core.swift; path = GroundSdk/Internal/Device/Peripheral/Camera2Core/MainCamera2Core.swift; sourceTree = "<group>"; };
 		B6D0EFBF0C24901D2AA32FDF275D5954 /* CameraZoom.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraZoom.swift; path = GroundSdk/Device/Peripheral/Camera/CameraZoom.swift; sourceTree = "<group>"; };
 		B7552928AB1628961437B03DFD980DF0 /* LogCollector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LogCollector.swift; path = GroundSdk/Log/LogCollector.swift; sourceTree = "<group>"; };
-		B764B08DB63075C3B9DE72D880CBC19F /* textureShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = textureShader.fsh; path = GroundSdk/Hmd/internal/Shaders/textureShader.fsh; sourceTree = "<group>"; };
+		B764B08DB63075C3B9DE72D880CBC19F /* textureShader.fsh */ = {isa = PBXFileReference; includeInIndex = 1; name = textureShader.fsh; path = GroundSdk/Hmd/internal/Shaders/textureShader.fsh; sourceTree = "<group>"; };
 		B7946A9294BDE857D114CD69B4B5CF93 /* Camera2WhiteBalanceLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Camera2WhiteBalanceLock.swift; path = GroundSdk/Device/Peripheral/Camera2/Camera2WhiteBalanceLock.swift; sourceTree = "<group>"; };
 		B7AD5C4D289C46E0253D5E59FABC7731 /* InstrumentCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InstrumentCore.swift; path = GroundSdk/Internal/Device/Instrument/InstrumentCore.swift; sourceTree = "<group>"; };
 		B7CFAAE3DB588D17E04C2C8444A04A6E /* Anafi2Antiflicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Anafi2Antiflicker.swift; path = ArsdkEngine/Peripheral/Anafi2Antiflicker.swift; sourceTree = "<group>"; };
@@ -1700,7 +1699,7 @@
 		C8FD742C38C1D3FE60B31C48DA0F8F29 /* ArsdkCrashmlDownloader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ArsdkCrashmlDownloader.swift; path = ArsdkEngine/Peripheral/ArsdkCrashmlDownloader.swift; sourceTree = "<group>"; };
 		C92E33D7760CDCA4017A310026333E47 /* TimeProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimeProvider.swift; path = GroundSdk/Internal/TimeProvider.swift; sourceTree = "<group>"; };
 		C95CEEB3B314B3880DC6E8AA90410963 /* BinaryDecodingOptions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BinaryDecodingOptions.swift; path = Sources/SwiftProtobuf/BinaryDecodingOptions.swift; sourceTree = "<group>"; };
-		C9B65C2E097071294E0D5BF7DFC1833C /* distortionShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.glsl; name = distortionShader.vsh; path = GroundSdk/Hmd/internal/Shaders/distortionShader.vsh; sourceTree = "<group>"; };
+		C9B65C2E097071294E0D5BF7DFC1833C /* distortionShader.vsh */ = {isa = PBXFileReference; includeInIndex = 1; name = distortionShader.vsh; path = GroundSdk/Hmd/internal/Shaders/distortionShader.vsh; sourceTree = "<group>"; };
 		CA46A250467E0E74225757A7CC419B08 /* FirmwareIdentifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirmwareIdentifier.swift; path = GroundSdk/Facility/Firmware/FirmwareIdentifier.swift; sourceTree = "<group>"; };
 		CABA4F69665C86C576EA289DD5087BC1 /* FlightPlanPilotingItf.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FlightPlanPilotingItf.swift; path = GroundSdk/Device/PilotingItf/FlightPlanPilotingItf.swift; sourceTree = "<group>"; };
 		CAF3428EE88AA8674D184FC23C523470 /* FirmwareStoreCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirmwareStoreCore.swift; path = GroundSdk/Internal/Utility/FirmwareStoreCore.swift; sourceTree = "<group>"; };
@@ -2460,6 +2459,7 @@
 				DE527939AFDD94AF320972BA47C20410 /* Resources */,
 				0F3D877A0C4E94D6AB56C858E1A3C0A9 /* Support Files */,
 			);
+			name = GroundSdk;
 			path = GroundSdk;
 			sourceTree = "<group>";
 		};
@@ -2606,6 +2606,7 @@
 				7A4941E1A5E7B1367D55CDAE63B256A8 /* ZigZag.swift */,
 				45A449D2DBF65912EA8A4C44C1E992EE /* Support Files */,
 			);
+			name = SwiftProtobuf;
 			path = SwiftProtobuf;
 			sourceTree = "<group>";
 		};
@@ -2649,10 +2650,10 @@
 		A94C01D22850F9859E45D4BE17A6586E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine.framework */,
-				9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk.framework */,
-				A3577A399724FA0F539320B688D901D9 /* Pods_KILLERBEES.framework */,
-				943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf.framework */,
+				0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine */,
+				9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk */,
+				A3577A399724FA0F539320B688D901D9 /* Pods-KILLERBEES */,
+				943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2663,6 +2664,7 @@
 				807B0F0EF2E25130E6FB8094B8519514 /* Frameworks */,
 				7D6A56D34B3311E172F8D580AF8F0805 /* Support Files */,
 			);
+			name = SdkCore;
 			path = SdkCore;
 			sourceTree = "<group>";
 		};
@@ -2912,6 +2914,7 @@
 				DBCA56F38F06AE25EE7F4B911AA2CDCA /* WifiStationController.swift */,
 				D353F9E90AA3DD183DF8F5B75CB4886A /* Support Files */,
 			);
+			name = ArsdkEngine;
 			path = ArsdkEngine;
 			sourceTree = "<group>";
 		};
@@ -3027,7 +3030,7 @@
 			);
 			name = ArsdkEngine;
 			productName = ArsdkEngine;
-			productReference = 0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine.framework */;
+			productReference = 0B795FE36B3486425D89717DD3A673CF /* ArsdkEngine */;
 			productType = "com.apple.product-type.framework";
 		};
 		A5F702E0DA383BC1479572581615A916 /* SwiftProtobuf */ = {
@@ -3045,7 +3048,7 @@
 			);
 			name = SwiftProtobuf;
 			productName = SwiftProtobuf;
-			productReference = 943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf.framework */;
+			productReference = 943D347E61A2E181A4FA2CA894307B6E /* SwiftProtobuf */;
 			productType = "com.apple.product-type.framework";
 		};
 		C231C773E9A1D812FB6FDFCCC24E709E /* Pods-KILLERBEES */ = {
@@ -3067,7 +3070,7 @@
 			);
 			name = "Pods-KILLERBEES";
 			productName = Pods_KILLERBEES;
-			productReference = A3577A399724FA0F539320B688D901D9 /* Pods_KILLERBEES.framework */;
+			productReference = A3577A399724FA0F539320B688D901D9 /* Pods-KILLERBEES */;
 			productType = "com.apple.product-type.framework";
 		};
 		E8E90452802ED9E50AE903DFFC16F09E /* GroundSdk */ = {
@@ -3087,7 +3090,7 @@
 			);
 			name = GroundSdk;
 			productName = GroundSdk;
-			productReference = 9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk.framework */;
+			productReference = 9E482C4ED7253C277B3441F0FE72EB85 /* GroundSdk */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -3096,9 +3099,8 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1530;
+				LastUpgradeCheck = 1500;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -4113,32 +4115,28 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 36A6D757DB614142CB97622628F319B7 /* SwiftProtobuf.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftProtobuf/SwiftProtobuf-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SwiftProtobuf/SwiftProtobuf-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/SwiftProtobuf/SwiftProtobuf.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = SwiftProtobuf;
 				PRODUCT_NAME = SwiftProtobuf;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4152,32 +4150,28 @@
 			baseConfigurationReference = F717D1C4C65AFA87022A0FF3D7F10B32 /* ArsdkEngine.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/ArsdkEngine/ArsdkEngine-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/ArsdkEngine/ArsdkEngine-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/ArsdkEngine/ArsdkEngine.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = ArsdkEngine;
 				PRODUCT_NAME = ArsdkEngine;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -4192,13 +4186,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -4209,7 +4204,6 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -4217,10 +4211,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -4262,11 +4252,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -4282,11 +4270,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -4298,32 +4287,28 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 636C260394C567C0194E6318BDF6E6FF /* SwiftProtobuf.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftProtobuf/SwiftProtobuf-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SwiftProtobuf/SwiftProtobuf-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/SwiftProtobuf/SwiftProtobuf.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = SwiftProtobuf;
 				PRODUCT_NAME = SwiftProtobuf;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4355,32 +4340,28 @@
 			baseConfigurationReference = F91CAE59CC09AC64B4FFF06688180A96 /* GroundSdk.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/GroundSdk/GroundSdk-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/GroundSdk/GroundSdk-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/GroundSdk/GroundSdk.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = GroundSdk;
 				PRODUCT_NAME = GroundSdk;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4394,13 +4375,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -4411,7 +4393,6 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -4419,10 +4400,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4435,32 +4412,28 @@
 			baseConfigurationReference = A54BA568006D22FB5CA40E67BA127B3D /* GroundSdk.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/GroundSdk/GroundSdk-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/GroundSdk/GroundSdk-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/GroundSdk/GroundSdk.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = GroundSdk;
 				PRODUCT_NAME = GroundSdk;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -4522,11 +4495,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4539,10 +4510,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -4555,32 +4527,28 @@
 			baseConfigurationReference = 3FC6AC3CB5333C50E59901B7F448DFC0 /* ArsdkEngine.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/ArsdkEngine/ArsdkEngine-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/ArsdkEngine/ArsdkEngine-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "Target Support Files/ArsdkEngine/ArsdkEngine.modulemap";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_MODULE_NAME = ArsdkEngine;
 				PRODUCT_NAME = ArsdkEngine;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
