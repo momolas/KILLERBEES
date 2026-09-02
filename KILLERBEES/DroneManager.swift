@@ -17,6 +17,7 @@ class DroneManager {
 
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
+    var rcConnectionState: DeviceState.ConnectionState = .disconnected
     var rcBatteryLevel: Int?
     var discoveredDronesViaRC: [DiscoveredDrone] = []
     var knownDronesViaRC: [KnownDrone] = []
@@ -77,16 +78,30 @@ class DroneManager {
             guard let self else { return }
             self.remoteControls = (rcList ?? []).compactMap { self.groundSdk.getRemoteControl(uid: $0.uid) }
 
-            // Auto-connexion à la première télécommande détectée (ex: branchée via USB)
-            if let firstRC = self.remoteControls.first, self.connectedRemoteControl == nil {
+            if let activeRC = self.connectedRemoteControl {
+                // Vérifier si la télécommande active est toujours dans la liste
+                if !self.remoteControls.contains(where: { $0.uid == activeRC.uid }) {
+                    self.connectedRemoteControl = self.remoteControls.first
+                    if let newRC = self.connectedRemoteControl {
+                        self.connectToRemoteControl(newRC)
+                    } else {
+                        self.resetRCState()
+                    }
+                }
+            } else if let firstRC = self.remoteControls.first {
                 self.connectToRemoteControl(firstRC)
-            } else if self.remoteControls.isEmpty {
-                self.connectedRemoteControl = nil
-                self.rcBatteryLevel = nil
-                self.discoveredDronesViaRC = []
-                self.knownDronesViaRC = []
+            } else {
+                self.resetRCState()
             }
         }
+    }
+
+    private func resetRCState() {
+        connectedRemoteControl = nil
+        rcConnectionState = .disconnected
+        rcBatteryLevel = nil
+        discoveredDronesViaRC = []
+        knownDronesViaRC = []
     }
 
     func connectToRemoteControl(_ rc: RemoteControl) {
@@ -95,19 +110,19 @@ class DroneManager {
         // 1. Observer l'état de connexion de la télécommande
         rcStateRef = rc.getState { [weak self] state in
             guard let self, let state else { return }
-            if state.connectionState == .disconnected {
-                if self.connectedRemoteControl?.uid == rc.uid {
-                    self.connectedRemoteControl = nil
-                    self.rcBatteryLevel = nil
-                    self.discoveredDronesViaRC = []
-                    self.knownDronesViaRC = []
-                }
-            } else if state.connectionState == .connected {
+            self.rcConnectionState = state.connectionState
+
+            if state.connectionState == .connected {
                 self.monitorRCDevices(rc)
+            } else if state.connectionState == .disconnected {
+                // Si la télécommande n'est plus détectée dans la liste des périphériques
+                if !self.remoteControls.contains(where: { $0.uid == rc.uid }) {
+                    self.resetRCState()
+                }
             }
         }
 
-        // 2. Lancer la connexion matérielle
+        // 2. Lancer la connexion matérielle si nécessaire
         _ = rc.connect()
     }
 
@@ -178,19 +193,21 @@ class DroneManager {
         // Surveillance de l'état de connexion
         droneStateRef = drone.getState { [weak self] state in
             guard let self, let state else { return }
-            if state.connectionState == .disconnected {
-                if self.connectedDrone?.uid == drone.uid {
-                    self.connectedDrone = nil
-                    self.connectionError = "La connexion avec le drone a été interrompue."
+            if state.connectionState == .connected {
+                self.connectionError = nil
+            } else if state.connectionState == .disconnected {
+                // Ne réinitialiser que si le drone n'est plus dans la liste des drones disponibles
+                if !self.drones.contains(where: { $0.uid == drone.uid }) {
+                    if self.connectedDrone?.uid == drone.uid {
+                        self.connectedDrone = nil
+                        self.connectionError = "La connexion avec le drone a été interrompue."
+                    }
                 }
             }
         }
 
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
-        let success = drone.connect()
-        if !success {
-            connectionError = "Impossible de se connecter au drone."
-        }
+        _ = drone.connect()
     }
 
     func disconnect() {

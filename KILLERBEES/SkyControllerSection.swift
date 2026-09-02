@@ -25,9 +25,20 @@ struct SkyControllerSection: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(rc.name)
                                 .font(.headline)
-                            Text("Pont USB & Radio longue portée actif")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            switch droneManager.rcConnectionState {
+                            case .connected:
+                                Text("Pont USB & Radio longue portée actif")
+                                    .font(.caption)
+                                    .foregroundStyle(.green)
+                            case .connecting:
+                                Text("Connexion en cours...")
+                                    .font(.caption)
+                                    .foregroundStyle(.orange)
+                            case .disconnected, .disconnecting:
+                                Text("Déconnecté")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                         
                         Spacer()
