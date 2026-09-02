@@ -10,24 +10,26 @@ struct VideoSection: View {
     let stream: CameraLive?
 
     var body: some View {
-        if let stream {
-            VideoPlayerView(stream: stream)
-                .frame(height: 300)
-                .background(.black)
-                .clipShape(.rect(cornerRadius: 16))
-        } else {
-            ZStack {
-                Color.black
-                VStack(spacing: 8) {
-                    ProgressView()
-                        .tint(.white)
-                    Text("Connexion au flux vidéo...")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.8))
+        ZStack {
+            if let stream {
+                VideoPlayerView(stream: stream)
+                    .background(.black)
+            } else {
+                ZStack {
+                    Color.black
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .tint(.white)
+                            .scaleEffect(1.2)
+                        Text("Connexion au flux vidéo...")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
                 }
             }
-            .frame(height: 300)
-            .clipShape(.rect(cornerRadius: 16))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
     }
 }

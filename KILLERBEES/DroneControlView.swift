@@ -11,6 +11,7 @@ import GroundSdk
 struct DroneControlView: View {
     let drone: Drone
     @SwiftUI.Environment(DroneManager.self) private var droneManager: DroneManager
+    @SwiftUI.Environment(\.dismiss) private var dismiss
     @State private var videoController = VideoController()
     @State private var showErrorAlert = false
 
@@ -19,19 +20,33 @@ struct DroneControlView: View {
     }
 
     var body: some View {
-        VStack {
+        ZStack {
+            // 1. Flux vidéo bord-à-bord plein écran
             VideoSection(stream: videoController.currentStream)
+                .ignoresSafeArea()
 
-            Spacer()
+            // 2. HUD superposé (Cockpit Overlay)
+            VStack {
+                CockpitTopBar(
+                    droneName: drone.name,
+                    droneBattery: droneManager.droneBatteryLevel,
+                    rcBattery: droneManager.rcBatteryLevel,
+                    flyingState: droneManager.flyingState,
+                    onDismiss: { dismiss() }
+                )
+                .padding(.top, 8)
 
-            ControlButtonsSection(
-                onTakeOff: { droneManager.takeOff() },
-                onLand: { droneManager.land() }
-            )
+                Spacer()
+
+                CockpitBottomBar(
+                    flyingState: droneManager.flyingState,
+                    onTakeOff: { droneManager.takeOff() },
+                    onLand: { droneManager.land() }
+                )
+            }
         }
-        .padding()
-        .navigationTitle(drone.name.isEmpty ? "Drone" : drone.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
+        .statusBarHidden(true)
         .alert("Erreur de connexion", isPresented: $showErrorAlert) {
             Button("OK", role: .cancel) {
                 droneManager.connectionError = nil
@@ -52,3 +67,4 @@ struct DroneControlView: View {
         }
     }
 }
+

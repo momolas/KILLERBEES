@@ -14,6 +14,8 @@ class DroneManager {
     private let groundSdk: GroundSdk
     var drones: [Drone] = []
     var connectedDrone: Drone?
+    var droneBatteryLevel: Int?
+    var flyingState: FlyingIndicatorsState = .landed
 
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
@@ -27,6 +29,8 @@ class DroneManager {
 
     private var droneListRef: Ref<[DroneListEntry]>?
     private var droneStateRef: Ref<DeviceState>?
+    private var droneBatteryRef: Ref<BatteryInfo>?
+    private var flyingIndicatorsRef: Ref<FlyingIndicators>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -217,6 +221,18 @@ class DroneManager {
             }
         }
 
+        // Surveillance de la batterie du drone
+        droneBatteryRef = drone.getInstrument(Instruments.batteryInfo) { [weak self] battery in
+            guard let self else { return }
+            self.droneBatteryLevel = battery?.batteryLevel
+        }
+
+        // Surveillance de l'état de vol
+        flyingIndicatorsRef = drone.getInstrument(Instruments.flyingIndicators) { [weak self] indicators in
+            guard let self, let indicators else { return }
+            self.flyingState = indicators.state ?? .landed
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
     }
@@ -225,6 +241,10 @@ class DroneManager {
         connectedDrone?.disconnect()
         connectedDrone = nil
         droneStateRef = nil
+        droneBatteryRef = nil
+        flyingIndicatorsRef = nil
+        droneBatteryLevel = nil
+        flyingState = .landed
         connectionError = nil
     }
 
