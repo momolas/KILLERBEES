@@ -13,6 +13,7 @@ struct DroneControlView: View {
     @SwiftUI.Environment(DroneManager.self) private var droneManager: DroneManager
     @SwiftUI.Environment(\.dismiss) private var dismiss
     @State private var videoController = VideoController()
+    @State private var isMapExpanded = false
     @State private var showErrorAlert = false
 
     init(drone: Drone) {
@@ -27,6 +28,7 @@ struct DroneControlView: View {
 
             // 2. HUD superposé (Cockpit Overlay)
             VStack {
+                // Barre Supérieure
                 CockpitTopBar(
                     droneName: drone.name,
                     droneBattery: droneManager.droneBatteryLevel,
@@ -40,29 +42,84 @@ struct DroneControlView: View {
                 )
                 .padding(.top, 8)
 
-                // Jauges de Télémétrie en Vol (Altitude & Vitesse)
-                CockpitTelemetryHUD(
-                    altitude: droneManager.altitude,
-                    verticalSpeed: droneManager.verticalSpeed,
-                    groundSpeed: droneManager.groundSpeed
+                // Bannière d'Alerte Vol (si active)
+                CockpitAlarmBanner(
+                    message: droneManager.activeAlarmText,
+                    isCritical: droneManager.isAlarmCritical
                 )
+                .padding(.top, 2)
+
+                // Télémétrie Supérieure (Altitude, Vitesse, Attitude)
+                HStack(alignment: .top) {
+                    CockpitTelemetryHUD(
+                        altitude: droneManager.altitude,
+                        verticalSpeed: droneManager.verticalSpeed,
+                        groundSpeed: droneManager.groundSpeed
+                    )
+
+                    Spacer()
+
+                    // Horizon Artificiel & Boussole
+                    CockpitAttitudeIndicator(
+                        pitch: droneManager.pitch,
+                        roll: droneManager.roll,
+                        heading: droneManager.heading
+                    )
+                    .padding(.trailing)
+                }
                 .padding(.top, 4)
 
                 Spacer()
 
-                CockpitBottomBar(
-                    flyingState: droneManager.flyingState,
-                    isRthActive: droneManager.isRthActive,
-                    onTakeOff: { droneManager.takeOff() },
-                    onLand: { droneManager.land() },
-                    onToggleRth: {
-                        if droneManager.isRthActive {
-                            droneManager.cancelReturnHome()
-                        } else {
-                            droneManager.triggerReturnHome()
+                // Zone Médiane / Basse : Mini-Carte (Gauche), Commandes Caméra & Nacelle (Droite), Barre de Vol (Centre)
+                HStack(alignment: .bottom, spacing: 12) {
+                    // Mini-Carte MapKit PiP (Bas Gauche)
+                    CockpitMiniMap(
+                        droneCoordinate: droneManager.droneCoordinate,
+                        homeCoordinate: droneManager.homeCoordinate,
+                        heading: droneManager.heading,
+                        isExpanded: $isMapExpanded
+                    )
+                    .padding(.leading)
+
+                    Spacer()
+
+                    // Commandes de Vol Décollage / Atterrissage / RTH
+                    CockpitBottomBar(
+                        flyingState: droneManager.flyingState,
+                        isRthActive: droneManager.isRthActive,
+                        onTakeOff: { droneManager.takeOff() },
+                        onLand: { droneManager.land() },
+                        onToggleRth: {
+                            if droneManager.isRthActive {
+                                droneManager.cancelReturnHome()
+                            } else {
+                                droneManager.triggerReturnHome()
+                            }
                         }
+                    )
+
+                    Spacer()
+
+                    // Contrôles Nacelle & Déclencheurs Médias (Droite)
+                    HStack(alignment: .center, spacing: 10) {
+                        CockpitGimbalControl(
+                            currentPitch: droneManager.gimbalPitch,
+                            onPitchChange: { newPitch in
+                                droneManager.setGimbalPitch(newPitch)
+                            }
+                        )
+
+                        CockpitCameraCaptureView(
+                            isRecording: droneManager.isRecording,
+                            canTakePhoto: droneManager.canTakePhoto,
+                            onTakePhoto: { droneManager.takePhoto() },
+                            onToggleRecording: { droneManager.toggleRecording() }
+                        )
                     }
-                )
+                    .padding(.trailing)
+                }
+                .padding(.bottom, 8)
             }
         }
         .toolbar(.hidden, for: .navigationBar)

@@ -5,6 +5,7 @@
 //  Refactored by Jules
 //
 
+import CoreLocation
 import Foundation
 import GroundSdk
 import SwiftUI
@@ -23,9 +24,25 @@ class DroneManager {
     var groundSpeed: Double?
     var satelliteCount: Int?
     var isGpsFixed: Bool = false
+    var droneCoordinate: CLLocationCoordinate2D?
+    var homeCoordinate: CLLocationCoordinate2D?
     var radioRssi: Int?
     var radioSignalQuality: Int?
     var isRthActive: Bool = false
+
+    // Horizon Artificiel & Cap
+    var pitch: Double = 0.0
+    var roll: Double = 0.0
+    var heading: Double = 0.0
+
+    // Nacelle (Gimbal) & Caméra
+    var gimbalPitch: Double = 0.0
+    var isRecording: Bool = false
+    var canTakePhoto: Bool = true
+
+    // Alertes de Sécurité
+    var activeAlarmText: String?
+    var isAlarmCritical: Bool = false
 
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
@@ -46,6 +63,11 @@ class DroneManager {
     private var gpsRef: Ref<Gps>?
     private var radioRef: Ref<Radio>?
     private var returnHomeRef: Ref<ReturnHomePilotingItf>?
+    private var attitudeRef: Ref<AttitudeIndicator>?
+    private var compassRef: Ref<Compass>?
+    private var gimbalRef: Ref<Gimbal>?
+    private var cameraRef: Ref<MainCamera>?
+    private var alarmsRef: Ref<Alarms>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -266,6 +288,12 @@ class DroneManager {
             guard let self else { return }
             self.satelliteCount = gps?.satelliteCount
             self.isGpsFixed = gps?.fixed ?? false
+            if let loc = gps?.lastKnownLocation {
+                self.droneCoordinate = loc.coordinate
+                if self.homeCoordinate == nil {
+                    self.homeCoordinate = loc.coordinate
+                }
+            }
         }
 
         // Surveillance de la liaison radio
@@ -281,8 +309,67 @@ class DroneManager {
             self.isRthActive = (returnHome?.state == .active)
         }
 
+        // Surveillance de l'Horizon Artificiel (Attitude)
+        attitudeRef = drone.getInstrument(Instruments.attitudeIndicator) { [weak self] attitude in
+            guard let self, let attitude else { return }
+            self.pitch = attitude.pitch ?? 0.0
+            self.roll = attitude.roll ?? 0.0
+        }
+
+        // Surveillance du Cap (Boussole)
+        compassRef = drone.getInstrument(Instruments.compass) { [weak self] compass in
+            guard let self, let compass else { return }
+            self.heading = compass.heading ?? 0.0
+        }
+
+        // Surveillance de la Nacelle (Gimbal)
+        gimbalRef = drone.getPeripheral(Peripherals.gimbal) { [weak self] gimbal in
+            guard let self, let gimbal else { return }
+            if let currentPitch = gimbal.currentAttitude[.pitch] {
+                self.gimbalPitch = currentPitch
+            }
+        }
+
+        // Surveillance de la Caméra (MainCamera)
+        cameraRef = drone.getPeripheral(Peripherals.mainCamera) { [weak self] camera in
+            guard let self, let camera else { return }
+            let state = camera.recordingState.functionState
+            self.isRecording = (state == .started || state == .starting)
+            self.canTakePhoto = camera.canStartPhotoCapture
+        }
+
+        // Surveillance des Alarmes de Sécurité
+        alarmsRef = drone.getInstrument(Instruments.alarms) { [weak self] alarms in
+            guard let self, let alarms else { return }
+            self.updateAlarms(alarms)
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
+    }
+
+    private func updateAlarms(_ alarms: Alarms) {
+        let autoLanding = alarms.getAlarm(kind: .automaticLandingBatteryIssue)
+        let wind = alarms.getAlarm(kind: .wind)
+        let power = alarms.getAlarm(kind: .power)
+        let motorError = alarms.getAlarm(kind: .motorError)
+
+        if autoLanding.level != .off {
+            activeAlarmText = "Atterrissage d'urgence batterie"
+            isAlarmCritical = true
+        } else if wind.level != .off {
+            activeAlarmText = "Alerte : Vent violent détecté !"
+            isAlarmCritical = (wind.level == .critical)
+        } else if power.level != .off {
+            activeAlarmText = "Alerte : Batterie critique"
+            isAlarmCritical = true
+        } else if motorError.level != .off {
+            activeAlarmText = "Alerte : Anomalie moteur"
+            isAlarmCritical = true
+        } else {
+            activeAlarmText = nil
+            isAlarmCritical = false
+        }
     }
 
     func disconnect() {
@@ -296,6 +383,11 @@ class DroneManager {
         gpsRef = nil
         radioRef = nil
         returnHomeRef = nil
+        attitudeRef = nil
+        compassRef = nil
+        gimbalRef = nil
+        cameraRef = nil
+        alarmsRef = nil
         droneBatteryLevel = nil
         flyingState = .landed
         altitude = nil
@@ -303,13 +395,23 @@ class DroneManager {
         groundSpeed = nil
         satelliteCount = nil
         isGpsFixed = false
+        droneCoordinate = nil
+        homeCoordinate = nil
         radioRssi = nil
         radioSignalQuality = nil
         isRthActive = false
+        pitch = 0.0
+        roll = 0.0
+        heading = 0.0
+        gimbalPitch = 0.0
+        isRecording = false
+        canTakePhoto = true
+        activeAlarmText = nil
+        isAlarmCritical = false
         connectionError = nil
     }
 
-    // MARK: - Pilotage
+    // MARK: - Pilotage & Nacelle & Médias
 
     func takeOff() {
         guard let drone = connectedDrone else { return }
@@ -333,5 +435,26 @@ class DroneManager {
     func cancelReturnHome() {
         guard let returnHome = returnHomeRef?.value else { return }
         _ = returnHome.deactivate()
+    }
+
+    func setGimbalPitch(_ pitch: Double) {
+        guard let gimbal = gimbalRef?.value else { return }
+        gimbal.control(mode: .position, yaw: nil, pitch: pitch, roll: nil)
+        self.gimbalPitch = pitch
+    }
+
+    func takePhoto() {
+        guard let camera = cameraRef?.value, camera.canStartPhotoCapture else { return }
+        camera.startPhotoCapture()
+    }
+
+    func toggleRecording() {
+        guard let camera = cameraRef?.value else { return }
+        let state = camera.recordingState.functionState
+        if state == .started || state == .starting {
+            camera.stopRecording()
+        } else if camera.canStartRecord {
+            camera.startRecording()
+        }
     }
 }
