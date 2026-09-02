@@ -9,13 +9,15 @@ import GroundSdk
 import SwiftUI
 
 struct ContentView: View {
-    @SwiftUI.Environment(DroneManager.self) var droneManager: DroneManager
+    @SwiftUI.Environment(DroneManager.self) private var droneManager: DroneManager
     @State private var navigationPath = NavigationPath()
+
+    init() {}
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
             List {
-                Section(header: Text("Appareils à proximité")) {
+                Section("Appareils à proximité") {
                     ForEach(droneManager.drones) { drone in
                         let isConnected = drone.uid == droneManager.connectedDrone?.uid
                         Button {
@@ -56,4 +58,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(DroneManager(groundSdk: GroundSdk()))
 }

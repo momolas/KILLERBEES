@@ -30,5 +30,7 @@ struct DroneRow: View {
             }
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityValue(isConnected ? "Connecté" : "Disponible")
     }
 }

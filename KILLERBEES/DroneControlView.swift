@@ -10,13 +10,17 @@ import GroundSdk
 
 struct DroneControlView: View {
     let drone: Drone
-    @SwiftUI.Environment(DroneManager.self) var droneManager: DroneManager
+    @SwiftUI.Environment(DroneManager.self) private var droneManager: DroneManager
     @State private var videoController = VideoController()
     @State private var showErrorAlert = false
 
+    init(drone: Drone) {
+        self.drone = drone
+    }
+
     var body: some View {
         VStack {
-            VideoSection(streamView: videoController.streamView)
+            VideoSection(stream: videoController.currentStream)
 
             Spacer()
 
@@ -26,7 +30,7 @@ struct DroneControlView: View {
             )
         }
         .padding()
-        .navigationTitle(drone.name ?? "Drone")
+        .navigationTitle(drone.name.isEmpty ? "Drone" : drone.name)
         .navigationBarTitleDisplayMode(.inline)
         .alert("Erreur de connexion", isPresented: $showErrorAlert) {
             Button("OK", role: .cancel) {
@@ -46,44 +50,5 @@ struct DroneControlView: View {
         .onDisappear {
             videoController.cleanup()
         }
-    }
-}
-
-struct VideoSection: View {
-    let streamView: StreamView?
-
-    var body: some View {
-        if let streamView {
-            VideoPlayerView(streamView: streamView)
-                .frame(height: 300)
-                .background(.black)
-        } else {
-            ZStack {
-                Color.black
-                Text("Connexion au flux vidéo...")
-                    .foregroundStyle(.white)
-            }
-            .frame(height: 300)
-        }
-    }
-}
-
-struct ControlButtonsSection: View {
-    let onTakeOff: () -> Void
-    let onLand: () -> Void
-
-    var body: some View {
-        HStack(spacing: 20) {
-            Button("Décoller", systemImage: "arrow.up.circle.fill", action: onTakeOff)
-                .buttonStyle(.borderedProminent)
-                .tint(.green)
-                .controlSize(.large)
-
-            Button("Atterrir", systemImage: "arrow.down.circle.fill", action: onLand)
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
-                .controlSize(.large)
-        }
-        .padding(.bottom)
     }
 }

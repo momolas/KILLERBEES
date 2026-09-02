@@ -27,7 +27,7 @@ class DroneManager {
 
     private func scanForDrones() {
         droneListRef = groundSdk.getDroneList { [weak self] droneList in
-            guard let self = self else { return }
+            guard let self else { return }
             self.drones = (droneList ?? []).compactMap { self.groundSdk.getDrone(uid: $0.uid) }
         }
     }
@@ -44,9 +44,14 @@ class DroneManager {
 
         // Surveillance de l'état de connexion
         droneStateRef = drone.getState { [weak self] state in
-			guard self != nil else { return }
-            print("Drone state: \(String(describing: state?.connectionState))")
-            // Ici, on pourrait gérer des erreurs ou mettre à jour l'UI plus finement
+            guard let self, let state else { return }
+            print("Drone state: \(state.connectionState)")
+            if state.connectionState == .disconnected {
+                if self.connectedDrone?.uid == drone.uid {
+                    self.connectedDrone = nil
+                    self.connectionError = "La connexion avec le drone a été interrompue."
+                }
+            }
         }
 
         // Connexion explicite

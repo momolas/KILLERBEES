@@ -10,12 +10,12 @@ import GroundSdk
 
 @main
 struct KILLERBEESApp: App {
-	let groundSdk = GroundSdk()
-	
-	var body: some Scene {
-		WindowGroup {
-			ContentView()
-				.environment(DroneManager(groundSdk: groundSdk))
-		}
-	}
+    @State private var droneManager = DroneManager(groundSdk: GroundSdk())
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(droneManager)
+        }
+    }
 }

@@ -18,6 +18,8 @@
 		CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B02EDB54280053DDD9 /* DroneManager.swift */; };
 		CD6D830E2FD5D3AB00D53031 /* DroneRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */; };
 		CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */; };
+		CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* VideoSection.swift */; };
+		CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Drone+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneRow.swift; sourceTree = "<group>"; };
+		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSection.swift; sourceTree = "<group>"; };
+		CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonsSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +98,8 @@
 				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
 				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
 				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
+				CD6D83102FD5D3AB00D53031 /* VideoSection.swift */,
+				CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */,
 				CD00575929F580970092FAC0 /* KILLERBEESApp.swift */,
 				CD00575B29F580970092FAC0 /* ContentView.swift */,
 				CD00575D29F580990092FAC0 /* Assets.xcassets */,
@@ -231,6 +237,8 @@
 				CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */,
 				CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */,
 				CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */,
+				CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */,
+				CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */,
 				CD00575C29F580970092FAC0 /* ContentView.swift in Sources */,
 				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
 			);
