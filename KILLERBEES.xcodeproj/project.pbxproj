@@ -38,32 +38,32 @@
 
 /* Begin PBXFileReference section */
 		CD00575629F580970092FAC0 /* KILLERBEES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KILLERBEES.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD00575929F580970092FAC0 /* KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KILLERBEESApp.swift; sourceTree = "<group>"; };
-		CD00575B29F580970092FAC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CD00575929F580970092FAC0 /* KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/KILLERBEESApp.swift; sourceTree = "<group>"; };
+		CD00575B29F580970092FAC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/ContentView.swift; sourceTree = "<group>"; };
 		CD00575D29F580990092FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KILLERBEES.entitlements; sourceTree = "<group>"; };
 		CD00576129F580990092FAC0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneControlView.swift; sourceTree = "<group>"; };
-		CD35B5B02EDB54280053DDD9 /* DroneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneManager.swift; sourceTree = "<group>"; };
-		CD35B5B12EDB54280053DDD9 /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
-		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
-		CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Drone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneRow.swift; sourceTree = "<group>"; };
-		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSection.swift; sourceTree = "<group>"; };
-		CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonsSection.swift; sourceTree = "<group>"; };
-		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyControllerSection.swift; sourceTree = "<group>"; };
+		CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/DroneControlView.swift; sourceTree = "<group>"; };
+		CD35B5B02EDB54280053DDD9 /* DroneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/DroneManager.swift; sourceTree = "<group>"; };
+		CD35B5B12EDB54280053DDD9 /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VideoController.swift; sourceTree = "<group>"; };
+		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoPlayerView.swift; sourceTree = "<group>"; };
+		CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/Drone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DroneRow.swift; sourceTree = "<group>"; };
+		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoSection.swift; sourceTree = "<group>"; };
+		CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/ControlButtonsSection.swift; sourceTree = "<group>"; };
+		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/SkyControllerSection.swift; sourceTree = "<group>"; };
 		CD6D831A2FD5D3AB00D53031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KnownDrone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitTopBar.swift; sourceTree = "<group>"; };
-		CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitBottomBar.swift; sourceTree = "<group>"; };
-		CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitTelemetryHUD.swift; sourceTree = "<group>"; };
-		CD6D83232FD5D3AB00D53031 /* CockpitGimbalControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitGimbalControl.swift; sourceTree = "<group>"; };
-		CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitCameraCaptureView.swift; sourceTree = "<group>"; };
-		CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitAttitudeIndicator.swift; sourceTree = "<group>"; };
-		CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitMiniMap.swift; sourceTree = "<group>"; };
-		CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CockpitAlarmBanner.swift; sourceTree = "<group>"; };
+		CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/KnownDrone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTopBar.swift; sourceTree = "<group>"; };
+		CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitBottomBar.swift; sourceTree = "<group>"; };
+		CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTelemetryHUD.swift; sourceTree = "<group>"; };
+		CD6D83232FD5D3AB00D53031 /* CockpitGimbalControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitGimbalControl.swift; sourceTree = "<group>"; };
+		CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCameraCaptureView.swift; sourceTree = "<group>"; };
+		CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAttitudeIndicator.swift; sourceTree = "<group>"; };
+		CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMiniMap.swift; sourceTree = "<group>"; };
+		CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAlarmBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,17 +99,86 @@
 		CD00575829F580970092FAC0 /* KILLERBEES */ = {
 			isa = PBXGroup;
 			children = (
-				CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */,
+				CD6D83302FD5D3AB00D53031 /* App */,
+				CD6D83312FD5D3AB00D53031 /* Core */,
+				CD6D83322FD5D3AB00D53031 /* Features */,
+				CD00575D29F580990092FAC0 /* Assets.xcassets */,
+				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
+				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
+				CD00576029F580990092FAC0 /* Preview Content */,
+			);
+			path = KILLERBEES;
+			sourceTree = "<group>";
+		};
+		CD6D83302FD5D3AB00D53031 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				CD00575929F580970092FAC0 /* KILLERBEESApp.swift */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		CD6D83312FD5D3AB00D53031 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		CD6D83322FD5D3AB00D53031 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				CD6D83332FD5D3AB00D53031 /* Connection */,
+				CD6D83342FD5D3AB00D53031 /* Cockpit */,
+			);
+			name = Features;
+			sourceTree = "<group>";
+		};
+		CD6D83332FD5D3AB00D53031 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				CD6D83352FD5D3AB00D53031 /* Views */,
+				CD6D83362FD5D3AB00D53031 /* Models */,
+			);
+			name = Connection;
+			sourceTree = "<group>";
+		};
+		CD6D83352FD5D3AB00D53031 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CD00575B29F580970092FAC0 /* ContentView.swift */,
 				CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */,
-				CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */,
+				CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */,
+				CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		CD6D83362FD5D3AB00D53031 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */,
 				CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */,
 				CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */,
-				CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */,
+				CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		CD6D83342FD5D3AB00D53031 /* Cockpit */ = {
+			isa = PBXGroup;
+			children = (
+				CD6D83372FD5D3AB00D53031 /* Views */,
+				CD6D83382FD5D3AB00D53031 /* Controllers */,
+			);
+			name = Cockpit;
+			sourceTree = "<group>";
+		};
+		CD6D83372FD5D3AB00D53031 /* Views */ = {
+			isa = PBXGroup;
+			children = (
 				CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */,
-				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
-				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
-				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
-				CD6D83102FD5D3AB00D53031 /* VideoSection.swift */,
 				CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */,
 				CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */,
 				CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */,
@@ -118,15 +187,18 @@
 				CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */,
 				CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */,
 				CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */,
-				CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */,
-				CD00575929F580970092FAC0 /* KILLERBEESApp.swift */,
-				CD00575B29F580970092FAC0 /* ContentView.swift */,
-				CD00575D29F580990092FAC0 /* Assets.xcassets */,
-				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
-				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
-				CD00576029F580990092FAC0 /* Preview Content */,
+				CD6D83102FD5D3AB00D53031 /* VideoSection.swift */,
+				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
 			);
-			path = KILLERBEES;
+			name = Views;
+			sourceTree = "<group>";
+		};
+		CD6D83382FD5D3AB00D53031 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		CD00576029F580990092FAC0 /* Preview Content */ = {
