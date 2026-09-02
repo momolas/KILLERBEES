@@ -48,6 +48,11 @@ class DroneManager {
             if autoConnection.state == .stopped {
                 _ = autoConnection.start()
             }
+            if let drone = autoConnection.drone {
+                if self.connectedDrone == nil || self.connectedDrone?.uid != drone.uid {
+                    self.connectToDrone(drone)
+                }
+            }
         }
     }
 
@@ -57,6 +62,11 @@ class DroneManager {
         droneListRef = groundSdk.getDroneList { [weak self] droneList in
             guard let self else { return }
             self.drones = (droneList ?? []).compactMap { self.groundSdk.getDrone(uid: $0.uid) }
+            
+            // Auto-connexion au premier drone disponible s'il n'y a pas de drone actif
+            if self.connectedDrone == nil, let firstDrone = self.drones.first {
+                self.connectToDrone(firstDrone)
+            }
         }
     }
 
@@ -108,12 +118,22 @@ class DroneManager {
             self.rcBatteryLevel = battery?.batteryLevel
         }
 
-        // Observer le DroneFinder pour détecter les drones via radio longue portée
+        // Observer le DroneFinder pour détecter et auto-connecter le drone associé
         droneFinderRef = rc.getPeripheral(Peripherals.droneFinder) { [weak self] finder in
             guard let self, let finder else { return }
             self.discoveredDronesViaRC = finder.discoveredDrones
             self.knownDronesViaRC = finder.knownDrones
             self.isDroneFinderScanning = (finder.state == .scanning)
+
+            // Auto-connexion directe au drone associé / mémorisé par le SkyController
+            if self.connectedDrone == nil {
+                if let knownDrone = finder.knownDrones.first,
+                   let drone = self.groundSdk.getDrone(uid: knownDrone.uid) {
+                    self.connectToDrone(drone)
+                } else if let discoveredDrone = finder.discoveredDrones.first {
+                    self.connectViaDroneFinder(discoveredDrone)
+                }
+            }
         }
 
         // Actualiser la recherche de drones via la télécommande
@@ -130,6 +150,12 @@ class DroneManager {
             _ = finder.connect(discoveredDrone: discoveredDrone, password: password)
         } else {
             _ = finder.connect(discoveredDrone: discoveredDrone)
+        }
+    }
+
+    func connectToKnownDrone(_ knownDrone: KnownDrone) {
+        if let drone = groundSdk.getDrone(uid: knownDrone.uid) {
+            connectToDrone(drone)
         }
     }
 
