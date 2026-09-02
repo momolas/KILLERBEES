@@ -19,6 +19,7 @@ class DroneManager {
     var connectedRemoteControl: RemoteControl?
     var rcBatteryLevel: Int?
     var discoveredDronesViaRC: [DiscoveredDrone] = []
+    var knownDronesViaRC: [KnownDrone] = []
     var isDroneFinderScanning: Bool = false
 
     var connectionError: String?
@@ -30,11 +31,24 @@ class DroneManager {
     private var rcStateRef: Ref<DeviceState>?
     private var rcBatteryRef: Ref<BatteryInfo>?
     private var droneFinderRef: Ref<DroneFinder>?
+    private var autoConnectionRef: Ref<AutoConnection>?
 
     init(groundSdk: GroundSdk) {
         self.groundSdk = groundSdk
+        setupAutoConnection()
         scanForDrones()
         scanForRemoteControls()
+    }
+
+    // MARK: - Auto-Connexion Intelligente
+
+    private func setupAutoConnection() {
+        autoConnectionRef = groundSdk.getFacility(Facilities.autoConnection) { [weak self] autoConnection in
+            guard let self, let autoConnection else { return }
+            if autoConnection.state == .stopped {
+                _ = autoConnection.start()
+            }
+        }
     }
 
     // MARK: - Détection des Drones
@@ -60,6 +74,7 @@ class DroneManager {
                 self.connectedRemoteControl = nil
                 self.rcBatteryLevel = nil
                 self.discoveredDronesViaRC = []
+                self.knownDronesViaRC = []
             }
         }
     }
@@ -75,6 +90,7 @@ class DroneManager {
                     self.connectedRemoteControl = nil
                     self.rcBatteryLevel = nil
                     self.discoveredDronesViaRC = []
+                    self.knownDronesViaRC = []
                 }
             } else if state.connectionState == .connected {
                 self.monitorRCDevices(rc)
@@ -96,15 +112,16 @@ class DroneManager {
         droneFinderRef = rc.getPeripheral(Peripherals.droneFinder) { [weak self] finder in
             guard let self, let finder else { return }
             self.discoveredDronesViaRC = finder.discoveredDrones
+            self.knownDronesViaRC = finder.knownDrones
             self.isDroneFinderScanning = (finder.state == .scanning)
         }
 
         // Actualiser la recherche de drones via la télécommande
-        droneFinderRef?.value?.refresh()
+        droneFinderRef?.value?.refresh(useBackupRadio: true)
     }
 
     func refreshDroneFinder() {
-        droneFinderRef?.value?.refresh()
+        droneFinderRef?.value?.refresh(useBackupRadio: true)
     }
 
     func connectViaDroneFinder(_ discoveredDrone: DiscoveredDrone, password: String? = nil) {

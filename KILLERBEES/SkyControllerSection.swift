@@ -43,14 +43,28 @@ struct SkyControllerSection: View {
                         }
                     }
                     
-                    if droneManager.isDroneFinderScanning {
-                        HStack(spacing: 8) {
-                            ProgressView()
-                                .controlSize(.small)
-                            Text("Recherche de drones via la télécommande...")
+                    HStack {
+                        if droneManager.isDroneFinderScanning {
+                            HStack(spacing: 8) {
+                                ProgressView()
+                                    .controlSize(.small)
+                                Text("Recherche active...")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        } else {
+                            Text("Recherche en veille")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        
+                        Spacer()
+                        
+                        Button("Scanner", systemImage: "arrow.clockwise") {
+                            droneManager.refreshDroneFinder()
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
                     }
                 }
                 .padding(.vertical, 4)
@@ -70,13 +84,42 @@ struct SkyControllerSection: View {
                             
                             Spacer()
                             
-                            Button("Appairer") {
+                            Button("Appairer", systemImage: "link") {
                                 droneManager.connectViaDroneFinder(discoveredDrone)
                             }
                             .buttonStyle(.borderedProminent)
                             .controlSize(.small)
                         }
                     }
+                } else if !droneManager.knownDronesViaRC.isEmpty {
+                    ForEach(droneManager.knownDronesViaRC) { knownDrone in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(knownDrone.name)
+                                    .font(.subheadline)
+                                    .bold()
+                                Text("Drone déjà associé au SkyController")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "antenna.radiowaves.left.and.right")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Aucun drone détecté à proximité")
+                            .font(.footnote)
+                            .bold()
+                            .foregroundStyle(.orange)
+                        Text("• Assurez-vous que le drone est allumé.\n• Si le drone n'est pas encore appairé au SkyController, appuyez 4 fois rapidement sur le bouton d'alimentation du drone pour lancer l'appairage.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 2)
                 }
             } else {
                 HStack(spacing: 12) {
