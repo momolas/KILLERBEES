@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C30C77C4B32F003BA55ED8A3 /* Pods_KILLERBEES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */; };
 		CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575929F580970092FAC0 /* KILLERBEESApp.swift */; };
 		CD00575C29F580970092FAC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575B29F580970092FAC0 /* ContentView.swift */; };
 		CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00575D29F580990092FAC0 /* Assets.xcassets */; };
@@ -56,20 +55,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		45EFB14C229B7F658AB3D0A2 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		CD00574D29F580970092FAC0 = {
 			isa = PBXGroup;
 			children = (
 				CD00575829F580970092FAC0 /* KILLERBEES */,
 				CD00575729F580970092FAC0 /* Products */,
-				45EFB14C229B7F658AB3D0A2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
