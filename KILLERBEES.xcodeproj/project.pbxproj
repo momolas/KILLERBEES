@@ -45,6 +45,7 @@
 		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyControllerSection.swift; sourceTree = "<group>"; };
+		CD6D831A2FD5D3AB00D53031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +96,7 @@
 				CD00575B29F580970092FAC0 /* ContentView.swift */,
 				CD00575D29F580990092FAC0 /* Assets.xcassets */,
 				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
+				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
 				CD00576029F580990092FAC0 /* Preview Content */,
 			);
 			path = KILLERBEES;
@@ -141,7 +143,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 2610;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					CD00575529F580970092FAC0 = {
 						CreatedOnToolsVersion = 14.3;
@@ -341,6 +343,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KILLERBEES/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -386,6 +389,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KILLERBEES/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
