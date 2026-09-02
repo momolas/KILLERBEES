@@ -7,10 +7,17 @@
 
 import SwiftUI
 import GroundSdk
+import ArsdkEngine
 
 @main
 struct KILLERBEESApp: App {
-    @State private var droneManager = DroneManager(groundSdk: GroundSdk())
+    @State private var droneManager: DroneManager
+
+    init() {
+        // Force le linkage et l'enregistrement runtime d'ArsdkEngine pour GroundSdk
+        _ = ArsdkEngine.self
+        _droneManager = State(initialValue: DroneManager(groundSdk: GroundSdk()))
+    }
 
     var body: some Scene {
         WindowGroup {
