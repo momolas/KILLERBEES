@@ -13,10 +13,14 @@ struct CockpitTopBar: View {
     let droneBattery: Int?
     let rcBattery: Int?
     let flyingState: FlyingIndicatorsState
+    let satelliteCount: Int?
+    let isGpsFixed: Bool
+    let radioSignalQuality: Int?
+    let isRthActive: Bool
     let onDismiss: () -> Void
 
     var body: some View {
-        HStack {
+        HStack(spacing: 10) {
             Button("Retour", systemImage: "chevron.left", action: onDismiss)
                 .labelStyle(.iconOnly)
                 .font(.headline)
@@ -27,9 +31,10 @@ struct CockpitTopBar: View {
 
             Spacer()
 
+            // Statut Central Drone & Vol
             HStack(spacing: 8) {
                 Circle()
-                    .fill(flyingState == .flying ? .green : .blue)
+                    .fill(isRthActive ? .orange : (flyingState == .flying ? .green : .blue))
                     .frame(width: 8, height: 8)
 
                 Text(droneName.isEmpty ? "Drone" : droneName)
@@ -37,14 +42,25 @@ struct CockpitTopBar: View {
                     .bold()
                     .foregroundStyle(.white)
 
-                Text(flyingState == .flying ? "EN VOL" : "AU SOL")
-                    .font(.caption2)
-                    .bold()
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(flyingState == .flying ? Color.green.opacity(0.3) : Color.white.opacity(0.2))
-                    .clipShape(.capsule)
-                    .foregroundStyle(.white)
+                if isRthActive {
+                    Text("RTH ACTIF")
+                        .font(.caption2)
+                        .bold()
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.orange.opacity(0.4))
+                        .clipShape(.capsule)
+                        .foregroundStyle(.white)
+                } else {
+                    Text(flyingState == .flying ? "EN VOL" : "AU SOL")
+                        .font(.caption2)
+                        .bold()
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(flyingState == .flying ? Color.green.opacity(0.3) : Color.white.opacity(0.2))
+                        .clipShape(.capsule)
+                        .foregroundStyle(.white)
+                }
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
@@ -53,9 +69,33 @@ struct CockpitTopBar: View {
 
             Spacer()
 
-            HStack(spacing: 12) {
+            // Télémétrie GPS, Radio & Batteries
+            HStack(spacing: 10) {
+                // GPS
+                HStack(spacing: 4) {
+                    Image(systemName: isGpsFixed ? "location.fill" : "location.slash")
+                        .font(.caption2)
+                        .foregroundStyle(isGpsFixed ? .green : .secondary)
+                    if let satellites = satelliteCount {
+                        Text("\(satellites)")
+                            .font(.caption)
+                            .bold()
+                            .foregroundStyle(.white)
+                    }
+                }
+
+                // Radio Link
+                if let quality = radioSignalQuality {
+                    HStack(spacing: 3) {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .font(.caption2)
+                            .foregroundStyle(quality >= 3 ? .green : (quality == 2 ? .orange : .red))
+                    }
+                }
+
+                // Batteries
                 if let rcBattery {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 3) {
                         Image(systemName: "gamecontroller.fill")
                             .font(.caption2)
                         Text("\(rcBattery)%")

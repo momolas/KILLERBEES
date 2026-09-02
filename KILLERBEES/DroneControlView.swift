@@ -32,16 +32,36 @@ struct DroneControlView: View {
                     droneBattery: droneManager.droneBatteryLevel,
                     rcBattery: droneManager.rcBatteryLevel,
                     flyingState: droneManager.flyingState,
+                    satelliteCount: droneManager.satelliteCount,
+                    isGpsFixed: droneManager.isGpsFixed,
+                    radioSignalQuality: droneManager.radioSignalQuality,
+                    isRthActive: droneManager.isRthActive,
                     onDismiss: { dismiss() }
                 )
                 .padding(.top, 8)
+
+                // Jauges de Télémétrie en Vol (Altitude & Vitesse)
+                CockpitTelemetryHUD(
+                    altitude: droneManager.altitude,
+                    verticalSpeed: droneManager.verticalSpeed,
+                    groundSpeed: droneManager.groundSpeed
+                )
+                .padding(.top, 4)
 
                 Spacer()
 
                 CockpitBottomBar(
                     flyingState: droneManager.flyingState,
+                    isRthActive: droneManager.isRthActive,
                     onTakeOff: { droneManager.takeOff() },
-                    onLand: { droneManager.land() }
+                    onLand: { droneManager.land() },
+                    onToggleRth: {
+                        if droneManager.isRthActive {
+                            droneManager.cancelReturnHome()
+                        } else {
+                            droneManager.triggerReturnHome()
+                        }
+                    }
                 )
             }
         }

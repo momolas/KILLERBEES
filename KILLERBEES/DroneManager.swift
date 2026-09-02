@@ -17,6 +17,16 @@ class DroneManager {
     var droneBatteryLevel: Int?
     var flyingState: FlyingIndicatorsState = .landed
 
+    // Télémétrie de vol en temps réel
+    var altitude: Double?
+    var verticalSpeed: Double?
+    var groundSpeed: Double?
+    var satelliteCount: Int?
+    var isGpsFixed: Bool = false
+    var radioRssi: Int?
+    var radioSignalQuality: Int?
+    var isRthActive: Bool = false
+
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
     var rcConnectionState: DeviceState.ConnectionState = .disconnected
@@ -31,6 +41,11 @@ class DroneManager {
     private var droneStateRef: Ref<DeviceState>?
     private var droneBatteryRef: Ref<BatteryInfo>?
     private var flyingIndicatorsRef: Ref<FlyingIndicators>?
+    private var altimeterRef: Ref<Altimeter>?
+    private var speedometerRef: Ref<Speedometer>?
+    private var gpsRef: Ref<Gps>?
+    private var radioRef: Ref<Radio>?
+    private var returnHomeRef: Ref<ReturnHomePilotingItf>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -233,6 +248,39 @@ class DroneManager {
             self.flyingState = indicators.state ?? .landed
         }
 
+        // Surveillance de l'altimètre
+        altimeterRef = drone.getInstrument(Instruments.altimeter) { [weak self] altimeter in
+            guard let self else { return }
+            self.altitude = altimeter?.takeoffRelativeAltitude
+            self.verticalSpeed = altimeter?.verticalSpeed
+        }
+
+        // Surveillance de la vitesse sol
+        speedometerRef = drone.getInstrument(Instruments.speedometer) { [weak self] speedometer in
+            guard let self else { return }
+            self.groundSpeed = speedometer?.groundSpeed
+        }
+
+        // Surveillance du GPS
+        gpsRef = drone.getInstrument(Instruments.gps) { [weak self] gps in
+            guard let self else { return }
+            self.satelliteCount = gps?.satelliteCount
+            self.isGpsFixed = gps?.fixed ?? false
+        }
+
+        // Surveillance de la liaison radio
+        radioRef = drone.getInstrument(Instruments.radio) { [weak self] radio in
+            guard let self else { return }
+            self.radioRssi = radio?.rssi
+            self.radioSignalQuality = radio?.linkSignalQuality
+        }
+
+        // Surveillance du Return-To-Home
+        returnHomeRef = drone.getPilotingItf(PilotingItfs.returnHome) { [weak self] returnHome in
+            guard let self else { return }
+            self.isRthActive = (returnHome?.state == .active)
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
     }
@@ -243,8 +291,21 @@ class DroneManager {
         droneStateRef = nil
         droneBatteryRef = nil
         flyingIndicatorsRef = nil
+        altimeterRef = nil
+        speedometerRef = nil
+        gpsRef = nil
+        radioRef = nil
+        returnHomeRef = nil
         droneBatteryLevel = nil
         flyingState = .landed
+        altitude = nil
+        verticalSpeed = nil
+        groundSpeed = nil
+        satelliteCount = nil
+        isGpsFixed = false
+        radioRssi = nil
+        radioSignalQuality = nil
+        isRthActive = false
         connectionError = nil
     }
 
@@ -262,5 +323,15 @@ class DroneManager {
         _ = drone.getPilotingItf(PilotingItfs.manualCopter) { pilotingItf in
             pilotingItf?.land()
         }
+    }
+
+    func triggerReturnHome() {
+        guard let returnHome = returnHomeRef?.value else { return }
+        _ = returnHome.activate()
+    }
+
+    func cancelReturnHome() {
+        guard let returnHome = returnHomeRef?.value else { return }
+        _ = returnHome.deactivate()
     }
 }
