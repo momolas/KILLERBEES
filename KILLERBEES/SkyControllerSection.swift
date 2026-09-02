@@ -83,41 +83,75 @@ struct SkyControllerSection: View {
                 // Drones découverts par le DroneFinder du SkyController
                 if !droneManager.discoveredDronesViaRC.isEmpty {
                     ForEach(droneManager.discoveredDronesViaRC) { discoveredDrone in
+                        let isConnected = (droneManager.connectedDrone?.uid == discoveredDrone.uid)
+                        let isKnown = discoveredDrone.known || droneManager.knownDronesViaRC.contains(where: { $0.uid == discoveredDrone.uid })
+                        
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text(discoveredDrone.name)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(discoveredDrone.name.isEmpty ? "Drone Parrot" : discoveredDrone.name)
                                     .font(.subheadline)
                                     .bold()
-                                Text("Signal : \(discoveredDrone.rssi) dBm • \(discoveredDrone.connectionSecurity.description)")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                
+                                if isConnected {
+                                    Text("Connecté • Signal : \(discoveredDrone.rssi) dBm")
+                                        .font(.caption2)
+                                        .foregroundStyle(.green)
+                                } else if isKnown {
+                                    Text("Associé au SkyController • Signal : \(discoveredDrone.rssi) dBm")
+                                        .font(.caption2)
+                                        .foregroundStyle(.blue)
+                                } else {
+                                    Text("Nouveau drone détecté • Signal : \(discoveredDrone.rssi) dBm")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                             
                             Spacer()
                             
-                            Button("Appairer", systemImage: "link") {
-                                droneManager.connectViaDroneFinder(discoveredDrone)
+                            if isConnected {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            } else if isKnown {
+                                Button("Connecter", systemImage: "bolt.fill") {
+                                    droneManager.connectToDiscoveredDrone(discoveredDrone)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            } else {
+                                Button("Appairer", systemImage: "link") {
+                                    droneManager.connectViaDroneFinder(discoveredDrone)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.small)
                         }
                     }
                 } else if !droneManager.knownDronesViaRC.isEmpty {
                     ForEach(droneManager.knownDronesViaRC) { knownDrone in
+                        let isConnected = (droneManager.connectedDrone?.uid == knownDrone.uid)
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text(knownDrone.name)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(knownDrone.name.isEmpty ? "Drone Associé" : knownDrone.name)
                                     .font(.subheadline)
                                     .bold()
-                                Text("Drone déjà associé au SkyController")
+                                Text(isConnected ? "Connecté au SkyController" : "Drone associé au SkyController")
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(isConnected ? .green : .secondary)
                             }
                             
                             Spacer()
                             
-                            Image(systemName: "antenna.radiowaves.left.and.right")
-                                .foregroundStyle(.secondary)
+                            if isConnected {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            } else {
+                                Button("Connecter", systemImage: "bolt.fill") {
+                                    droneManager.connectToKnownDrone(knownDrone)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            }
                         }
                     }
                 } else {

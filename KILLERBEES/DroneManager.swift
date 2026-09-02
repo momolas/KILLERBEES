@@ -145,8 +145,11 @@ class DroneManager {
                 if let knownDrone = finder.knownDrones.first,
                    let drone = self.groundSdk.getDrone(uid: knownDrone.uid) {
                     self.connectToDrone(drone)
-                } else if let discoveredDrone = finder.discoveredDrones.first {
-                    self.connectViaDroneFinder(discoveredDrone)
+                } else if let knownDiscovered = finder.discoveredDrones.first(where: { $0.known }),
+                          let drone = self.groundSdk.getDrone(uid: knownDiscovered.uid) {
+                    self.connectToDrone(drone)
+                } else if let firstDiscovered = finder.discoveredDrones.first {
+                    self.connectViaDroneFinder(firstDiscovered)
                 }
             }
         }
@@ -157,6 +160,14 @@ class DroneManager {
 
     func refreshDroneFinder() {
         droneFinderRef?.value?.refresh(useBackupRadio: true)
+    }
+
+    func connectToDiscoveredDrone(_ discoveredDrone: DiscoveredDrone) {
+        if let drone = groundSdk.getDrone(uid: discoveredDrone.uid) {
+            connectToDrone(drone)
+        } else {
+            connectViaDroneFinder(discoveredDrone)
+        }
     }
 
     func connectViaDroneFinder(_ discoveredDrone: DiscoveredDrone, password: String? = nil) {
