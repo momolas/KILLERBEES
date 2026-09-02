@@ -18,8 +18,8 @@
 	<string>KILLERBEES utilise votre position pour la sécurité du vol et le guidage du drone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>KILLERBEES a besoin d'accéder à la photothèque pour enregistrer les photos et vidéos capturées par le drone.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>KILLERBEES utilise la caméra pour l'affichage et les fonctionnalités de pilotage.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>KILLERBEES utilise les capteurs de mouvement et le baromètre pour l'altimétrie et la sécurité du vol.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_arsdk-mux._tcp</string>
