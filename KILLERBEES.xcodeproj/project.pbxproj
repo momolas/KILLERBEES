@@ -19,6 +19,9 @@
 		CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */; };
 		CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* VideoSection.swift */; };
 		CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */; };
+		CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */; };
+		CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */; };
+		CD6D83192FD5D3AB00D53031 /* SkyControllerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -39,6 +42,9 @@
 		CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneRow.swift; sourceTree = "<group>"; };
 		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSection.swift; sourceTree = "<group>"; };
 		CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonsSection.swift; sourceTree = "<group>"; };
+		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyControllerSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +82,9 @@
 			children = (
 				CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */,
 				CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */,
+				CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */,
+				CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */,
+				CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */,
 				CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */,
 				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
 				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
@@ -180,6 +189,9 @@
 				CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */,
 				CD6D830E2FD5D3AB00D53031 /* DroneRow.swift in Sources */,
 				CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */,
+				CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */,
+				CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */,
+				CD6D83192FD5D3AB00D53031 /* SkyControllerSection.swift in Sources */,
 				CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */,
 				CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */,
 				CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */,
@@ -337,6 +349,9 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = "com.parrot.dronesdk";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -379,6 +394,9 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = "com.parrot.dronesdk";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;

@@ -17,13 +17,21 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             List {
-                Section("Appareils à proximité") {
-                    ForEach(droneManager.drones) { drone in
-                        let isConnected = drone.uid == droneManager.connectedDrone?.uid
-                        Button {
-                            selectDrone(drone)
-                        } label: {
-                            DroneRow(drone: drone, isConnected: isConnected)
+                SkyControllerSection()
+
+                Section("Drones disponibles") {
+                    if droneManager.drones.isEmpty {
+                        Text("Aucun drone détecté à proximité.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(droneManager.drones) { drone in
+                            let isConnected = drone.uid == droneManager.connectedDrone?.uid
+                            Button {
+                                selectDrone(drone)
+                            } label: {
+                                DroneRow(drone: drone, isConnected: isConnected)
+                            }
                         }
                     }
                 }
