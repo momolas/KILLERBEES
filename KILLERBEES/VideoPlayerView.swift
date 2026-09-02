@@ -12,7 +12,11 @@ struct VideoPlayerView: UIViewRepresentable {
     let stream: CameraLive?
 
     func makeUIView(context: Context) -> StreamView {
-        StreamView(frame: .zero)
+        let streamView = StreamView(frame: .zero)
+        streamView.renderingScaleType = .crop
+        streamView.renderingPaddingFill = .none
+        streamView.setStream(stream: stream)
+        return streamView
     }
 
     func updateUIView(_ streamView: StreamView, context: Context) {
