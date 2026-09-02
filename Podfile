@@ -6,7 +6,7 @@ target 'KILLERBEES' do
   use_frameworks!
 
   # Pods for KILLERBEES
-  pod 'GroundSdk', '~> 8.4.0'
-  pod 'ArsdkEngine', '~> 8.4.0'
-  pod 'SdkCore', '~> 8.4.0'
+  pod 'GroundSdk'
+  pod 'ArsdkEngine'
+  pod 'SdkCore'
 end
