@@ -1,6 +1,0 @@
-framework module GroundSdk {
-  umbrella header "GroundSdk-umbrella.h"
-
-  export *
-  module * { export * }
-}
