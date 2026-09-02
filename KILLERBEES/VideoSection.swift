@@ -14,13 +14,20 @@ struct VideoSection: View {
             VideoPlayerView(stream: stream)
                 .frame(height: 300)
                 .background(.black)
+                .clipShape(.rect(cornerRadius: 16))
         } else {
             ZStack {
                 Color.black
-                Text("Connexion au flux vidéo...")
-                    .foregroundStyle(.white)
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .tint(.white)
+                    Text("Connexion au flux vidéo...")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.8))
+                }
             }
             .frame(height: 300)
+            .clipShape(.rect(cornerRadius: 16))
         }
     }
 }
