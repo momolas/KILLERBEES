@@ -33,6 +33,10 @@ class DroneManager {
     }
 
     func connectToDrone(_ drone: Drone) {
+        if connectedDrone?.uid == drone.uid {
+            return
+        }
+
         connectionError = nil
 
         // Si on change de drone, on déconnecte l'ancien

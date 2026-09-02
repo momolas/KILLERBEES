@@ -20,10 +20,12 @@
 		CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */; };
 		CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* VideoSection.swift */; };
 		CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */; };
+		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
+		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
+		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0BAB0CA7E5B6E6E49B0C9E5F /* Pods_KILLERBEES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KILLERBEES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD00575629F580970092FAC0 /* KILLERBEES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KILLERBEES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD00575929F580970092FAC0 /* KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KILLERBEESApp.swift; sourceTree = "<group>"; };
 		CD00575B29F580970092FAC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -45,7 +47,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C30C77C4B32F003BA55ED8A3 /* Pods_KILLERBEES.framework in Frameworks */,
+				CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */,
+				CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */,
+				CDD680703048551B002AF635 /* SdkCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,17 +116,20 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD00576529F580990092FAC0 /* Build configuration list for PBXNativeTarget "KILLERBEES" */;
 			buildPhases = (
-				2EF0DDEF9227690801B2474A /* [CP] Check Pods Manifest.lock */,
 				CD00575229F580970092FAC0 /* Sources */,
 				CD00575329F580970092FAC0 /* Frameworks */,
 				CD00575429F580970092FAC0 /* Resources */,
-				4D7A30343F0FCF5574AD6C8A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = KILLERBEES;
+			packageProductDependencies = (
+				CDD6806B3048551B002AF635 /* GroundSdk */,
+				CDD6806C3048551B002AF635 /* ArsdkEngine */,
+				CDD6806D3048551B002AF635 /* SdkCore */,
+			);
 			productName = KILLERBEES;
 			productReference = CD00575629F580970092FAC0 /* KILLERBEES.app */;
 			productType = "com.apple.product-type.application";
@@ -174,52 +181,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		2EF0DDEF9227690801B2474A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-KILLERBEES-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4D7A30343F0FCF5574AD6C8A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-KILLERBEES/Pods-KILLERBEES-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CD00575229F580970092FAC0 /* Sources */ = {
@@ -480,6 +441,24 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CDD6806B3048551B002AF635 /* GroundSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDD6806A3048551B002AF635 /* XCRemoteSwiftPackageReference "ParrotSDK" */;
+			productName = GroundSdk;
+		};
+		CDD6806C3048551B002AF635 /* ArsdkEngine */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDD6806A3048551B002AF635 /* XCRemoteSwiftPackageReference "ParrotSDK" */;
+			productName = ArsdkEngine;
+		};
+		CDD6806D3048551B002AF635 /* SdkCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDD6806A3048551B002AF635 /* XCRemoteSwiftPackageReference "ParrotSDK" */;
+			productName = SdkCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD00574E29F580970092FAC0 /* Project object */;
 }
