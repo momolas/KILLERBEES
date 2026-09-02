@@ -1,6 +1,15 @@
 {
-  "originHash" : "fcdc35830888d7fb6a3f8abaf90fc1ddc2201baa935a22c2a11313909d0991f9",
+  "originHash" : "e1d2eb7a139fd592cd7d4dba7e7e6a8dde56dcc646ae48bbf659d3a57fe0a730",
   "pins" : [
+    {
+      "identity" : "parrotsdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/momolas/ParrotSDK.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3af278cd94d07c043b7cce0567d36a735dd15bd0"
+      }
+    },
     {
       "identity" : "swift-protobuf",
       "kind" : "remoteSourceControl",
