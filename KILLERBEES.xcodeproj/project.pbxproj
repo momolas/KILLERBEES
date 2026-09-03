@@ -36,6 +36,10 @@
 		CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */; };
 		CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */; };
 		CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */; };
+		CD6D83512FD5D3AB00D53031 /* DashboardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */; };
+		CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */; };
+		CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */; };
+		CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -74,6 +78,10 @@
 		CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
 		CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/HapticFeedback.swift; sourceTree = "<group>"; };
 		CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMissionStatusBar.swift; sourceTree = "<group>"; };
+		CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardHeaderView.swift; sourceTree = "<group>"; };
+		CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardDroneCard.swift; sourceTree = "<group>"; };
+		CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardRemoteCard.swift; sourceTree = "<group>"; };
+		CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardPreflightCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +167,10 @@
 			isa = PBXGroup;
 			children = (
 				CD00575B29F580970092FAC0 /* ContentView.swift */,
+				CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */,
+				CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */,
+				CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */,
+				CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */,
 				CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */,
 				CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */,
 				CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */,
@@ -329,6 +341,10 @@
 				CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */,
 				CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */,
 				CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */,
+				CD6D83512FD5D3AB00D53031 /* DashboardHeaderView.swift in Sources */,
+				CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */,
+				CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */,
+				CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
