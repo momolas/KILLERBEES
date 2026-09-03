@@ -18,6 +18,7 @@ struct CockpitTopBar: View {
     let radioSignalQuality: Int?
     let isRthActive: Bool
     let isFccMode: Bool
+    let droneConnectionState: DeviceState.ConnectionState
     let onToggleFcc: () -> Void
     let onDismiss: () -> Void
 
@@ -36,7 +37,7 @@ struct CockpitTopBar: View {
             // Statut Central Drone & Vol
             HStack(spacing: 8) {
                 Circle()
-                    .fill(isRthActive ? .orange : (flyingState == .flying ? .green : .blue))
+                    .fill(connectionStatusColor)
                     .frame(width: 8, height: 8)
 
                 Text(droneName.isEmpty ? "Drone" : droneName)
@@ -44,24 +45,51 @@ struct CockpitTopBar: View {
                     .bold()
                     .foregroundStyle(.white)
 
-                if isRthActive {
-                    Text("RTH ACTIF")
+                switch droneConnectionState {
+                case .connecting:
+                    HStack(spacing: 4) {
+                        ProgressView()
+                            .controlSize(.mini)
+                        Text("CONNEXION...")
+                            .font(.caption2)
+                            .bold()
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.orange.opacity(0.3))
+                    .clipShape(.capsule)
+                    .foregroundStyle(.orange)
+
+                case .disconnected, .disconnecting:
+                    Text("DÉCONNECTÉ")
                         .font(.caption2)
                         .bold()
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.orange.opacity(0.4))
+                        .background(Color.red.opacity(0.4))
                         .clipShape(.capsule)
                         .foregroundStyle(.white)
-                } else {
-                    Text(flyingState == .flying ? "EN VOL" : "AU SOL")
-                        .font(.caption2)
-                        .bold()
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(flyingState == .flying ? Color.green.opacity(0.3) : Color.white.opacity(0.2))
-                        .clipShape(.capsule)
-                        .foregroundStyle(.white)
+
+                case .connected:
+                    if isRthActive {
+                        Text("RTH ACTIF")
+                            .font(.caption2)
+                            .bold()
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.orange.opacity(0.4))
+                            .clipShape(.capsule)
+                            .foregroundStyle(.white)
+                    } else {
+                        Text(flyingState == .flying ? "EN VOL" : "AU SOL")
+                            .font(.caption2)
+                            .bold()
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(flyingState == .flying ? Color.green.opacity(0.3) : Color.white.opacity(0.2))
+                            .clipShape(.capsule)
+                            .foregroundStyle(.white)
+                    }
                 }
             }
             .padding(.horizontal, 14)
@@ -165,6 +193,17 @@ struct CockpitTopBar: View {
         case 50...100: return .green
         case 20..<50:  return .orange
         default:       return .red
+        }
+    }
+
+    private var connectionStatusColor: Color {
+        switch droneConnectionState {
+        case .connected:
+            return isRthActive ? .orange : (flyingState == .flying ? .green : .blue)
+        case .connecting:
+            return .orange
+        case .disconnected, .disconnecting:
+            return .red
         }
     }
 }

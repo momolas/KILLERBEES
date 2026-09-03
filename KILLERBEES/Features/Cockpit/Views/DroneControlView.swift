@@ -39,6 +39,7 @@ struct DroneControlView: View {
                     radioSignalQuality: droneManager.radioSignalQuality,
                     isRthActive: droneManager.isRthActive,
                     isFccMode: droneManager.isFccMode,
+                    droneConnectionState: droneManager.droneConnectionState,
                     onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
                     onDismiss: { dismiss() }
                 )

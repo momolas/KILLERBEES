@@ -15,6 +15,8 @@ class DroneManager {
     private let groundSdk: GroundSdk
     var drones: [Drone] = []
     var connectedDrone: Drone?
+    var droneConnectionState: DeviceState.ConnectionState = .disconnected
+    var droneConnectionCause: DeviceState.ConnectionStateCause = .none
     var droneBatteryLevel: Int?
     var flyingState: FlyingIndicatorsState = .landed
 
@@ -254,10 +256,15 @@ class DroneManager {
         }
 
         connectedDrone = drone
+        droneConnectionState = drone.state.connectionState
+        droneConnectionCause = drone.state.connectionStateCause
 
         // Surveillance de l'état de connexion
         droneStateRef = drone.getState { [weak self] state in
             guard let self, let state else { return }
+            self.droneConnectionState = state.connectionState
+            self.droneConnectionCause = state.connectionStateCause
+
             if state.connectionState == .connected {
                 self.connectionError = nil
             } else if state.connectionState == .disconnected {
@@ -443,6 +450,8 @@ class DroneManager {
         flightPlanUploadState = .none
         latestMissionItemExecuted = nil
         isFlightPlanActive = false
+        droneConnectionState = .disconnected
+        droneConnectionCause = .none
         connectionError = nil
     }
 
