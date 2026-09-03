@@ -13,6 +13,7 @@ struct DroneControlView: View {
     @SwiftUI.Environment(DroneManager.self) private var droneManager: DroneManager
     @SwiftUI.Environment(\.dismiss) private var dismiss
     @State private var videoController = VideoController()
+    @State private var visionService = VisionTrackerService()
     @State private var isMapExpanded = false
     @State private var showErrorAlert = false
 
@@ -22,11 +23,36 @@ struct DroneControlView: View {
 
     var body: some View {
         ZStack {
-            // 1. Flux vidéo bord-à-bord plein écran
-            VideoSection(stream: videoController.currentStream)
-                .ignoresSafeArea()
+            // 1. Flux vidéo bord-à-bord plein écran avec flux IA
+            VideoSection(stream: videoController.currentStream) { image in
+                if visionService.isTrackingActive, let cgImage = image.cgImage {
+                    visionService.processFrame(cgImage) { azimuth, elevation, scale, confidence, isNew in
+                        droneManager.sendTargetDetection(
+                            azimuth: azimuth,
+                            elevation: elevation,
+                            changeOfScale: scale,
+                            confidence: confidence,
+                            isNewTarget: isNew
+                        )
+                    }
+                }
+            }
+            .ignoresSafeArea()
 
-            // 2. HUD superposé (Cockpit Overlay)
+            // 2. Superposition IA Tactile (Réticules & Verrouillage Cible)
+            if visionService.isTrackingActive {
+                CockpitAITrackingOverlay(
+                    detectedBoxes: visionService.detectedBoxes,
+                    lockedBox: visionService.lockedTargetBox,
+                    isTargetLocked: visionService.isTargetLocked,
+                    onSelectPoint: { visionService.lockTarget(at: $0) },
+                    onSelectBox: { visionService.lockBox($0) },
+                    onCancelLock: { visionService.unlockTarget() }
+                )
+                .ignoresSafeArea()
+            }
+
+            // 3. HUD superposé (Cockpit Overlay)
             VStack {
                 // Barre Supérieure
                 CockpitTopBar(
@@ -122,8 +148,33 @@ struct DroneControlView: View {
 
                     Spacer()
 
-                    // Contrôles Nacelle & Déclencheurs Médias (Droite)
+                    // Contrôles Nacelle, IA Tracking & Déclencheurs Médias (Droite)
                     HStack(alignment: .center, spacing: 10) {
+                        // Bouton IA Tracking
+                        Button {
+                            withAnimation(.spring(response: 0.3)) {
+                                visionService.toggleTracking()
+                            }
+                        } label: {
+                            VStack(spacing: 3) {
+                                Image(systemName: visionService.isTargetLocked ? "scope" : (visionService.isTrackingActive ? "viewfinder.circle.fill" : "viewfinder"))
+                                    .font(.system(size: 16, weight: .bold))
+                                Text(visionService.isTargetLocked ? "LOCK" : (visionService.isTrackingActive ? "IA ON" : "IA"))
+                                    .font(.system(size: 8, weight: .black))
+                            }
+                            .foregroundStyle(visionService.isTargetLocked ? .red : (visionService.isTrackingActive ? .green : .white))
+                            .frame(width: 44, height: 44)
+                            .background(.ultraThinMaterial)
+                            .clipShape(.circle)
+                            .overlay(
+                                Circle().strokeBorder(
+                                    visionService.isTargetLocked ? Color.red : (visionService.isTrackingActive ? Color.green : Color.white.opacity(0.3)),
+                                    lineWidth: 1.5
+                                )
+                            )
+                        }
+                        .accessibilityLabel("Activer le suivi par intelligence artificielle")
+
                         CockpitGimbalControl(
                             currentPitch: droneManager.gimbalPitch,
                             onPitchChange: { newPitch in

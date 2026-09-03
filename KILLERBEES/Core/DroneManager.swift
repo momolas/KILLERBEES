@@ -83,6 +83,7 @@ class DroneManager {
     private var alarmsRef: Ref<Alarms>?
     private var wifiAccessPointRef: Ref<WifiAccessPoint>?
     private var flightPlanRef: Ref<FlightPlanPilotingItf>?
+    private var targetTrackerRef: Ref<TargetTracker>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -380,6 +381,11 @@ class DroneManager {
             self.isFlightPlanActive = (flightPlan.state == .active)
         }
 
+        // Surveillance du Suivi de Cible Visuel (TargetTracker)
+        targetTrackerRef = drone.getPeripheral(Peripherals.targetTracker) { [weak self] tracker in
+            guard let self, tracker != nil else { return }
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
     }
@@ -426,6 +432,7 @@ class DroneManager {
         alarmsRef = nil
         wifiAccessPointRef = nil
         flightPlanRef = nil
+        targetTrackerRef = nil
         droneBatteryLevel = nil
         flyingState = .landed
         altitude = nil
@@ -569,5 +576,27 @@ class DroneManager {
 
     func stopFlightPlan() {
         pauseFlightPlan()
+    }
+
+    // MARK: - Suivi Visuel par IA (TargetTracker)
+
+    func sendTargetDetection(
+        azimuth: Double,
+        elevation: Double,
+        changeOfScale: Double,
+        confidence: Double,
+        isNewTarget: Bool
+    ) {
+        guard let tracker = targetTrackerRef?.value else { return }
+        let timestamp = UInt64(Date().timeIntervalSince1970 * 1000)
+        let info = TargetDetectionInfo(
+            targetAzimuth: azimuth,
+            targetElevation: elevation,
+            changeOfScale: changeOfScale,
+            confidence: confidence,
+            isNewTarget: isNewTarget,
+            timestamp: timestamp
+        )
+        tracker.sendTargetDetectionInfo(info)
     }
 }

@@ -8,11 +8,12 @@ import GroundSdk
 
 struct VideoSection: View {
     let stream: CameraLive?
+    var onFrameCaptured: ((UIImage) -> Void)? = nil
 
     var body: some View {
         ZStack {
             if let stream {
-                VideoPlayerView(stream: stream)
+                VideoPlayerView(stream: stream, onFrameCaptured: onFrameCaptured)
                     .background(.black)
             } else {
                 ZStack {
