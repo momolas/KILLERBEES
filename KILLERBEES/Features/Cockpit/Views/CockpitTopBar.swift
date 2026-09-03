@@ -17,6 +17,8 @@ struct CockpitTopBar: View {
     let isGpsFixed: Bool
     let radioSignalQuality: Int?
     let isRthActive: Bool
+    let isFccMode: Bool
+    let onToggleFcc: () -> Void
     let onDismiss: () -> Void
 
     var body: some View {
@@ -66,6 +68,30 @@ struct CockpitTopBar: View {
             .padding(.vertical, 8)
             .background(.ultraThinMaterial)
             .clipShape(.capsule)
+
+            Spacer()
+
+            // Badge & Sélecteur Réglementaire RF (Mod FCC)
+            Button {
+                onToggleFcc()
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: isFccMode ? "bolt.fill" : "globe.europe.africa.fill")
+                        .font(.caption2)
+                    Text(isFccMode ? "FCC 1W" : "CE 100mW")
+                        .font(.caption2)
+                        .bold()
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(isFccMode ? Color.purple.opacity(0.4) : Color.blue.opacity(0.3))
+                .foregroundStyle(.white)
+                .clipShape(.capsule)
+                .overlay(
+                    Capsule().strokeBorder(isFccMode ? Color.purple : Color.blue.opacity(0.6), lineWidth: 1)
+                )
+            }
+            .accessibilityLabel(isFccMode ? "Mode FCC activé à un watt" : "Mode CE standard à cent milliwatts")
 
             Spacer()
 

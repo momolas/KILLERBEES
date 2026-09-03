@@ -44,6 +44,17 @@ class DroneManager {
     var activeAlarmText: String?
     var isAlarmCritical: Bool = false
 
+    // Mod FCC (Débridage Puissance Wi-Fi)
+    var isFccMode: Bool = false
+    var currentCountryCode: String = "FR"
+
+    // Missions Autonomes MAVLink (FlightPlan)
+    var flightPlanState: ActivablePilotingItfState = .unavailable
+    var flightPlanUploadState: FlightPlanFileUploadState = .none
+    var latestMissionItemExecuted: UInt?
+    var isFlightPlanActive: Bool = false
+    var waypoints: [CLLocationCoordinate2D] = []
+
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
     var rcConnectionState: DeviceState.ConnectionState = .disconnected
@@ -68,6 +79,8 @@ class DroneManager {
     private var gimbalRef: Ref<Gimbal>?
     private var cameraRef: Ref<MainCamera>?
     private var alarmsRef: Ref<Alarms>?
+    private var wifiAccessPointRef: Ref<WifiAccessPoint>?
+    private var flightPlanRef: Ref<FlightPlanPilotingItf>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -344,6 +357,22 @@ class DroneManager {
             self.updateAlarms(alarms)
         }
 
+        // Surveillance et Configuration Wi-Fi (Mod FCC)
+        wifiAccessPointRef = drone.getPeripheral(Peripherals.wifiAccessPoint) { [weak self] wifi in
+            guard let self, let wifi else { return }
+            self.currentCountryCode = wifi.country.value.rawValue
+            self.isFccMode = (wifi.country.value == .unitedStates)
+        }
+
+        // Surveillance du Pilotage Autonome MAVLink (FlightPlan)
+        flightPlanRef = drone.getPilotingItf(PilotingItfs.flightPlan) { [weak self] flightPlan in
+            guard let self, let flightPlan else { return }
+            self.flightPlanState = flightPlan.state
+            self.flightPlanUploadState = flightPlan.latestUploadState
+            self.latestMissionItemExecuted = flightPlan.latestMissionItemExecuted
+            self.isFlightPlanActive = (flightPlan.state == .active)
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
     }
@@ -388,6 +417,8 @@ class DroneManager {
         gimbalRef = nil
         cameraRef = nil
         alarmsRef = nil
+        wifiAccessPointRef = nil
+        flightPlanRef = nil
         droneBatteryLevel = nil
         flyingState = .landed
         altitude = nil
@@ -408,6 +439,10 @@ class DroneManager {
         canTakePhoto = true
         activeAlarmText = nil
         isAlarmCritical = false
+        flightPlanState = .unavailable
+        flightPlanUploadState = .none
+        latestMissionItemExecuted = nil
+        isFlightPlanActive = false
         connectionError = nil
     }
 
@@ -456,5 +491,74 @@ class DroneManager {
         } else if camera.canStartRecord {
             camera.startRecording()
         }
+    }
+
+    // MARK: - Mod FCC (Puissance & Réglementation Wi-Fi)
+
+    func toggleFccMode(enabled: Bool) {
+        guard let wifi = wifiAccessPointRef?.value else { return }
+        wifi.country.value = enabled ? .unitedStates : .france
+        wifi.environment.value = .outdoor
+        self.isFccMode = enabled
+        self.currentCountryCode = enabled ? "US" : "FR"
+    }
+
+    // MARK: - Missions Autonomes MAVLink (FlightPlan)
+
+    func addWaypoint(_ coordinate: CLLocationCoordinate2D) {
+        waypoints.append(coordinate)
+    }
+
+    func clearWaypoints() {
+        waypoints.removeAll()
+    }
+
+    func uploadWaypointMission(altitude: Double = 15.0) {
+        guard !waypoints.isEmpty else { return }
+        guard let flightPlan = flightPlanRef?.value else { return }
+
+        // Génération du fichier standard MAVLink (QGC WPL 120)
+        var lines = ["QGC WPL 120"]
+
+        // Élément 0 : Point de départ (Home / 1er Waypoint)
+        let home = waypoints.first!
+        lines.append(String(format: "0\t1\t0\t16\t0\t0\t0\t0\t%.7f\t%.7f\t%.1f\t1", home.latitude, home.longitude, altitude))
+
+        // Élément 1 : Commande Décollage (NAV_TAKEOFF = 22)
+        lines.append(String(format: "1\t0\t3\t22\t0\t0\t0\t0\t0\t0\t%.1f\t1", altitude))
+
+        // Éléments 2...N : Waypoints de navigation (NAV_WAYPOINT = 16)
+        for (index, wp) in waypoints.enumerated() {
+            let itemIndex = index + 2
+            lines.append(String(format: "%d\t0\t3\t16\t0\t0\t0\t0\t%.7f\t%.7f\t%.1f\t1", itemIndex, wp.latitude, wp.longitude, altitude))
+        }
+
+        // Dernier élément : Retour au point de départ RTH (NAV_RETURN_TO_LAUNCH = 20)
+        let rthIndex = waypoints.count + 2
+        lines.append(String(format: "%d\t0\t3\t20\t0\t0\t0\t0\t0\t0\t0\t1", rthIndex))
+
+        let content = lines.joined(separator: "\n") + "\n"
+        let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("mission.mavlink")
+
+        do {
+            try content.write(to: tempUrl, atomically: true, encoding: .utf8)
+            flightPlan.uploadFlightPlan(filepath: tempUrl.path)
+        } catch {
+            print("Erreur écriture fichier MAVLink : \(error)")
+        }
+    }
+
+    func startFlightPlan() {
+        guard let flightPlan = flightPlanRef?.value, flightPlan.state == .idle else { return }
+        _ = flightPlan.activate(restart: true)
+    }
+
+    func pauseFlightPlan() {
+        guard let flightPlan = flightPlanRef?.value, flightPlan.state == .active else { return }
+        _ = flightPlan.deactivate()
+    }
+
+    func stopFlightPlan() {
+        pauseFlightPlan()
     }
 }

@@ -38,6 +38,8 @@ struct DroneControlView: View {
                     isGpsFixed: droneManager.isGpsFixed,
                     radioSignalQuality: droneManager.radioSignalQuality,
                     isRthActive: droneManager.isRthActive,
+                    isFccMode: droneManager.isFccMode,
+                    onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
                     onDismiss: { dismiss() }
                 )
                 .padding(.top, 8)
@@ -71,6 +73,22 @@ struct DroneControlView: View {
 
                 Spacer()
 
+                // Bandeau de Mission Autonome MAVLink (si waypoints ou mission active)
+                if isMapExpanded || !droneManager.waypoints.isEmpty || droneManager.isFlightPlanActive {
+                    CockpitFlightPlanOverlay(
+                        flightPlanState: droneManager.flightPlanState,
+                        flightPlanUploadState: droneManager.flightPlanUploadState,
+                        waypointCount: droneManager.waypoints.count,
+                        currentMissionItem: droneManager.latestMissionItemExecuted,
+                        isFlightPlanActive: droneManager.isFlightPlanActive,
+                        onUploadMission: { droneManager.uploadWaypointMission() },
+                        onStartMission: { droneManager.startFlightPlan() },
+                        onPauseMission: { droneManager.pauseFlightPlan() },
+                        onClearWaypoints: { droneManager.clearWaypoints() }
+                    )
+                    .padding(.bottom, 6)
+                }
+
                 // Zone Médiane / Basse : Mini-Carte (Gauche), Commandes Caméra & Nacelle (Droite), Barre de Vol (Centre)
                 HStack(alignment: .bottom, spacing: 12) {
                     // Mini-Carte MapKit PiP (Bas Gauche)
@@ -78,6 +96,8 @@ struct DroneControlView: View {
                         droneCoordinate: droneManager.droneCoordinate,
                         homeCoordinate: droneManager.homeCoordinate,
                         heading: droneManager.heading,
+                        waypoints: droneManager.waypoints,
+                        onAddWaypoint: { droneManager.addWaypoint($0) },
                         isExpanded: $isMapExpanded
                     )
                     .padding(.leading)
