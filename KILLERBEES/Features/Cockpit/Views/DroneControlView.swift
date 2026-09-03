@@ -45,9 +45,15 @@ struct DroneControlView: View {
                     detectedBoxes: visionService.detectedBoxes,
                     lockedBox: visionService.lockedTargetBox,
                     isTargetLocked: visionService.isTargetLocked,
+                    trackingMode: droneManager.selectedTrackingMode,
+                    trackingIssues: droneManager.trackingIssues,
                     onSelectPoint: { visionService.lockTarget(at: $0) },
                     onSelectBox: { visionService.lockBox($0) },
-                    onCancelLock: { visionService.unlockTarget() }
+                    onSelectMode: { droneManager.selectTrackingMode($0) },
+                    onCancelLock: {
+                        visionService.unlockTarget()
+                        droneManager.stopPilotingTracking()
+                    }
                 )
                 .ignoresSafeArea()
             }
@@ -154,6 +160,9 @@ struct DroneControlView: View {
                         Button {
                             withAnimation(.spring(response: 0.3)) {
                                 visionService.toggleTracking()
+                                if !visionService.isTrackingActive {
+                                    droneManager.stopPilotingTracking()
+                                }
                             }
                         } label: {
                             VStack(spacing: 3) {

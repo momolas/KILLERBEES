@@ -8,7 +8,26 @@
 import CoreLocation
 import Foundation
 import GroundSdk
-import SwiftUI
+enum TrackingMode: String, CaseIterable, Identifiable, Sendable {
+    case lookAt = "LOOK-AT"
+    case followMe = "FOLLOW-ME"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .lookAt: return "Cadrage Look-At"
+        case .followMe: return "Poursuite Follow-Me"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .lookAt: return "scope"
+        case .followMe: return "figure.run"
+        }
+    }
+}
 
 @Observable @MainActor
 class DroneManager {
@@ -57,6 +76,12 @@ class DroneManager {
     var isFlightPlanActive: Bool = false
     var waypoints: [CLLocationCoordinate2D] = []
 
+    // Suivi de Cibles Autonome (Look-At & Follow-Me)
+    var selectedTrackingMode: TrackingMode = .lookAt
+    var activeTrackingMode: TrackingMode? = nil
+    var isTrackingActive: Bool = false
+    var trackingIssues: [String] = []
+
     var remoteControls: [RemoteControl] = []
     var connectedRemoteControl: RemoteControl?
     var rcConnectionState: DeviceState.ConnectionState = .disconnected
@@ -84,6 +109,8 @@ class DroneManager {
     private var wifiAccessPointRef: Ref<WifiAccessPoint>?
     private var flightPlanRef: Ref<FlightPlanPilotingItf>?
     private var targetTrackerRef: Ref<TargetTracker>?
+    private var lookAtRef: Ref<LookAtPilotingItf>?
+    private var followMeRef: Ref<FollowMePilotingItf>?
 
     private var rcListRef: Ref<[RemoteControlListEntry]>?
     private var rcStateRef: Ref<DeviceState>?
@@ -386,6 +413,18 @@ class DroneManager {
             guard let self, tracker != nil else { return }
         }
 
+        // Surveillance du Mode Look-At
+        lookAtRef = drone.getPilotingItf(PilotingItfs.lookAt) { [weak self] lookAt in
+            guard let self, lookAt != nil else { return }
+            self.updateTrackingState()
+        }
+
+        // Surveillance du Mode Follow-Me
+        followMeRef = drone.getPilotingItf(PilotingItfs.followMe) { [weak self] followMe in
+            guard let self, followMe != nil else { return }
+            self.updateTrackingState()
+        }
+
         // Connexion explicite (GroundSdk route via le SkyController s'il est connecté)
         _ = drone.connect()
     }
@@ -433,6 +472,11 @@ class DroneManager {
         wifiAccessPointRef = nil
         flightPlanRef = nil
         targetTrackerRef = nil
+        lookAtRef = nil
+        followMeRef = nil
+        activeTrackingMode = nil
+        isTrackingActive = false
+        trackingIssues = []
         droneBatteryLevel = nil
         flyingState = .landed
         altitude = nil
@@ -578,7 +622,51 @@ class DroneManager {
         pauseFlightPlan()
     }
 
-    // MARK: - Suivi Visuel par IA (TargetTracker)
+    // MARK: - Suivi Visuel par IA & Pilotage Autonome (Look-At & Follow-Me)
+
+    func selectTrackingMode(_ mode: TrackingMode) {
+        selectedTrackingMode = mode
+        if isTrackingActive {
+            startPilotingTracking(mode: mode)
+        } else {
+            updateTrackingState()
+        }
+    }
+
+    func startPilotingTracking(mode: TrackingMode? = nil) {
+        let targetMode = mode ?? selectedTrackingMode
+        if targetMode == .lookAt {
+            if followMeRef?.value?.state == .active {
+                _ = followMeRef?.value?.deactivate()
+            }
+            if let lookAt = lookAtRef?.value, lookAt.state != .active {
+                _ = lookAt.activate()
+            }
+        } else {
+            if lookAtRef?.value?.state == .active {
+                _ = lookAtRef?.value?.deactivate()
+            }
+            if let followMe = followMeRef?.value, followMe.state != .active {
+                if followMe.followMode.supportedModes.contains(.relative) {
+                    followMe.followMode.value = .relative
+                }
+                _ = followMe.activate()
+            }
+        }
+        updateTrackingState()
+    }
+
+    func stopPilotingTracking() {
+        if lookAtRef?.value?.state == .active {
+            _ = lookAtRef?.value?.deactivate()
+        }
+        if followMeRef?.value?.state == .active {
+            _ = followMeRef?.value?.deactivate()
+        }
+        activeTrackingMode = nil
+        isTrackingActive = false
+        updateTrackingState()
+    }
 
     func sendTargetDetection(
         azimuth: Double,
@@ -588,6 +676,12 @@ class DroneManager {
         isNewTarget: Bool
     ) {
         guard let tracker = targetTrackerRef?.value else { return }
+
+        // Si le mode de pilotage autonome n'est pas encore actif, l'activer
+        if !isTrackingActive {
+            startPilotingTracking()
+        }
+
         let timestamp = UInt64(Date().timeIntervalSince1970 * 1000)
         let info = TargetDetectionInfo(
             targetAzimuth: azimuth,
@@ -598,5 +692,49 @@ class DroneManager {
             timestamp: timestamp
         )
         tracker.sendTargetDetectionInfo(info)
+    }
+
+    private func updateTrackingState() {
+        if lookAtRef?.value?.state == .active {
+            activeTrackingMode = .lookAt
+            isTrackingActive = true
+        } else if followMeRef?.value?.state == .active {
+            activeTrackingMode = .followMe
+            isTrackingActive = true
+        } else {
+            activeTrackingMode = nil
+            isTrackingActive = false
+        }
+
+        var issues: [String] = []
+        if selectedTrackingMode == .lookAt, let lookAt = lookAtRef?.value {
+            for issue in lookAt.availabilityIssues {
+                issues.append(issueDescription(issue))
+            }
+        } else if selectedTrackingMode == .followMe, let followMe = followMeRef?.value {
+            for issue in followMe.availabilityIssues {
+                issues.append(issueDescription(issue))
+            }
+        }
+        trackingIssues = issues
+    }
+
+    private func issueDescription(_ issue: TrackingIssue) -> String {
+        switch issue {
+        case .droneNotFlying: return "Drone au sol"
+        case .droneNotCalibrated: return "Drone non calibré"
+        case .droneGpsInfoInaccurate: return "GPS drone imprécis"
+        case .droneTooCloseToTarget: return "Trop près de la cible"
+        case .droneTooCloseToGround: return "Trop près du sol"
+        case .targetGpsInfoInaccurate: return "GPS cible imprécis"
+        case .targetBarometerInfoInaccurate: return "Baromètre imprécis"
+        case .targetDetectionInfoMissing: return "Cible visuelle non détectée"
+        case .droneAboveMaxAltitude: return "Altitude maximale atteinte"
+        case .droneOutOfGeofence: return "Hors de la zone de vol"
+        case .droneTooFarFromTarget: return "Trop loin de la cible"
+        case .targetHorizontalSpeedKO: return "Vitesse horizontale trop élevée"
+        case .targetVerticalSpeedKO: return "Vitesse verticale trop élevée"
+        case .targetAltitudeAccuracyKO: return "Altitude cible imprécise"
+        }
     }
 }
