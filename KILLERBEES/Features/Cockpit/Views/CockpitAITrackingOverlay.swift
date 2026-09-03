@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CockpitAITrackingOverlay: View {
-    let detectedBoxes: [CGRect]
+    let detectedObjects: [DetectedObject]
     let lockedBox: CGRect?
     let isTargetLocked: Bool
     let trackingMode: TrackingMode
@@ -66,7 +66,7 @@ struct CockpitAITrackingOverlay: View {
                         }
                     }
 
-                // Boîte de sélection en cours de tracé (Drag)
+                // Boîte de sélection en cours de tracé (Drag manuel)
                 if let start = dragStartPoint, let current = dragCurrentPoint {
                     let rect = CGRect(
                         x: min(start.x, current.x),
@@ -81,21 +81,21 @@ struct CockpitAITrackingOverlay: View {
                         .position(x: rect.midX, y: rect.midY)
                 }
 
-                // Cibles Détectées Automatiquement (non verrouillées)
+                // Cibles Détectées Automatiquement par YOLO (non verrouillées)
                 if !isTargetLocked {
-                    ForEach(detectedBoxes.indices, id: \.self) { index in
-                        let box = detectedBoxes[index]
-                        let screenRect = convertToScreenRect(box, in: viewSize)
+                    ForEach(detectedObjects) { object in
+                        let screenRect = convertToScreenRect(object.box, in: viewSize)
+                        let color = colorForLabel(object.label)
 
                         ZStack(alignment: .topLeading) {
                             RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(Color.green, lineWidth: 2)
+                                .strokeBorder(color, lineWidth: 2)
 
-                            Text("CIBLE")
-                                .font(.system(size: 9, weight: .bold))
+                            Text("\(object.label) \(Int(object.confidence * 100))%")
+                                .font(.system(size: 8, weight: .black))
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 1)
-                                .background(Color.green)
+                                .background(color)
                                 .foregroundStyle(.black)
                                 .clipShape(.rect(cornerRadius: 3))
                                 .offset(x: 2, y: -16)
@@ -187,6 +187,21 @@ struct CockpitAITrackingOverlay: View {
                     Spacer()
                 }
             }
+        }
+    }
+
+    private func colorForLabel(_ label: String) -> Color {
+        switch label {
+        case "VOITURE", "CAMION", "BUS", "MOTO", "VÉLO":
+            return .cyan
+        case "HUMAIN":
+            return .green
+        case "CHIEN", "CHAT", "CHEVAL", "BOVIN":
+            return .yellow
+        case "BATEAU", "AVION":
+            return .mint
+        default:
+            return .green
         }
     }
 

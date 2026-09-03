@@ -42,7 +42,7 @@ struct DroneControlView: View {
             // 2. Superposition IA Tactile (Réticules & Verrouillage Cible)
             if visionService.isTrackingActive {
                 CockpitAITrackingOverlay(
-                    detectedBoxes: visionService.detectedBoxes,
+                    detectedObjects: visionService.detectedObjects,
                     lockedBox: visionService.lockedTargetBox,
                     isTargetLocked: visionService.isTargetLocked,
                     trackingMode: droneManager.selectedTrackingMode,

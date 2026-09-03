@@ -6,17 +6,30 @@
 //
 
 import CoreGraphics
+import CoreML
 import Foundation
 import SwiftUI
 import Vision
 
+struct DetectedObject: Identifiable, Sendable {
+    let id = UUID()
+    let box: CGRect // Coordonnées normalisées SwiftUI [0, 1] (origine haut-gauche)
+    let label: String
+    let confidence: Float
+}
+
 @Observable @MainActor
 class VisionTrackerService {
     var isTrackingActive: Bool = false
-    var detectedBoxes: [CGRect] = [] // Coordonnées normalisées SwiftUI [0, 1] (origine haut-gauche)
+    var detectedObjects: [DetectedObject] = []
     var lockedTargetBox: CGRect? = nil
     var isTargetLocked: Bool = false
 
+    var detectedBoxes: [CGRect] {
+        detectedObjects.map(\.box)
+    }
+
+    private var yoloModel: VNCoreMLModel?
     private var trackingRequest: VNTrackObjectRequest?
     private var sequenceHandler = VNSequenceRequestHandler()
     private var isFirstDetection: Bool = true
@@ -26,7 +39,26 @@ class VisionTrackerService {
     private let horizontalFovRad: Double = 1.2043 // 69 degrés
     private let verticalFovRad: Double = 0.7330   // 42 degrés
 
-    init() {}
+    init() {
+        setupYoloModel()
+    }
+
+    private func setupYoloModel() {
+        guard let modelUrl = Bundle.main.url(forResource: "yolov8n", withExtension: "mlmodelc") else {
+            print("Modèle yolov8n.mlmodelc non trouvé dans le bundle")
+            return
+        }
+
+        do {
+            let config = MLModelConfiguration()
+            config.computeUnits = .all // Utilise l'Apple Neural Engine (ANE)
+            let coreMlModel = try MLModel(contentsOf: modelUrl, configuration: config)
+            self.yoloModel = try VNCoreMLModel(for: coreMlModel)
+            print("Modèle YOLOv8n chargé avec succès sur le Neural Engine !")
+        } catch {
+            print("Erreur initialisation YOLOv8n : \(error)")
+        }
+    }
 
     // MARK: - Analyse d'une Image
 
@@ -43,25 +75,61 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Détection Automatique de Silhouettes (Human Detection)
+    // MARK: - Détection Automatique Multi-Classes (YOLOv8 CoreML & Vision)
 
     private func detectObjects(in cgImage: CGImage) {
-        let request = VNDetectHumanRectanglesRequest { [weak self] request, error in
-            guard let self, error == nil, let results = request.results as? [VNHumanObservation] else {
-                return
-            }
+        if let yoloModel {
+            let request = VNCoreMLRequest(model: yoloModel) { [weak self] request, error in
+                guard let self, error == nil,
+                      let observations = request.results as? [VNRecognizedObjectObservation] else {
+                    return
+                }
 
-            Task { @MainActor in
-                self.detectedBoxes = results.map { observation in
-                    self.convertVisionRectToSwiftUI(observation.boundingBox)
+                let objects = observations.compactMap { obs -> DetectedObject? in
+                    guard let topLabel = obs.labels.first, topLabel.confidence >= 0.35 else {
+                        return nil
+                    }
+
+                    let swiftUIBox = self.convertVisionRectToSwiftUI(obs.boundingBox)
+                    let translated = self.translateLabel(topLabel.identifier)
+                    return DetectedObject(
+                        box: swiftUIBox,
+                        label: translated,
+                        confidence: topLabel.confidence
+                    )
+                }
+
+                Task { @MainActor in
+                    self.detectedObjects = objects
                 }
             }
+
+            request.imageCropAndScaleOption = .scaleFill
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            try? handler.perform([request])
+        } else {
+            // Fallback natif Apple Human Detection
+            let request = VNDetectHumanRectanglesRequest { [weak self] request, error in
+                guard let self, error == nil, let results = request.results as? [VNHumanObservation] else {
+                    return
+                }
+
+                let objects = results.map { observation in
+                    DetectedObject(
+                        box: self.convertVisionRectToSwiftUI(observation.boundingBox),
+                        label: "HUMAIN",
+                        confidence: observation.confidence
+                    )
+                }
+
+                Task { @MainActor in
+                    self.detectedObjects = objects
+                }
+            }
+            request.upperBodyOnly = false
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            try? handler.perform([request])
         }
-
-        request.upperBodyOnly = false
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        try? handler.perform([request])
     }
 
     // MARK: - Poursuite Continue de Cible Verrouillée (VNTrackObjectRequest)
@@ -123,11 +191,9 @@ class VisionTrackerService {
     // MARK: - Gestion du Verrouillage
 
     func lockTarget(at point: CGPoint) {
-        // Vérifier si le point touche une boîte déjà détectée
-        if let tappedBox = detectedBoxes.first(where: { $0.contains(point) }) {
-            lockBox(tappedBox)
+        if let tappedObject = detectedObjects.first(where: { $0.box.contains(point) }) {
+            lockBox(tappedObject.box)
         } else {
-            // Créer une boîte personnalisée autour du tap (ex: 15% de largeur/hauteur)
             let size: CGFloat = 0.15
             let manualBox = CGRect(
                 x: max(0, min(point.x - size / 2, 1.0 - size)),
@@ -159,14 +225,33 @@ class VisionTrackerService {
         isTrackingActive.toggle()
         if !isTrackingActive {
             unlockTarget()
-            detectedBoxes.removeAll()
+            detectedObjects.removeAll()
+        }
+    }
+
+    // MARK: - Traduction des Labels COCO
+
+    private func translateLabel(_ identifier: String) -> String {
+        switch identifier.lowercased() {
+        case "person": return "HUMAIN"
+        case "car": return "VOITURE"
+        case "motorcycle": return "MOTO"
+        case "bicycle": return "VÉLO"
+        case "bus": return "BUS"
+        case "truck": return "CAMION"
+        case "boat": return "BATEAU"
+        case "airplane": return "AVION"
+        case "dog": return "CHIEN"
+        case "cat": return "CHAT"
+        case "horse": return "CHEVAL"
+        case "sheep": return "MOUTON"
+        case "cow": return "BOVIN"
+        default: return identifier.uppercased()
         }
     }
 
     // MARK: - Conversion de Coordonnées
 
-    // Vision : origine bas-gauche
-    // SwiftUI : origine haut-gauche
     private func convertVisionRectToSwiftUI(_ visionRect: CGRect) -> CGRect {
         CGRect(
             x: visionRect.origin.x,
