@@ -232,9 +232,14 @@ class VisionTrackerService {
     func toggleTracking() {
         isTrackingActive.toggle()
         if !isTrackingActive {
-            unlockTarget()
-            detectedObjects.removeAll()
+            stopTracking()
         }
+    }
+
+    func stopTracking() {
+        isTrackingActive = false
+        unlockTarget()
+        detectedObjects.removeAll()
     }
 
     // MARK: - Conversion de Coordonnées

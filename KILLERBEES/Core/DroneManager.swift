@@ -36,6 +36,9 @@ class DroneManager {
     var connectedDrone: Drone?
     var droneConnectionState: DeviceState.ConnectionState = .disconnected
     var droneConnectionCause: DeviceState.ConnectionStateCause = .none
+    var isDroneConnected: Bool {
+        droneConnectionState == .connected
+    }
     var droneBatteryLevel: Int?
     var flyingState: FlyingIndicatorsState = .landed
 
@@ -295,12 +298,15 @@ class DroneManager {
 
             if state.connectionState == .connected {
                 self.connectionError = nil
-            } else if state.connectionState == .disconnected {
-                // Ne réinitialiser que si le drone n'est plus dans la liste des drones disponibles
-                if !self.drones.contains(where: { $0.uid == drone.uid }) {
-                    if self.connectedDrone?.uid == drone.uid {
-                        self.connectedDrone = nil
-                        self.connectionError = "La connexion avec le drone a été interrompue."
+            } else {
+                self.stopPilotingTracking()
+                if state.connectionState == .disconnected {
+                    // Ne réinitialiser que si le drone n'est plus dans la liste des drones disponibles
+                    if !self.drones.contains(where: { $0.uid == drone.uid }) {
+                        if self.connectedDrone?.uid == drone.uid {
+                            self.connectedDrone = nil
+                            self.connectionError = "La connexion avec le drone a été interrompue."
+                        }
                     }
                 }
             }

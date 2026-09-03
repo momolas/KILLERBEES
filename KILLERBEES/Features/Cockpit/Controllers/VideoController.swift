@@ -29,7 +29,7 @@ class VideoController {
             guard let self, let state else { return }
             if state.connectionState == .connected {
                 self.startVideoStream()
-            } else if state.connectionState == .disconnected {
+            } else {
                 self.stopVideoStream()
             }
         }
@@ -37,6 +37,8 @@ class VideoController {
         // Si le drone est déjà connecté, on initialise le flux immédiatement
         if drone.state.connectionState == .connected {
             startVideoStream()
+        } else {
+            stopVideoStream()
         }
     }
 
@@ -81,7 +83,10 @@ class VideoController {
         }
     }
 
-    private func stopVideoStream() {
+    func stopVideoStream() {
+        if let live = currentStream {
+            _ = live.pause()
+        }
         cameraLiveRef = nil
         streamServerRef = nil
         currentStream = nil

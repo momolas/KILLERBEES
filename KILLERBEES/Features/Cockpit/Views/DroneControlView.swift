@@ -24,7 +24,10 @@ struct DroneControlView: View {
     var body: some View {
         ZStack {
             // 1. Flux vidéo bord-à-bord plein écran avec flux IA
-            VideoSection(stream: videoController.currentStream) { image in
+            VideoSection(
+                stream: videoController.currentStream,
+                isDroneConnected: droneManager.isDroneConnected
+            ) { image in
                 if visionService.isTrackingActive, let cgImage = image.cgImage {
                     visionService.processFrame(cgImage) { azimuth, elevation, scale, confidence, isNew in
                         droneManager.sendTargetDetection(
@@ -40,7 +43,7 @@ struct DroneControlView: View {
             .ignoresSafeArea()
 
             // 2. Superposition IA Tactile (Réticules & Verrouillage Cible)
-            if visionService.isTrackingActive {
+            if droneManager.isDroneConnected && visionService.isTrackingActive {
                 CockpitAITrackingOverlay(
                     detectedObjects: visionService.detectedObjects,
                     lockedBox: visionService.lockedTargetBox,
@@ -188,6 +191,8 @@ struct DroneControlView: View {
                                 )
                             )
                         }
+                        .disabled(!droneManager.isDroneConnected)
+                        .opacity(droneManager.isDroneConnected ? 1.0 : 0.35)
                         .accessibilityLabel("Activer le suivi par intelligence artificielle")
 
                         CockpitGimbalControl(
@@ -222,6 +227,15 @@ struct DroneControlView: View {
         }
         .onChange(of: droneManager.connectionError) { _, newValue in
             showErrorAlert = newValue != nil
+        }
+        .onChange(of: droneManager.isDroneConnected) { _, isConnected in
+            if !isConnected {
+                videoController.stopVideoStream()
+                visionService.stopTracking()
+                droneManager.stopPilotingTracking()
+            } else {
+                videoController.setup(with: drone)
+            }
         }
         .onAppear {
             videoController.setup(with: drone)

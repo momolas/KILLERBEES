@@ -28,6 +28,11 @@ struct VideoPlayerView: UIViewRepresentable {
     func updateUIView(_ streamView: StreamView, context: Context) {
         streamView.setStream(stream: stream)
         context.coordinator.parent = self
+        if stream == nil {
+            context.coordinator.stopCaptureTimer()
+        } else {
+            context.coordinator.startCaptureTimer()
+        }
     }
 
     static func dismantleUIView(_ streamView: StreamView, coordinator: Coordinator) {
@@ -46,24 +51,30 @@ struct VideoPlayerView: UIViewRepresentable {
 
         func attach(to view: StreamView) {
             self.streamView = view
-            startCaptureTimer()
+            if parent.stream != nil {
+                startCaptureTimer()
+            }
         }
 
         func detach() {
-            captureTimer?.invalidate()
-            captureTimer = nil
+            stopCaptureTimer()
             streamView = nil
         }
 
-        private func startCaptureTimer() {
-            captureTimer?.invalidate()
+        func startCaptureTimer() {
+            guard captureTimer == nil, parent.stream != nil else { return }
             captureTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
-                guard let self, let streamView = self.streamView, self.parent.onFrameCaptured != nil else { return }
+                guard let self, let streamView = self.streamView, self.parent.onFrameCaptured != nil, self.parent.stream != nil else { return }
                 let image = streamView.snapshot
                 if image.size.width > 0 && image.size.height > 0 {
                     self.parent.onFrameCaptured?(image)
                 }
             }
+        }
+
+        func stopCaptureTimer() {
+            captureTimer?.invalidate()
+            captureTimer = nil
         }
     }
 }
