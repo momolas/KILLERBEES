@@ -168,12 +168,25 @@ struct CockpitAITrackingOverlay: View {
                     }
                     .padding(.top, 58)
 
-                    // Alerte de prérequis (si le drone est au sol ou GPS insuffisant)
-                    if let issue = trackingIssues.first {
+                    // Guide de pilotage ou avertissement de vol
+                    if !isTargetLocked {
+                        HStack(spacing: 4) {
+                            Image(systemName: "hand.tap.fill")
+                                .font(.system(size: 9))
+                            Text("TOUCHEZ UNE CIBLE OU TRACEZ UN CADRE")
+                                .font(.system(size: 9, weight: .black))
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color.cyan.opacity(0.85))
+                        .foregroundStyle(.black)
+                        .clipShape(.capsule)
+                        .shadow(radius: 2)
+                    } else if let issue = trackingIssues.first(where: { $0 != "Cible visuelle non détectée" }) {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(.system(size: 9))
-                            Text(issue)
+                            Text(issue.uppercased())
                                 .font(.system(size: 9, weight: .bold))
                         }
                         .padding(.horizontal, 8)
@@ -192,11 +205,11 @@ struct CockpitAITrackingOverlay: View {
 
     private func colorForLabel(_ label: String) -> Color {
         switch label {
-        case "VOITURE", "CAMION", "BUS", "MOTO", "VÉLO":
+        case "CIBLE", "CIBLE D'INTÉRÊT", "VOITURE", "CAMION", "BUS", "MOTO", "VÉLO":
             return .cyan
         case "HUMAIN":
             return .green
-        case "CHIEN", "CHAT", "CHEVAL", "BOVIN":
+        case "CHIEN", "CHAT", "CHEVAL", "ANIMAL":
             return .yellow
         case "BATEAU", "AVION":
             return .mint

@@ -47,8 +47,14 @@ struct DroneControlView: View {
                     isTargetLocked: visionService.isTargetLocked,
                     trackingMode: droneManager.selectedTrackingMode,
                     trackingIssues: droneManager.trackingIssues,
-                    onSelectPoint: { visionService.lockTarget(at: $0) },
-                    onSelectBox: { visionService.lockBox($0) },
+                    onSelectPoint: {
+                        visionService.lockTarget(at: $0)
+                        droneManager.startPilotingTracking()
+                    },
+                    onSelectBox: {
+                        visionService.lockBox($0)
+                        droneManager.startPilotingTracking()
+                    },
                     onSelectMode: { droneManager.selectTrackingMode($0) },
                     onCancelLock: {
                         visionService.unlockTarget()

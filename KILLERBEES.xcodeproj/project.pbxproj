@@ -34,7 +34,6 @@
 		CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */; };
 		CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */; };
 		CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */; };
-		CD6D83452FD5D3AB00D53031 /* yolov8n.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83442FD5D3AB00D53031 /* yolov8n.mlmodelc */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -71,7 +70,6 @@
 		CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitFlightPlanOverlay.swift; sourceTree = "<group>"; };
 		CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VisionTrackerService.swift; sourceTree = "<group>"; };
 		CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
-		CD6D83442FD5D3AB00D53031 /* yolov8n.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper.modelc; path = Resources/yolov8n.mlmodelc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +112,6 @@
 				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
 				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
 				CD00576029F580990092FAC0 /* Preview Content */,
-				CD6D83442FD5D3AB00D53031 /* yolov8n.mlmodelc */,
 			);
 			path = KILLERBEES;
 			sourceTree = "<group>";
@@ -289,7 +286,6 @@
 			files = (
 				CD00576229F580990092FAC0 /* Preview Assets.xcassets in Resources */,
 				CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */,
-				CD6D83452FD5D3AB00D53031 /* yolov8n.mlmodelc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,6 +3,8 @@
 //  KILLERBEES
 //
 //  Created by Jules
+//  Framework 100% Natif Apple Vision (https://developer.apple.com/documentation/vision)
+//  Optimisé pour .cpuAndNeuralEngine (Apple Neural Engine + CPU)
 //
 
 import CoreGraphics
@@ -29,7 +31,6 @@ class VisionTrackerService {
         detectedObjects.map(\.box)
     }
 
-    private var yoloModel: VNCoreMLModel?
     private var trackingRequest: VNTrackObjectRequest?
     private var sequenceHandler = VNSequenceRequestHandler()
     private var isFirstDetection: Bool = true
@@ -39,26 +40,7 @@ class VisionTrackerService {
     private let horizontalFovRad: Double = 1.2043 // 69 degrés
     private let verticalFovRad: Double = 0.7330   // 42 degrés
 
-    init() {
-        setupYoloModel()
-    }
-
-    private func setupYoloModel() {
-        guard let modelUrl = Bundle.main.url(forResource: "yolov8n", withExtension: "mlmodelc") else {
-            print("Modèle yolov8n.mlmodelc non trouvé dans le bundle")
-            return
-        }
-
-        do {
-            let config = MLModelConfiguration()
-            config.computeUnits = .all // Utilise l'Apple Neural Engine (ANE)
-            let coreMlModel = try MLModel(contentsOf: modelUrl, configuration: config)
-            self.yoloModel = try VNCoreMLModel(for: coreMlModel)
-            print("Modèle YOLOv8n chargé avec succès sur le Neural Engine !")
-        } catch {
-            print("Erreur initialisation YOLOv8n : \(error)")
-        }
-    }
+    init() {}
 
     // MARK: - Analyse d'une Image
 
@@ -75,60 +57,85 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Détection Automatique Multi-Classes (YOLOv8 CoreML & Vision)
+    // MARK: - Configuration Matérielle Apple Silicon (.cpuAndNeuralEngine)
+
+    /// Configure une requête Apple Vision pour privilégier le Neural Engine (ANE) et le CPU,
+    /// excluant le GPU pour éviter toute saccade ou latence dans le rendu 60 FPS du cockpit.
+    private func configureComputeDevices(for request: VNRequest) {
+        guard let supportedStages = try? request.supportedComputeStageDevices else { return }
+
+        for (stage, devices) in supportedStages {
+            // 1. Priorité absolue à l'Apple Neural Engine (ANE)
+            if let neuralEngine = devices.first(where: {
+                if case .neuralEngine = $0 { return true }
+                return false
+            }) {
+                request.setComputeDevice(neuralEngine, for: stage)
+            } else if let cpu = devices.first(where: {
+                // 2. Repli vers le CPU si le Neural Engine n'est pas disponible pour cette étape
+                if case .cpu = $0 { return true }
+                return false
+            }) {
+                request.setComputeDevice(cpu, for: stage)
+            }
+        }
+    }
+
+    // MARK: - Détection Native Apple Vision (Humains, Animaux, Cibles Saillantes)
 
     private func detectObjects(in cgImage: CGImage) {
-        if let yoloModel {
-            let request = VNCoreMLRequest(model: yoloModel) { [weak self] request, error in
-                guard let self, error == nil,
-                      let observations = request.results as? [VNRecognizedObjectObservation] else {
-                    return
+        var newObjects: [DetectedObject] = []
+
+        // 1. Requête Native Apple : Détection de Silhouettes et Corps Humains
+        let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
+            guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
+            for human in results where human.confidence > 0.4 {
+                let box = self.convertVisionRectToSwiftUI(human.boundingBox)
+                newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
+            }
+        }
+        humanRequest.upperBodyOnly = false
+        configureComputeDevices(for: humanRequest)
+
+        // 2. Requête Native Apple : Reconnaissance d'Animaux
+        let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
+            guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
+            for animal in results where animal.confidence > 0.4 {
+                let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
+                let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
+                let frenchLabel: String
+                switch topLabel {
+                case "dog": frenchLabel = "CHIEN"
+                case "cat": frenchLabel = "CHAT"
+                default: frenchLabel = "ANIMAL"
                 }
+                newObjects.append(DetectedObject(box: box, label: frenchLabel, confidence: animal.confidence))
+            }
+        }
+        configureComputeDevices(for: animalRequest)
 
-                let objects = observations.compactMap { obs -> DetectedObject? in
-                    guard let topLabel = obs.labels.first, topLabel.confidence >= 0.35 else {
-                        return nil
-                    }
+        // 3. Requête Native Apple : Détection de Saillance / Cibles d'Intérêt (Véhicules, Objets Mobiles)
+        let saliencyRequest = VNGenerateObjectnessBasedSaliencyImageRequest { [weak self] request, error in
+            guard let self, error == nil,
+                  let result = (request.results as? [VNSaliencyImageObservation])?.first,
+                  let salientObjects = result.salientObjects else { return }
 
-                    let swiftUIBox = self.convertVisionRectToSwiftUI(obs.boundingBox)
-                    let translated = self.translateLabel(topLabel.identifier)
-                    return DetectedObject(
-                        box: swiftUIBox,
-                        label: translated,
-                        confidence: topLabel.confidence
-                    )
-                }
-
-                Task { @MainActor in
-                    self.detectedObjects = objects
+            for salient in salientObjects where salient.confidence > 0.5 {
+                let box = self.convertVisionRectToSwiftUI(salient.boundingBox)
+                let alreadyCovered = newObjects.contains { $0.box.intersects(box) }
+                if !alreadyCovered && box.width > 0.06 && box.height > 0.06 {
+                    newObjects.append(DetectedObject(box: box, label: "CIBLE", confidence: salient.confidence))
                 }
             }
+        }
+        configureComputeDevices(for: saliencyRequest)
 
-            request.imageCropAndScaleOption = .scaleFill
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            try? handler.perform([request])
-        } else {
-            // Fallback natif Apple Human Detection
-            let request = VNDetectHumanRectanglesRequest { [weak self] request, error in
-                guard let self, error == nil, let results = request.results as? [VNHumanObservation] else {
-                    return
-                }
-
-                let objects = results.map { observation in
-                    DetectedObject(
-                        box: self.convertVisionRectToSwiftUI(observation.boundingBox),
-                        label: "HUMAIN",
-                        confidence: observation.confidence
-                    )
-                }
-
-                Task { @MainActor in
-                    self.detectedObjects = objects
-                }
-            }
-            request.upperBodyOnly = false
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            try? handler.perform([request])
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([humanRequest, animalRequest, saliencyRequest])
+            self.detectedObjects = newObjects
+        } catch {
+            print("Erreur analyse Apple Vision : \(error)")
         }
     }
 
@@ -143,8 +150,10 @@ class VisionTrackerService {
 
         if trackingRequest == nil {
             let observation = VNDetectedObjectObservation(boundingBox: visionBox)
-            trackingRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
-            trackingRequest?.trackingLevel = .accurate
+            let request = VNTrackObjectRequest(detectedObjectObservation: observation)
+            request.trackingLevel = .accurate
+            configureComputeDevices(for: request)
+            trackingRequest = request
             initialTargetArea = max(currentBox.width * currentBox.height, 0.001)
             isFirstDetection = true
         }
@@ -157,7 +166,6 @@ class VisionTrackerService {
             guard let results = request.results as? [VNDetectedObjectObservation],
                   let trackedObservation = results.first,
                   trackedObservation.confidence > 0.3 else {
-                // Perte de cible
                 return
             }
 
@@ -184,7 +192,7 @@ class VisionTrackerService {
             isFirstDetection = false
 
         } catch {
-            print("Erreur suivi optique : \(error)")
+            print("Erreur suivi optique Apple Vision : \(error)")
         }
     }
 
@@ -226,27 +234,6 @@ class VisionTrackerService {
         if !isTrackingActive {
             unlockTarget()
             detectedObjects.removeAll()
-        }
-    }
-
-    // MARK: - Traduction des Labels COCO
-
-    private func translateLabel(_ identifier: String) -> String {
-        switch identifier.lowercased() {
-        case "person": return "HUMAIN"
-        case "car": return "VOITURE"
-        case "motorcycle": return "MOTO"
-        case "bicycle": return "VÉLO"
-        case "bus": return "BUS"
-        case "truck": return "CAMION"
-        case "boat": return "BATEAU"
-        case "airplane": return "AVION"
-        case "dog": return "CHIEN"
-        case "cat": return "CHAT"
-        case "horse": return "CHEVAL"
-        case "sheep": return "MOUTON"
-        case "cow": return "BOVIN"
-        default: return identifier.uppercased()
         }
     }
 
