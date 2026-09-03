@@ -41,27 +41,32 @@ struct ContentView: View {
                     // Grille Bento Scrollable
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 14) {
-                            // 1. Tuile Bento Drone Anafi
-                            DashboardDroneCard(
-                                connectedDrone: droneManager.connectedDrone,
-                                isConnected: droneManager.isDroneConnected,
-                                batteryLevel: droneManager.droneBatteryLevel,
-                                satelliteCount: droneManager.satelliteCount,
-                                isGpsFixed: droneManager.isGpsFixed,
-                                availableDrones: droneManager.drones,
-                                onSelectDrone: { drone in
-                                    HapticFeedback.tap()
-                                    selectDrone(drone)
-                                }
-                            )
+                            // Tuiles Principales Côte à Côte
+                            HStack(alignment: .top, spacing: 14) {
+                                // 1. Tuile Bento Drone Anafi
+                                DashboardDroneCard(
+                                    connectedDrone: droneManager.connectedDrone,
+                                    isConnected: droneManager.isDroneConnected,
+                                    batteryLevel: droneManager.droneBatteryLevel,
+                                    satelliteCount: droneManager.satelliteCount,
+                                    isGpsFixed: droneManager.isGpsFixed,
+                                    availableDrones: droneManager.drones,
+                                    onSelectDrone: { drone in
+                                        HapticFeedback.tap()
+                                        selectDrone(drone)
+                                    }
+                                )
+                                .frame(maxWidth: .infinity, alignment: .top)
 
-                            // 2. Tuile Bento SkyController 3
-                            DashboardRemoteCard(
-                                remoteControl: droneManager.connectedRemoteControl,
-                                isConnected: droneManager.rcConnectionState == .connected,
-                                batteryLevel: droneManager.rcBatteryLevel,
-                                isScanning: droneManager.isDroneFinderScanning
-                            )
+                                // 2. Tuile Bento SkyController 3
+                                DashboardRemoteCard(
+                                    remoteControl: droneManager.connectedRemoteControl,
+                                    isConnected: droneManager.rcConnectionState == .connected,
+                                    batteryLevel: droneManager.rcBatteryLevel,
+                                    isScanning: droneManager.isDroneFinderScanning
+                                )
+                                .frame(maxWidth: .infinity, alignment: .top)
+                            }
 
                             // 3. Tuile Bento Checklist Pré-vol
                             DashboardPreflightCard(isFccMode: droneManager.isFccMode)
