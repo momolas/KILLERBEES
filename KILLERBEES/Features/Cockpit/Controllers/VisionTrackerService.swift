@@ -42,18 +42,26 @@ class VisionTrackerService {
 
     init() {}
 
+    private var isProcessing: Bool = false
+
     // MARK: - Analyse d'une Image
 
     func processFrame(
         _ cgImage: CGImage,
-        onTargetData: (Double, Double, Double, Double, Bool) -> Void
+        onTargetData: @escaping (Double, Double, Double, Double, Bool) -> Void
     ) {
-        guard isTrackingActive else { return }
+        guard isTrackingActive, !isProcessing else { return }
+        isProcessing = true
 
         if let currentTarget = lockedTargetBox {
             trackLockedTarget(in: cgImage, currentBox: currentTarget, onTargetData: onTargetData)
+            isProcessing = false
         } else {
-            detectObjects(in: cgImage)
+            Task { [weak self] in
+                guard let self else { return }
+                self.detectObjects(in: cgImage)
+                self.isProcessing = false
+            }
         }
     }
 
@@ -262,6 +270,7 @@ class VisionTrackerService {
 
     func stopTracking() {
         isTrackingActive = false
+        isProcessing = false
         unlockTarget()
         detectedObjects.removeAll()
     }

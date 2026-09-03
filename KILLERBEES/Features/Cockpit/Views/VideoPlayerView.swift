@@ -29,9 +29,9 @@ struct VideoPlayerView: UIViewRepresentable {
         streamView.setStream(stream: stream)
         context.coordinator.parent = self
         if stream == nil {
-            context.coordinator.stopCaptureTimer()
+            context.coordinator.stopCaptureTask()
         } else {
-            context.coordinator.startCaptureTimer()
+            context.coordinator.startCaptureTask()
         }
     }
 
@@ -40,10 +40,11 @@ struct VideoPlayerView: UIViewRepresentable {
         streamView.setStream(stream: nil)
     }
 
+    @MainActor
     class Coordinator {
         var parent: VideoPlayerView
         private weak var streamView: StreamView?
-        private var captureTimer: Timer?
+        private var captureTask: Task<Void, Never>?
 
         init(_ parent: VideoPlayerView) {
             self.parent = parent
@@ -52,29 +53,41 @@ struct VideoPlayerView: UIViewRepresentable {
         func attach(to view: StreamView) {
             self.streamView = view
             if parent.stream != nil {
-                startCaptureTimer()
+                startCaptureTask()
             }
         }
 
         func detach() {
-            stopCaptureTimer()
+            stopCaptureTask()
             streamView = nil
         }
 
-        func startCaptureTimer() {
-            guard captureTimer == nil, parent.stream != nil else { return }
-            captureTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
-                guard let self, let streamView = self.streamView, self.parent.onFrameCaptured != nil, self.parent.stream != nil else { return }
-                let image = streamView.snapshot
-                if image.size.width > 0 && image.size.height > 0 {
-                    self.parent.onFrameCaptured?(image)
+        func startCaptureTask() {
+            guard captureTask == nil, parent.stream != nil else { return }
+            captureTask = Task { @MainActor [weak self] in
+                while !Task.isCancelled {
+                    do {
+                        try await Task.sleep(for: .milliseconds(66))
+                    } catch {
+                        break
+                    }
+                    guard let self,
+                          let streamView = self.streamView,
+                          self.parent.onFrameCaptured != nil,
+                          self.parent.stream != nil else {
+                        break
+                    }
+                    let image = streamView.snapshot
+                    if image.size.width > 0 && image.size.height > 0 {
+                        self.parent.onFrameCaptured?(image)
+                    }
                 }
             }
         }
 
-        func stopCaptureTimer() {
-            captureTimer?.invalidate()
-            captureTimer = nil
+        func stopCaptureTask() {
+            captureTask?.cancel()
+            captureTask = nil
         }
     }
 }
