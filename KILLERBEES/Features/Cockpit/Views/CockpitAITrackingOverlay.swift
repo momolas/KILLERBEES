@@ -3,9 +3,41 @@
 //  KILLERBEES
 //
 //  Created by Jules
+//  Cockpit HUD Tactique Apple Vision avec Micro-Animations & Retours Haptiques
 //
 
 import SwiftUI
+
+struct TacticalCornersShape: Shape {
+    let length: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let l = min(length, min(rect.width, rect.height) / 2)
+        
+        // Haut Gauche
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY + l))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX + l, y: rect.minY))
+        
+        // Haut Droite
+        path.move(to: CGPoint(x: rect.maxX - l, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + l))
+        
+        // Bas Droite
+        path.move(to: CGPoint(x: rect.maxX, y: rect.maxY - l))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.maxX - l, y: rect.maxY))
+        
+        // Bas Gauche
+        path.move(to: CGPoint(x: rect.minX + l, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - l))
+        
+        return path
+    }
+}
 
 struct CockpitAITrackingOverlay: View {
     let detectedObjects: [DetectedObject]
@@ -20,6 +52,8 @@ struct CockpitAITrackingOverlay: View {
 
     @State private var dragStartPoint: CGPoint?
     @State private var dragCurrentPoint: CGPoint?
+    @State private var pulseScale: CGFloat = 1.0
+    @State private var reticleRotation: Double = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -81,15 +115,15 @@ struct CockpitAITrackingOverlay: View {
                         .position(x: rect.midX, y: rect.midY)
                 }
 
-                // Cibles Détectées Automatiquement par YOLO (non verrouillées)
+                // Cibles Détectées Automatiquement (non verrouillées)
                 if !isTargetLocked {
                     ForEach(detectedObjects) { object in
                         let screenRect = convertToScreenRect(object.box, in: viewSize)
                         let color = colorForLabel(object.label)
 
                         ZStack(alignment: .topLeading) {
-                            RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(color, lineWidth: 2)
+                            TacticalCornersShape(length: 12)
+                                .stroke(color, lineWidth: 2)
 
                             Text("\(object.label) \(Int(object.confidence * 100))%")
                                 .font(.system(size: 8, weight: .black))
@@ -105,38 +139,61 @@ struct CockpitAITrackingOverlay: View {
                     }
                 }
 
-                // Cible Verrouillée Active (Locked Target)
+                // Cible Verrouillée Active avec Micro-Animation Tactique
                 if let locked = lockedBox {
                     let screenRect = convertToScreenRect(locked, in: viewSize)
                     let lockColor: Color = (trackingMode == .followMe) ? .orange : .red
 
                     ZStack {
-                        // Cadre de visée
-                        RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(lockColor, lineWidth: 2.5)
+                        // Cercle de pulsation externe
+                        Circle()
+                            .stroke(lockColor.opacity(0.4), lineWidth: 1.5)
+                            .frame(width: max(screenRect.width, screenRect.height) * 1.35, height: max(screenRect.width, screenRect.height) * 1.35)
+                            .scaleEffect(pulseScale)
 
-                        // Réticule central
-                        Image(systemName: "plus")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(lockColor)
+                        // 4 Coins militaires resserrés
+                        TacticalCornersShape(length: 16)
+                            .stroke(lockColor, lineWidth: 2.8)
 
-                        // Badge de verrouillage avec mode actif
+                        // Réticule central à croix dynamique
+                        ZStack {
+                            Circle()
+                                .strokeBorder(lockColor, lineWidth: 1)
+                                .frame(width: 22, height: 22)
+                            
+                            Image(systemName: "plus")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(lockColor)
+                        }
+
+                        // Badge supérieur de verrouillage
                         VStack {
-                            Text(trackingMode == .followMe ? "🚀 FOLLOW-ME ACTIF" : "🎯 LOOK-AT ACTIF")
-                                .font(.system(size: 9, weight: .black))
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(lockColor)
-                                .foregroundStyle(.white)
-                                .clipShape(.capsule)
-                                .shadow(radius: 3)
+                            HStack(spacing: 4) {
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 5, height: 5)
+                                Text(trackingMode == .followMe ? "🚀 FOLLOW-ME ACTIF" : "🎯 LOOK-AT ACTIF")
+                                    .font(.system(size: 9, weight: .black))
+                            }
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(lockColor)
+                            .foregroundStyle(.white)
+                            .clipShape(.capsule)
+                            .shadow(radius: 4)
+
                             Spacer()
                         }
-                        .offset(y: -22)
+                        .offset(y: -24)
                     }
                     .frame(width: screenRect.width, height: screenRect.height)
                     .position(x: screenRect.midX, y: screenRect.midY)
-                    .shadow(color: lockColor.opacity(0.5), radius: 6)
+                    .shadow(color: lockColor.opacity(0.6), radius: 8)
+                    .onAppear {
+                        withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                            pulseScale = 1.12
+                        }
+                    }
                 }
 
                 // Sélecteur Tactique Haut : LOOK-AT vs FOLLOW-ME
@@ -144,6 +201,7 @@ struct CockpitAITrackingOverlay: View {
                     HStack(spacing: 6) {
                         ForEach(TrackingMode.allCases) { mode in
                             Button {
+                                HapticFeedback.modeChanged()
                                 onSelectMode(mode)
                             } label: {
                                 HStack(spacing: 4) {
@@ -168,12 +226,12 @@ struct CockpitAITrackingOverlay: View {
                     }
                     .padding(.top, 58)
 
-                    // Guide de pilotage ou avertissement de vol
+                    // Bandeau de Statut Contextuel de Mission
                     if !isTargetLocked {
-                        HStack(spacing: 4) {
+                        HStack(spacing: 5) {
                             Image(systemName: "hand.tap.fill")
                                 .font(.system(size: 9))
-                            Text("TOUCHEZ UNE CIBLE OU TRACEZ UN CADRE")
+                            Text("TOUCHEZ UNE CIBLE (AIMANTATION AUTO)")
                                 .font(.system(size: 9, weight: .black))
                         }
                         .padding(.horizontal, 10)
@@ -181,7 +239,7 @@ struct CockpitAITrackingOverlay: View {
                         .background(Color.cyan.opacity(0.85))
                         .foregroundStyle(.black)
                         .clipShape(.capsule)
-                        .shadow(radius: 2)
+                        .shadow(radius: 3)
                     } else if let issue = trackingIssues.first(where: { $0 != "Cible visuelle non détectée" }) {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -195,6 +253,23 @@ struct CockpitAITrackingOverlay: View {
                         .foregroundStyle(.black)
                         .clipShape(.capsule)
                         .shadow(radius: 2)
+                    } else {
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(trackingMode == .followMe ? Color.orange : Color.green)
+                                .frame(width: 6, height: 6)
+                            Text(trackingMode == .followMe ? "POURSUITE DYNAMIQUE EN COURS" : "CADRAGE NACELLE ACTIF")
+                                .font(.system(size: 9, weight: .black))
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color.black.opacity(0.75))
+                        .foregroundStyle(.white)
+                        .clipShape(.capsule)
+                        .overlay(
+                            Capsule().strokeBorder(Color.white.opacity(0.2), lineWidth: 1)
+                        )
+                        .shadow(radius: 3)
                     }
 
                     Spacer()

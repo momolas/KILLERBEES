@@ -196,12 +196,32 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Gestion du Verrouillage
+    // MARK: - Gestion du Verrouillage Tactique & Aimantation Magnétique (Magnetic Snap)
 
     func lockTarget(at point: CGPoint) {
-        if let tappedObject = detectedObjects.first(where: { $0.box.contains(point) }) {
-            lockBox(tappedObject.box)
+        // 1. Touche directe à l'intérieur d'une boîte existante
+        if let directHit = detectedObjects.first(where: { $0.box.contains(point) }) {
+            lockBox(directHit.box)
+            return
+        }
+
+        // 2. Aimantation Magnétique (Magnetic Snap) :
+        // Détecte la cible la plus proche dans un rayon tolérant de 10% de l'écran
+        let snapRadius: CGFloat = 0.10
+        let nearest = detectedObjects
+            .map { obj -> (object: DetectedObject, distance: CGFloat) in
+                let center = CGPoint(x: obj.box.midX, y: obj.box.midY)
+                let dx = center.x - point.x
+                let dy = center.y - point.y
+                return (obj, sqrt(dx * dx + dy * dy))
+            }
+            .filter { $0.distance <= snapRadius }
+            .min(by: { $0.distance < $1.distance })
+
+        if let snapped = nearest {
+            lockBox(snapped.object.box)
         } else {
+            // 3. Tracé d'un cadre manuel centré sur le point
             let size: CGFloat = 0.15
             let manualBox = CGRect(
                 x: max(0, min(point.x - size / 2, 1.0 - size)),
@@ -214,14 +234,18 @@ class VisionTrackerService {
     }
 
     func lockBox(_ rect: CGRect) {
-        unlockTarget()
+        unlockTarget(silent: true)
         lockedTargetBox = rect
         isTargetLocked = true
         isFirstDetection = true
         trackingRequest = nil
+        HapticFeedback.targetLocked()
     }
 
-    func unlockTarget() {
+    func unlockTarget(silent: Bool = false) {
+        if isTargetLocked && !silent {
+            HapticFeedback.targetLost()
+        }
         lockedTargetBox = nil
         isTargetLocked = false
         trackingRequest = nil

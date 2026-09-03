@@ -146,20 +146,38 @@ struct DroneControlView: View {
 
                     Spacer()
 
-                    // Commandes de Vol Décollage / Atterrissage / RTH
-                    CockpitBottomBar(
-                        flyingState: droneManager.flyingState,
-                        isRthActive: droneManager.isRthActive,
-                        onTakeOff: { droneManager.takeOff() },
-                        onLand: { droneManager.land() },
-                        onToggleRth: {
-                            if droneManager.isRthActive {
-                                droneManager.cancelReturnHome()
-                            } else {
-                                droneManager.triggerReturnHome()
+                    // Commandes de Vol Décollage / Atterrissage / RTH & Bandeau de Mission
+                    VStack(spacing: 8) {
+                        CockpitMissionStatusBar(
+                            isConnected: droneManager.isDroneConnected,
+                            isTargetLocked: visionService.isTargetLocked,
+                            isTrackingActive: visionService.isTrackingActive,
+                            trackingMode: droneManager.selectedTrackingMode,
+                            flyingState: droneManager.flyingState,
+                            altitude: droneManager.altitude
+                        )
+
+                        CockpitBottomBar(
+                            flyingState: droneManager.flyingState,
+                            isRthActive: droneManager.isRthActive,
+                            onTakeOff: {
+                                HapticFeedback.tap()
+                                droneManager.takeOff()
+                            },
+                            onLand: {
+                                HapticFeedback.tap()
+                                droneManager.land()
+                            },
+                            onToggleRth: {
+                                HapticFeedback.tap()
+                                if droneManager.isRthActive {
+                                    droneManager.cancelReturnHome()
+                                } else {
+                                    droneManager.triggerReturnHome()
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
 
                     Spacer()
 
@@ -167,6 +185,7 @@ struct DroneControlView: View {
                     HStack(alignment: .center, spacing: 10) {
                         // Bouton IA Tracking
                         Button {
+                            HapticFeedback.tap()
                             withAnimation(.spring(response: 0.3)) {
                                 visionService.toggleTracking()
                                 if !visionService.isTrackingActive {

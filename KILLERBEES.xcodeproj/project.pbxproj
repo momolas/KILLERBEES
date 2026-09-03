@@ -34,6 +34,8 @@
 		CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */; };
 		CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */; };
 		CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */; };
+		CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */; };
+		CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -70,6 +72,8 @@
 		CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitFlightPlanOverlay.swift; sourceTree = "<group>"; };
 		CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VisionTrackerService.swift; sourceTree = "<group>"; };
 		CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
+		CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/HapticFeedback.swift; sourceTree = "<group>"; };
+		CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMissionStatusBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
+				CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 				CD6D83102FD5D3AB00D53031 /* VideoSection.swift */,
 				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
 				CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */,
+				CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -321,6 +327,8 @@
 				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
 				CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */,
 				CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */,
+				CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */,
+				CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
