@@ -53,17 +53,18 @@ struct CockpitMiniMap: View {
             )
 
             // Bouton agrandissement / réduction
-            Button {
+            Button(isExpanded ? "Réduire la carte" : "Agrandir la carte",
+                systemImage: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right") {
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                     isExpanded.toggle()
                 }
-            } label: {
-                Image(systemName: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(.white)
-                    .padding(6)
-                    .background(.ultraThinMaterial)
-                    .clipShape(.circle)
+            }
+            .labelStyle(.iconOnly)
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(.white)
+            .padding(6)
+            .background(.ultraThinMaterial)
+            .clipShape(.circle)
             }
             .padding(6)
         }
