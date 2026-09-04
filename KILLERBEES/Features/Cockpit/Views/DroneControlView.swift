@@ -100,6 +100,7 @@ struct DroneControlView: View {
                     isFccMode: droneManager.isFccMode,
                     activeMissionMode: droneManager.activeMissionMode,
                     droneConnectionState: droneManager.droneConnectionState,
+                    smartRTH: droneManager.smartRTH,
                     onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
                     onSelectMissionMode: { droneManager.setMissionMode($0) },
                     onDismiss: { dismiss() }
@@ -112,6 +113,27 @@ struct DroneControlView: View {
                     isCritical: droneManager.isAlarmCritical
                 )
                 .padding(.top, 2)
+
+                // Badge Smart RTH & Point de Non-Retour (si en vol ou RTH actif)
+                if droneManager.flyingState == .flying || droneManager.isRthActive {
+                    CockpitSmartRTHBadge(
+                        smartRTH: droneManager.smartRTH,
+                        isRthActive: droneManager.isRthActive,
+                        onTriggerRth: {
+                            HapticFeedback.tap()
+                            droneManager.triggerReturnHome()
+                        },
+                        onCancelRth: {
+                            HapticFeedback.tap()
+                            droneManager.cancelReturnHome()
+                        },
+                        onCancelAutoTrigger: {
+                            HapticFeedback.tap()
+                            droneManager.cancelRthAutoTrigger()
+                        }
+                    )
+                    .padding(.top, 2)
+                }
 
                 // Badges Spécifiques au Mode de Mission (Surveillance, Loisir, Chasse)
                 switch droneManager.activeMissionMode {

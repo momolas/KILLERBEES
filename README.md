@@ -44,7 +44,12 @@ L'interface s'adapte en temps réel selon le mode de mission sélectionné :
 - **Mode Chasse** : Badge cinématique avec cap azimutal, vitesse du gibier en km/h, icône de l'espèce identifiée et profil de vol réactif (lacet à 120°/s).
 - **Mode Surveillance** : Détection d'intrusions, décompte des personnes, bouton de capture de preuve photo instantanée horodatée avec coordonnées GPS.
 - **Mode Loisir** : Profil cinématique 4K avec lacet doux (25°/s sans saccade) et grille des tiers 3x3 pour le cadrage photographique.
-- **Télémétrie Complète** : Niveaux de batterie (drone et SkyController), indicateurs GPS et satellites, qualité du lien radio, état FCC, RTH (Return-To-Home), bannières d'alarmes critiques et mini-carte satellite tactique avec ligne de visée.
+- **Télémétrie Complète** : Niveaux de batterie (drone et SkyController), indicateurs GPS et satellites, qualité du lien radio, état FCC, bannières d'alarmes critiques et mini-carte satellite tactique avec ligne de visée.
+- **⚡ Smart RTH & Point de Non-Retour Dynamique** :
+  - Calcul trigonométrique en temps réel de la distance et du temps de vol requis pour regagner le point de départ (Home).
+  - Prise en compte de l'**anémomètre** embarqué : projection vectorielle du vent (vent de face pénalisant vs vent arrière favorable) et surconsommation des moteurs.
+  - Jauge de batterie intelligente avec **marqueur physique du seuil de non-retour** et marge de temps sécurisée en minutes.
+  - Badge HUD de retour affichant la distance, le temps estimé de retour (ETA), la vitesse du vent et l'alerte d'auto-déclenchement GroundSdk.
 
 ---
 
@@ -56,6 +61,7 @@ Le projet repose sur une architecture **MVVM** moderne et réactive, conforme au
 KILLERBEES/
 ├── Core/
 │   ├── DroneManager.swift          # Pilotage GroundSdk, profil de vol, télémétrie
+│   ├── SmartRTHAssessment.swift    # Moteur de calcul dynamique du point de non-retour et Smart RTH
 │   └── MissionMode.swift           # Définition des profils de vol et modes de mission
 ├── Features/
 │   ├── Connection/                 # Découverte et appairage des drones
@@ -70,6 +76,8 @@ KILLERBEES/
 │           ├── DroneControlView.swift         # Écran cockpit principal
 │           ├── CockpitAITrackingOverlay.swift # Réticules tactiques, boîtes OBB, masque thermique
 │           ├── CockpitTopBar.swift            # Barre d'état télémétrique
+│           ├── CockpitSmartBatteryBar.swift   # Jauge intelligente avec marqueur Point de Non-Retour
+│           ├── CockpitSmartRTHBadge.swift     # Badge HUD d'alerte et de télémétrie RTH (vent, distance, ETA)
 │           ├── CockpitGameVectorBadge.swift   # Télémétrie gibier (cap, vitesse, espèce)
 │           ├── CockpitSurveillanceBadge.swift # Télémétrie sécurité & capture preuve
 │           ├── CockpitLeisureBadge.swift      # Outils cinématographiques & grille

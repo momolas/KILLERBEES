@@ -54,6 +54,15 @@ class DroneManager {
     var radioSignalQuality: Int?
     var isRthActive: Bool = false
 
+    // Smart RTH & Calcul Dynamique du Point de Non-Retour
+    var smartRTH: SmartRTHAssessment?
+    var homeReachability: HomeReachability = .unknown
+    var rthAutoTriggerDelay: TimeInterval = 0.0
+    var rthMinAltitude: Double = 30.0
+    var windHorizontalSpeed: Double?
+    var windNorthSpeed: Double?
+    var windEastSpeed: Double?
+
     // Horizon Artificiel & Cap
     var pitch: Double = 0.0
     var roll: Double = 0.0
@@ -111,6 +120,7 @@ class DroneManager {
     private var gpsRef: Ref<Gps>?
     private var radioRef: Ref<Radio>?
     private var returnHomeRef: Ref<ReturnHomePilotingItf>?
+    private var anemometerRef: Ref<Anemometer>?
     private var attitudeRef: Ref<AttitudeIndicator>?
     private var compassRef: Ref<Compass>?
     private var gimbalRef: Ref<Gimbal>?
@@ -324,6 +334,7 @@ class DroneManager {
         droneBatteryRef = drone.getInstrument(Instruments.batteryInfo) { [weak self] battery in
             guard let self else { return }
             self.droneBatteryLevel = battery?.batteryLevel
+            self.updateSmartRTHCalculation()
         }
 
         // Surveillance de l'état de vol
@@ -337,6 +348,7 @@ class DroneManager {
             guard let self else { return }
             self.altitude = altimeter?.takeoffRelativeAltitude
             self.verticalSpeed = altimeter?.verticalSpeed
+            self.updateSmartRTHCalculation()
         }
 
         // Surveillance de la vitesse sol
@@ -355,6 +367,7 @@ class DroneManager {
                 if self.homeCoordinate == nil {
                     self.homeCoordinate = loc.coordinate
                 }
+                self.updateSmartRTHCalculation()
             }
         }
 
@@ -365,10 +378,28 @@ class DroneManager {
             self.radioSignalQuality = radio?.linkSignalQuality
         }
 
-        // Surveillance du Return-To-Home
+        // Surveillance du Return-To-Home & Smart RTH
         returnHomeRef = drone.getPilotingItf(PilotingItfs.returnHome) { [weak self] returnHome in
             guard let self else { return }
             self.isRthActive = (returnHome?.state == .active)
+            self.homeReachability = returnHome?.homeReachability ?? .unknown
+            self.rthAutoTriggerDelay = returnHome?.autoTriggerDelay ?? 0.0
+            if let minAlt = returnHome?.minAltitude?.value {
+                self.rthMinAltitude = minAlt
+            }
+            if let homeLoc = returnHome?.homeLocation {
+                self.homeCoordinate = CLLocationCoordinate2D(latitude: homeLoc.latitude, longitude: homeLoc.longitude)
+            }
+            self.updateSmartRTHCalculation()
+        }
+
+        // Surveillance de l'Anémomètre (Vitesse & Direction du Vent)
+        anemometerRef = drone.getInstrument(Instruments.anemometer) { [weak self] anemometer in
+            guard let self else { return }
+            self.windHorizontalSpeed = anemometer?.horizontalSpeed
+            self.windNorthSpeed = anemometer?.northSpeed
+            self.windEastSpeed = anemometer?.eastSpeed
+            self.updateSmartRTHCalculation()
         }
 
         // Surveillance de l'Horizon Artificiel (Attitude)
@@ -427,8 +458,8 @@ class DroneManager {
         }
 
         // Surveillance du Suivi de Cible Visuel (TargetTracker)
-        targetTrackerRef = drone.getPeripheral(Peripherals.targetTracker) { [weak self] tracker in
-            guard let self, tracker != nil else { return }
+        targetTrackerRef = drone.getPeripheral(Peripherals.targetTracker) { tracker in
+            guard tracker != nil else { return }
         }
 
         // Surveillance du Mode Look-At
@@ -472,7 +503,7 @@ class DroneManager {
     }
 
     func disconnect() {
-        connectedDrone?.disconnect()
+        _ = connectedDrone?.disconnect()
         connectedDrone = nil
         droneStateRef = nil
         droneBatteryRef = nil
@@ -482,6 +513,7 @@ class DroneManager {
         gpsRef = nil
         radioRef = nil
         returnHomeRef = nil
+        anemometerRef = nil
         attitudeRef = nil
         compassRef = nil
         gimbalRef = nil
@@ -507,6 +539,12 @@ class DroneManager {
         radioRssi = nil
         radioSignalQuality = nil
         isRthActive = false
+        smartRTH = nil
+        homeReachability = .unknown
+        rthAutoTriggerDelay = 0.0
+        windHorizontalSpeed = nil
+        windNorthSpeed = nil
+        windEastSpeed = nil
         pitch = 0.0
         roll = 0.0
         heading = 0.0
@@ -548,6 +586,26 @@ class DroneManager {
     func cancelReturnHome() {
         guard let returnHome = returnHomeRef?.value else { return }
         _ = returnHome.deactivate()
+    }
+
+    // MARK: - Smart RTH & Point de Non-Retour
+
+    func updateSmartRTHCalculation() {
+        smartRTH = SmartRTHAssessment.compute(
+            droneLocation: droneCoordinate,
+            homeLocation: homeCoordinate,
+            currentAltitude: altitude,
+            rthMinAltitude: rthMinAltitude,
+            windNorthSpeed: windNorthSpeed,
+            windEastSpeed: windEastSpeed,
+            currentBattery: droneBatteryLevel,
+            homeReachability: homeReachability,
+            autoTriggerDelay: rthAutoTriggerDelay
+        )
+    }
+
+    func cancelRthAutoTrigger() {
+        returnHomeRef?.value?.cancelAutoTrigger()
     }
 
     func setGimbalPitch(_ pitch: Double) {

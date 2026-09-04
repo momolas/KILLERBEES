@@ -20,6 +20,7 @@ struct CockpitTopBar: View {
     let isFccMode: Bool
     let activeMissionMode: MissionMode
     let droneConnectionState: DeviceState.ConnectionState
+    let smartRTH: SmartRTHAssessment?
     let onToggleFcc: () -> Void
     let onSelectMissionMode: (MissionMode) -> Void
     let onDismiss: () -> Void
@@ -193,15 +194,10 @@ struct CockpitTopBar: View {
                 }
 
                 if let droneBattery {
-                    HStack(spacing: 4) {
-                        Image(systemName: batterySystemImage(for: droneBattery))
-                            .font(.caption)
-                            .foregroundStyle(batteryColor(for: droneBattery))
-                        Text("\(droneBattery)%")
-                            .font(.caption)
-                            .bold()
-                            .foregroundStyle(.white)
-                    }
+                    CockpitSmartBatteryBar(
+                        batteryLevel: droneBattery,
+                        smartRTH: smartRTH
+                    )
                 }
             }
             .padding(.horizontal, 12)
