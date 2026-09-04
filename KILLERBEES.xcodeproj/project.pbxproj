@@ -53,6 +53,9 @@
 		CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */; };
 		CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */; };
 		CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */; };
+		CD6D83D52FD5D3AB00D53031 /* TacticalCornersShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */; };
+		CD6D83D72FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */; };
+		CD6D83D92FD5D3AB00D53031 /* CockpitOrientedBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -108,6 +111,9 @@
 		CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartRTHBadge.swift; sourceTree = "<group>"; };
 		CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TrackingMode.swift; sourceTree = "<group>"; };
 		CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/DetectedObject.swift; sourceTree = "<group>"; };
+		CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/TacticalCornersShape.swift; sourceTree = "<group>"; };
+		CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift; sourceTree = "<group>"; };
+		CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitOrientedBoxView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +258,9 @@
 				CD6D83762FD5D3AB00D53031 /* CockpitCompositionGridView.swift */,
 				CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */,
 				CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */,
+				CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */,
+				CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */,
+				CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -397,6 +406,9 @@
 				CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */,
 				CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */,
 				CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */,
+				CD6D83D52FD5D3AB00D53031 /* TacticalCornersShape.swift in Sources */,
+				CD6D83D72FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift in Sources */,
+				CD6D83D92FD5D3AB00D53031 /* CockpitOrientedBoxView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

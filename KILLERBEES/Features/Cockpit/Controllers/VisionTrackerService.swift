@@ -140,14 +140,17 @@ class VisionTrackerService {
         isProcessing = true
 
         if let currentTarget = lockedTargetBox {
-            trackLockedTarget(
-                in: cgImage,
-                currentBox: currentTarget,
-                droneHeading: droneHeading,
-                droneAltitude: droneAltitude,
-                onTargetData: onTargetData
-            )
-            isProcessing = false
+            Task { [weak self] in
+                guard let self else { return }
+                await self.trackLockedTarget(
+                    in: cgImage,
+                    currentBox: currentTarget,
+                    droneHeading: droneHeading,
+                    droneAltitude: droneAltitude,
+                    onTargetData: onTargetData
+                )
+                self.isProcessing = false
+            }
         } else {
             Task { [weak self] in
                 guard let self else { return }
@@ -189,6 +192,7 @@ class VisionTrackerService {
             // Priorité 1 : Moteur YOLO Core AI Segmentation (Masque thermique + Silhouette)
             if let tracker = coreAISegTracker, tracker.isModelReady {
                 let (objects, mask, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
                 if !enriched.isEmpty {
                     self.segmentationMaskImage = mask
@@ -201,6 +205,7 @@ class VisionTrackerService {
             // Priorité 2 : Moteur YOLO Core AI OBB (Boîtes Orientées)
             if let tracker = coreAIOBBTracker, tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
                 if !enriched.isEmpty {
                     self.segmentationMaskImage = nil
@@ -213,6 +218,7 @@ class VisionTrackerService {
             // Priorité 3 : Moteur YOLO Core AI Détection Standard
             if let tracker = coreAIDetectTracker, tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
                 if !enriched.isEmpty {
                     self.segmentationMaskImage = nil
@@ -224,6 +230,7 @@ class VisionTrackerService {
         }
         #endif
 
+        guard isTrackingActive, lockedTargetBox == nil else { return }
         // Aucun objet détecté par Core AI
         self.segmentationMaskImage = nil
         self.detectedObjects = []
@@ -432,7 +439,7 @@ class VisionTrackerService {
         droneHeading: Double,
         droneAltitude: Double,
         onTargetData: (Double, Double, Double, Double, Bool) -> Void
-    ) {
+    ) async {
         let visionBox = convertSwiftUIRectToVision(currentBox)
 
         if trackingRequest == nil {
@@ -450,10 +457,12 @@ class VisionTrackerService {
         do {
             try sequenceHandler.perform([request], on: cgImage)
 
+            guard isTrackingActive, lockedTargetBox != nil else { return }
+
             guard let results = request.results as? [VNDetectedObjectObservation],
                   let trackedObservation = results.first,
                   trackedObservation.confidence > 0.3 else {
-                handleTrackingLoss(in: cgImage, lastBox: currentBox)
+                await handleTrackingLoss(in: cgImage, lastBox: currentBox)
                 return
             }
 
@@ -503,7 +512,7 @@ class VisionTrackerService {
 
     // MARK: - Gestion du Décrochage & Ré-Acquisition Intelligente (YOLO)
 
-    private func handleTrackingLoss(in cgImage: CGImage, lastBox: CGRect) {
+    private func handleTrackingLoss(in cgImage: CGImage, lastBox: CGRect) async {
         trackingLossCounter += 1
 
         // 1. Décrochage bref (3 à 25 frames, ~0.1 à 0.8s) : tentative de ré-accrochage automatique via Core AI
@@ -511,22 +520,20 @@ class VisionTrackerService {
             #if canImport(CoreAI)
             if #available(iOS 27.0, macOS 27.0, *) {
                 if let tracker = (coreAISegTracker ?? coreAIDetectTracker), tracker.isModelReady {
-                    Task { @MainActor [weak self] in
-                        guard let self else { return }
-                        let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.2)
-                        if let candidate = objects.first(where: {
-                            hypot($0.box.midX - lastBox.midX, $0.box.midY - lastBox.midY) < 0.18
-                        }) {
-                            let reVisionBox = self.convertSwiftUIRectToVision(candidate.box)
-                            let observation = VNDetectedObjectObservation(boundingBox: reVisionBox)
-                            let newRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
-                            newRequest.trackingLevel = .accurate
-                            self.configureComputeDevices(for: newRequest)
-                            self.trackingRequest = newRequest
-                            self.lockedTargetBox = candidate.box
-                            self.trackingLossCounter = 0
-                            print("🎯 Ré-accrochage automatique de la cible via Apple Core AI !")
-                        }
+                    let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.2)
+                    guard isTrackingActive else { return }
+                    if let candidate = objects.first(where: {
+                        hypot($0.box.midX - lastBox.midX, $0.box.midY - lastBox.midY) < 0.18
+                    }) {
+                        let reVisionBox = self.convertSwiftUIRectToVision(candidate.box)
+                        let observation = VNDetectedObjectObservation(boundingBox: reVisionBox)
+                        let newRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
+                        newRequest.trackingLevel = .accurate
+                        self.configureComputeDevices(for: newRequest)
+                        self.trackingRequest = newRequest
+                        self.lockedTargetBox = candidate.box
+                        self.trackingLossCounter = 0
+                        print("🎯 Ré-accrochage automatique de la cible via Apple Core AI !")
                     }
                     return
                 }

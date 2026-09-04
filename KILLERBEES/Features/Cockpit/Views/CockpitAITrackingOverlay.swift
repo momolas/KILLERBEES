@@ -8,136 +8,6 @@
 
 import SwiftUI
 
-struct TacticalCornersShape: Shape {
-    let length: CGFloat
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let l = min(length, min(rect.width, rect.height) / 2)
-        
-        // Haut Gauche
-        path.move(to: CGPoint(x: rect.minX, y: rect.minY + l))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.minX + l, y: rect.minY))
-        
-        // Haut Droite
-        path.move(to: CGPoint(x: rect.maxX - l, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + l))
-        
-        // Bas Droite
-        path.move(to: CGPoint(x: rect.maxX, y: rect.maxY - l))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.maxX - l, y: rect.maxY))
-        
-        // Bas Gauche
-        path.move(to: CGPoint(x: rect.minX + l, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - l))
-        
-        return path
-    }
-}
-
-struct CockpitThermalSilhouetteLayer: View {
-    let cgImage: CGImage
-    let color: Color
-
-    var body: some View {
-        Image(decorative: cgImage, scale: 1.0, orientation: .up)
-            .resizable()
-            .scaledToFill()
-            .colorMultiply(color)
-            .opacity(0.40)
-            .blendMode(.screen)
-            .allowsHitTesting(false)
-    }
-}
-
-struct CockpitOrientedBoxView: View {
-    let object: DetectedObject
-    let viewSize: CGSize
-    let color: Color
-
-    var body: some View {
-        if let corners = object.orientedCorners, corners.count == 4 {
-            let screenCorners = corners.map { CGPoint(x: $0.x * viewSize.width, y: $0.y * viewSize.height) }
-
-            ZStack {
-                // Polygone orienté OBB
-                Path { path in
-                    path.move(to: screenCorners[0])
-                    path.addLine(to: screenCorners[1])
-                    path.addLine(to: screenCorners[2])
-                    path.addLine(to: screenCorners[3])
-                    path.closeSubpath()
-                }
-                .stroke(color, style: StrokeStyle(lineWidth: 2, dash: [6, 3]))
-                .background(
-                    Path { path in
-                        path.move(to: screenCorners[0])
-                        path.addLine(to: screenCorners[1])
-                        path.addLine(to: screenCorners[2])
-                        path.addLine(to: screenCorners[3])
-                        path.closeSubpath()
-                    }
-                    .fill(color.opacity(0.08))
-                )
-
-                // Indicateur de Cap Tête/Axe
-                if let angleRad = object.orientedAngleRad {
-                    let centerX = (screenCorners[0].x + screenCorners[2].x) / 2
-                    let centerY = (screenCorners[0].y + screenCorners[2].y) / 2
-                    let headingDeg = Double((angleRad * 180.0 / .pi + 360.0).truncatingRemainder(dividingBy: 360.0))
-
-                    Image(systemName: "location.north.fill")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(color)
-                        .rotationEffect(.degrees(headingDeg))
-                        .position(x: centerX, y: centerY)
-                }
-
-                // Badge de Label
-                let topCorner = screenCorners.min(by: { $0.y < $1.y }) ?? screenCorners[0]
-                Text("\(object.label) \(Int(object.confidence * 100))%")
-                    .font(.system(size: 8, weight: .black))
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 1)
-                    .background(color)
-                    .foregroundStyle(.black)
-                    .clipShape(.rect(cornerRadius: 3))
-                    .position(x: topCorner.x, y: max(14, topCorner.y - 12))
-            }
-        } else {
-            let screenRect = convertToScreenRect(object.box, in: viewSize)
-            ZStack(alignment: .topLeading) {
-                TacticalCornersShape(length: 12)
-                    .stroke(color, lineWidth: 2)
-
-                Text("\(object.label) \(Int(object.confidence * 100))%")
-                    .font(.system(size: 8, weight: .black))
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 1)
-                    .background(color)
-                    .foregroundStyle(.black)
-                    .clipShape(.rect(cornerRadius: 3))
-                    .offset(x: 2, y: -16)
-            }
-            .frame(width: screenRect.width, height: screenRect.height)
-            .position(x: screenRect.midX, y: screenRect.midY)
-        }
-    }
-
-    private func convertToScreenRect(_ normalized: CGRect, in size: CGSize) -> CGRect {
-        CGRect(
-            x: normalized.origin.x * size.width,
-            y: normalized.origin.y * size.height,
-            width: normalized.size.width * size.width,
-            height: normalized.size.height * size.height
-        )
-    }
-}
-
 struct CockpitAITrackingOverlay: View {
     let detectedObjects: [DetectedObject]
     let lockedBox: CGRect?
@@ -218,8 +88,8 @@ struct CockpitAITrackingOverlay: View {
                         height: abs(current.y - start.y)
                     )
                     Rectangle()
-                        .strokeBorder(Color.yellow, style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
-                        .background(Color.yellow.opacity(0.1))
+                        .strokeBorder(.yellow, style: StrokeStyle(lineWidth: 2, dash: [6, 4]))
+                        .background(.yellow.opacity(0.1))
                         .frame(width: rect.width, height: rect.height)
                         .position(x: rect.midX, y: rect.midY)
                 }
@@ -253,7 +123,7 @@ struct CockpitAITrackingOverlay: View {
                             Circle()
                                 .strokeBorder(lockColor, lineWidth: 1)
                                 .frame(width: 22, height: 22)
-                            
+
                             Image(systemName: "plus")
                                 .font(.system(size: 11, weight: .bold))
                                 .foregroundStyle(lockColor)
@@ -305,12 +175,12 @@ struct CockpitAITrackingOverlay: View {
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(trackingMode == mode ? (mode == .followMe ? Color.orange : Color.green) : Color.black.opacity(0.65))
-                                .foregroundStyle(trackingMode == mode ? Color.black : Color.white)
+                                .background(trackingMode == mode ? (mode == .followMe ? .orange : .green) : .black.opacity(0.65))
+                                .foregroundStyle(trackingMode == mode ? .black : .white)
                                 .clipShape(.capsule)
                                 .overlay(
                                     Capsule().strokeBorder(
-                                        trackingMode == mode ? Color.white.opacity(0.4) : Color.white.opacity(0.2),
+                                        trackingMode == mode ? .white.opacity(0.4) : .white.opacity(0.2),
                                         lineWidth: 1
                                     )
                                 )
@@ -329,7 +199,7 @@ struct CockpitAITrackingOverlay: View {
                         }
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .background(Color.cyan.opacity(0.85))
+                        .background(.cyan.opacity(0.85))
                         .foregroundStyle(.black)
                         .clipShape(.capsule)
                         .shadow(radius: 3)
@@ -342,25 +212,25 @@ struct CockpitAITrackingOverlay: View {
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(Color.yellow)
+                        .background(.yellow)
                         .foregroundStyle(.black)
                         .clipShape(.capsule)
                         .shadow(radius: 2)
                     } else {
                         HStack(spacing: 5) {
                             Circle()
-                                .fill(trackingMode == .followMe ? Color.orange : Color.green)
+                                .fill(trackingMode == .followMe ? .orange : .green)
                                 .frame(width: 6, height: 6)
                             Text(trackingMode == .followMe ? "POURSUITE DYNAMIQUE EN COURS" : "CADRAGE NACELLE ACTIF")
                                 .font(.system(size: 9, weight: .black))
                         }
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .background(Color.black.opacity(0.75))
+                        .background(.black.opacity(0.75))
                         .foregroundStyle(.white)
                         .clipShape(.capsule)
                         .overlay(
-                            Capsule().strokeBorder(Color.white.opacity(0.2), lineWidth: 1)
+                            Capsule().strokeBorder(.white.opacity(0.2), lineWidth: 1)
                         )
                         .shadow(radius: 3)
                     }

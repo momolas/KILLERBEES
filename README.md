@@ -86,7 +86,10 @@ KILLERBEES/
 │       └── Views/
 │           ├── DroneControlView.swift              # Écran cockpit principal
 │           ├── CockpitMilitaryPitchLadderHUD.swift # Horizon militaire central (Pitch Ladder, Boresight, Heading Tape)
-│           ├── CockpitAITrackingOverlay.swift      # Réticules tactiques, boîtes OBB, masque thermique
+│           ├── CockpitAITrackingOverlay.swift      # Réticules tactiques et sélecteurs de suivi
+│           ├── CockpitOrientedBoxView.swift        # Rendu des boîtes orientées OBB et axes de cap
+│           ├── CockpitThermalSilhouetteLayer.swift # Calque de masque thermique issu de la segmentation
+│           ├── TacticalCornersShape.swift          # Forme géométrique des 4 coins militaires
 │           ├── CockpitTopBar.swift                 # Barre d'état télémétrique avec bouton Declutter
 │           ├── CockpitSmartBatteryBar.swift        # Jauge intelligente avec marqueur Point de Non-Retour
 │           ├── CockpitSmartRTHBadge.swift          # Badge HUD d'alerte et de télémétrie RTH (vent, distance, ETA)

@@ -29,29 +29,9 @@ struct DroneControlView: View {
             ZStack {
                 VideoSection(
                     stream: videoController.currentStream,
-                    isDroneConnected: droneManager.isDroneConnected
-                ) { image in
-                    if visionService.isTrackingActive, let cgImage = image.cgImage {
-                        visionService.processFrame(
-                            cgImage,
-                            droneHeading: droneManager.heading,
-                            droneAltitude: droneManager.altitude ?? 30.0,
-                            missionMode: droneManager.activeMissionMode
-                        ) { azimuth, elevation, scale, confidence, isNew in
-                            droneManager.sendTargetDetection(
-                                azimuth: azimuth,
-                                elevation: elevation,
-                                changeOfScale: scale,
-                                confidence: confidence,
-                                isNewTarget: isNew
-                            )
-                            droneManager.updateTargetGroundPosition(
-                                azimuthRad: azimuth,
-                                elevationRad: elevation
-                            )
-                        }
-                    }
-                }
+                    isDroneConnected: droneManager.isDroneConnected,
+                    onFrameCaptured: handleCapturedFrame
+                )
 
                 if isLeisureGridEnabled {
                     CockpitCompositionGridView()
@@ -305,7 +285,7 @@ struct DroneControlView: View {
                             .clipShape(.circle)
                             .overlay(
                                 Circle().strokeBorder(
-                                    visionService.isTargetLocked ? Color.red : (visionService.isTrackingActive ? Color.green : Color.white.opacity(0.3)),
+                                    visionService.isTargetLocked ? .red : (visionService.isTrackingActive ? .green : .white.opacity(0.3)),
                                     lineWidth: 1.5
                                 )
                             )
@@ -363,6 +343,30 @@ struct DroneControlView: View {
         }
         .onDisappear {
             videoController.cleanup()
+        }
+    }
+
+    // MARK: - Traitement du Flux Vidéo & Télémétrie de Cible
+
+    private func handleCapturedFrame(_ image: UIImage) {
+        guard visionService.isTrackingActive, let cgImage = image.cgImage else { return }
+        visionService.processFrame(
+            cgImage,
+            droneHeading: droneManager.heading,
+            droneAltitude: droneManager.altitude ?? 30.0,
+            missionMode: droneManager.activeMissionMode
+        ) { azimuth, elevation, scale, confidence, isNew in
+            droneManager.sendTargetDetection(
+                azimuth: azimuth,
+                elevation: elevation,
+                changeOfScale: scale,
+                confidence: confidence,
+                isNewTarget: isNew
+            )
+            droneManager.updateTargetGroundPosition(
+                azimuthRad: azimuth,
+                elevationRad: elevation
+            )
         }
     }
 }
