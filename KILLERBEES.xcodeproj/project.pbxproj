@@ -7,55 +7,55 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575929F580970092FAC0 /* KILLERBEESApp.swift */; };
-		CD00575C29F580970092FAC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575B29F580970092FAC0 /* ContentView.swift */; };
+		CD00575A29F580970092FAC0 /* App/KILLERBEESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575929F580970092FAC0 /* App/KILLERBEESApp.swift */; };
+		CD00575C29F580970092FAC0 /* Features/Connection/Views/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD00575B29F580970092FAC0 /* Features/Connection/Views/ContentView.swift */; };
 		CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00575D29F580990092FAC0 /* Assets.xcassets */; };
 		CD00576229F580990092FAC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD00576129F580990092FAC0 /* Preview Assets.xcassets */; };
-		CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */; };
-		CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B12EDB54280053DDD9 /* VideoController.swift */; };
-		CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */; };
-		CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B02EDB54280053DDD9 /* DroneManager.swift */; };
-		CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */; };
-		CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* VideoSection.swift */; };
-		CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */; };
-		CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */; };
-		CD6D831C2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */; };
-		CD6D831E2FD5D3AB00D53031 /* CockpitTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */; };
-		CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */; };
-		CD6D83222FD5D3AB00D53031 /* CockpitTelemetryHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */; };
-		CD6D83242FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */; };
-		CD6D83262FD5D3AB00D53031 /* CockpitCameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */; };
-		CD6D83282FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */; };
-		CD6D832A2FD5D3AB00D53031 /* CockpitMiniMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */; };
-		CD6D832C2FD5D3AB00D53031 /* CockpitAlarmBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */; };
-		CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */; };
-		CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */; };
-		CD6D83B12FD5D3AB00D53031 /* CoreAIVisionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */; };
-		CD6D83B32FD5D3AB00D53031 /* yolo26n.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */; };
-		CD6D83B52FD5D3AB00D53031 /* yolo26n-seg.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */; };
-		CD6D83B72FD5D3AB00D53031 /* yolo26n-obb.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */; };
-		CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */; };
-		CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */; };
-		CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */; };
-		CD6D83512FD5D3AB00D53031 /* DashboardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */; };
-		CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */; };
-		CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */; };
-		CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */; };
-		CD6D83612FD5D3AB00D53031 /* CockpitZoomControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */; };
-		CD6D83632FD5D3AB00D53031 /* CockpitGameVectorBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */; };
-		CD6D83712FD5D3AB00D53031 /* MissionMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83702FD5D3AB00D53031 /* MissionMode.swift */; };
-		CD6D83732FD5D3AB00D53031 /* CockpitSurveillanceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83722FD5D3AB00D53031 /* CockpitSurveillanceBadge.swift */; };
-		CD6D83752FD5D3AB00D53031 /* CockpitLeisureBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83742FD5D3AB00D53031 /* CockpitLeisureBadge.swift */; };
-		CD6D83772FD5D3AB00D53031 /* CockpitCompositionGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83762FD5D3AB00D53031 /* CockpitCompositionGridView.swift */; };
-		CD6D83792FD5D3AB00D53031 /* DashboardMissionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83782FD5D3AB00D53031 /* DashboardMissionCard.swift */; };
-		CD6D83C12FD5D3AB00D53031 /* SmartRTHAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */; };
-		CD6D83C32FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */; };
-		CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */; };
-		CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */; };
-		CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */; };
-		CD6D83D52FD5D3AB00D53031 /* TacticalCornersShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */; };
-		CD6D83D72FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */; };
-		CD6D83D92FD5D3AB00D53031 /* CockpitOrientedBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */; };
+		CD35B5B32EDB54280053DDD9 /* Features/Cockpit/Views/VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B22EDB54280053DDD9 /* Features/Cockpit/Views/VideoPlayerView.swift */; };
+		CD35B5B42EDB54280053DDD9 /* Features/Cockpit/Controllers/VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B12EDB54280053DDD9 /* Features/Cockpit/Controllers/VideoController.swift */; };
+		CD35B5B52EDB54280053DDD9 /* Features/Cockpit/Views/DroneControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5AF2EDB54280053DDD9 /* Features/Cockpit/Views/DroneControlView.swift */; };
+		CD35B5B62EDB54280053DDD9 /* Core/DroneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B02EDB54280053DDD9 /* Core/DroneManager.swift */; };
+		CD6D830F2FD5D3AB00D53031 /* Features/Connection/Models/Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Features/Connection/Models/Drone+Identifiable.swift */; };
+		CD6D83112FD5D3AB00D53031 /* Features/Cockpit/Views/VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* Features/Cockpit/Views/VideoSection.swift */; };
+		CD6D83152FD5D3AB00D53031 /* Features/Connection/Models/RemoteControl+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83142FD5D3AB00D53031 /* Features/Connection/Models/RemoteControl+Identifiable.swift */; };
+		CD6D83172FD5D3AB00D53031 /* Features/Connection/Models/DiscoveredDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83162FD5D3AB00D53031 /* Features/Connection/Models/DiscoveredDrone+Identifiable.swift */; };
+		CD6D831C2FD5D3AB00D53031 /* Features/Connection/Models/KnownDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831B2FD5D3AB00D53031 /* Features/Connection/Models/KnownDrone+Identifiable.swift */; };
+		CD6D831E2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTopBar.swift */; };
+		CD6D83202FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831F2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitBottomBar.swift */; };
+		CD6D83222FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTelemetryHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83212FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTelemetryHUD.swift */; };
+		CD6D83242FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83232FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift */; };
+		CD6D83262FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83252FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCameraCaptureView.swift */; };
+		CD6D83282FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83272FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAttitudeIndicator.swift */; };
+		CD6D832A2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMiniMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83292FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMiniMap.swift */; };
+		CD6D832C2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAlarmBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832B2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAlarmBanner.swift */; };
+		CD6D832E2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitFlightPlanOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitFlightPlanOverlay.swift */; };
+		CD6D83412FD5D3AB00D53031 /* Features/Cockpit/Controllers/VisionTrackerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83402FD5D3AB00D53031 /* Features/Cockpit/Controllers/VisionTrackerService.swift */; };
+		CD6D83432FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAITrackingOverlay.swift */; };
+		CD6D83462FD5D3AB00D53031 /* Core/HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83472FD5D3AB00D53031 /* Core/HapticFeedback.swift */; };
+		CD6D83482FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMissionStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83492FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMissionStatusBar.swift */; };
+		CD6D83512FD5D3AB00D53031 /* Features/Connection/Views/DashboardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83502FD5D3AB00D53031 /* Features/Connection/Views/DashboardHeaderView.swift */; };
+		CD6D83532FD5D3AB00D53031 /* Features/Connection/Views/DashboardDroneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83522FD5D3AB00D53031 /* Features/Connection/Views/DashboardDroneCard.swift */; };
+		CD6D83552FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83542FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift */; };
+		CD6D83572FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83562FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift */; };
+		CD6D83612FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitZoomControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83602FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitZoomControl.swift */; };
+		CD6D83632FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitGameVectorBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83622FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitGameVectorBadge.swift */; };
+		CD6D83712FD5D3AB00D53031 /* Core/MissionMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83702FD5D3AB00D53031 /* Core/MissionMode.swift */; };
+		CD6D83732FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSurveillanceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83722FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSurveillanceBadge.swift */; };
+		CD6D83752FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitLeisureBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83742FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitLeisureBadge.swift */; };
+		CD6D83772FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCompositionGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83762FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCompositionGridView.swift */; };
+		CD6D83792FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83782FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift */; };
+		CD6D83B12FD5D3AB00D53031 /* Features/Cockpit/Controllers/CoreAIVisionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83B02FD5D3AB00D53031 /* Features/Cockpit/Controllers/CoreAIVisionTracker.swift */; };
+		CD6D83B32FD5D3AB00D53031 /* Resources/Models/yolo26n.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B22FD5D3AB00D53031 /* Resources/Models/yolo26n.aimodel */; };
+		CD6D83B52FD5D3AB00D53031 /* Resources/Models/yolo26n-seg.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B42FD5D3AB00D53031 /* Resources/Models/yolo26n-seg.aimodel */; };
+		CD6D83B72FD5D3AB00D53031 /* Resources/Models/yolo26n-obb.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B62FD5D3AB00D53031 /* Resources/Models/yolo26n-obb.aimodel */; };
+		CD6D83C12FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C02FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift */; };
+		CD6D83C32FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartBatteryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C22FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartBatteryBar.swift */; };
+		CD6D83C52FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartRTHBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C42FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartRTHBadge.swift */; };
+		CD6D83D12FD5D3AB00D53031 /* Core/TrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D02FD5D3AB00D53031 /* Core/TrackingMode.swift */; };
+		CD6D83D32FD5D3AB00D53031 /* Features/Cockpit/Controllers/DetectedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D22FD5D3AB00D53031 /* Features/Cockpit/Controllers/DetectedObject.swift */; };
+		CD6D83D52FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D42FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift */; };
+		CD6D83D72FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D62FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift */; };
+		CD6D83D92FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D82FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -63,57 +63,57 @@
 
 /* Begin PBXFileReference section */
 		CD00575629F580970092FAC0 /* KILLERBEES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KILLERBEES.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD00575929F580970092FAC0 /* KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/KILLERBEESApp.swift; sourceTree = "<group>"; };
-		CD00575B29F580970092FAC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/ContentView.swift; sourceTree = "<group>"; };
+		CD00575929F580970092FAC0 /* App/KILLERBEESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/KILLERBEESApp.swift; sourceTree = "<group>"; };
+		CD00575B29F580970092FAC0 /* Features/Connection/Views/ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/ContentView.swift; sourceTree = "<group>"; };
 		CD00575D29F580990092FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KILLERBEES.entitlements; sourceTree = "<group>"; };
 		CD00576129F580990092FAC0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/DroneControlView.swift; sourceTree = "<group>"; };
-		CD35B5B02EDB54280053DDD9 /* DroneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/DroneManager.swift; sourceTree = "<group>"; };
-		CD35B5B12EDB54280053DDD9 /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VideoController.swift; sourceTree = "<group>"; };
-		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoPlayerView.swift; sourceTree = "<group>"; };
-		CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/Drone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoSection.swift; sourceTree = "<group>"; };
-		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD35B5AF2EDB54280053DDD9 /* Features/Cockpit/Views/DroneControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/DroneControlView.swift; sourceTree = "<group>"; };
+		CD35B5B02EDB54280053DDD9 /* Core/DroneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/DroneManager.swift; sourceTree = "<group>"; };
+		CD35B5B12EDB54280053DDD9 /* Features/Cockpit/Controllers/VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VideoController.swift; sourceTree = "<group>"; };
+		CD35B5B22EDB54280053DDD9 /* Features/Cockpit/Views/VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoPlayerView.swift; sourceTree = "<group>"; };
+		CD6D830C2FD5D3AB00D53031 /* Features/Connection/Models/Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/Drone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83102FD5D3AB00D53031 /* Features/Cockpit/Views/VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoSection.swift; sourceTree = "<group>"; };
+		CD6D83142FD5D3AB00D53031 /* Features/Connection/Models/RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D83162FD5D3AB00D53031 /* Features/Connection/Models/DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D831A2FD5D3AB00D53031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/KnownDrone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTopBar.swift; sourceTree = "<group>"; };
-		CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitBottomBar.swift; sourceTree = "<group>"; };
-		CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTelemetryHUD.swift; sourceTree = "<group>"; };
-		CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift; sourceTree = "<group>"; };
-		CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCameraCaptureView.swift; sourceTree = "<group>"; };
-		CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAttitudeIndicator.swift; sourceTree = "<group>"; };
-		CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMiniMap.swift; sourceTree = "<group>"; };
-		CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAlarmBanner.swift; sourceTree = "<group>"; };
-		CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitFlightPlanOverlay.swift; sourceTree = "<group>"; };
-		CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VisionTrackerService.swift; sourceTree = "<group>"; };
-		CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/CoreAIVisionTracker.swift; sourceTree = "<group>"; };
-		CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n.aimodel; sourceTree = "<group>"; };
-		CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-seg.aimodel; sourceTree = "<group>"; };
-		CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-obb.aimodel; sourceTree = "<group>"; };
-		CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
-		CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/HapticFeedback.swift; sourceTree = "<group>"; };
-		CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMissionStatusBar.swift; sourceTree = "<group>"; };
-		CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardHeaderView.swift; sourceTree = "<group>"; };
-		CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardDroneCard.swift; sourceTree = "<group>"; };
-		CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardRemoteCard.swift; sourceTree = "<group>"; };
-		CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardPreflightCard.swift; sourceTree = "<group>"; };
-		CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitZoomControl.swift; sourceTree = "<group>"; };
-		CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitGameVectorBadge.swift; sourceTree = "<group>"; };
-		CD6D83702FD5D3AB00D53031 /* MissionMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/MissionMode.swift; sourceTree = "<group>"; };
-		CD6D83722FD5D3AB00D53031 /* CockpitSurveillanceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSurveillanceBadge.swift; sourceTree = "<group>"; };
-		CD6D83742FD5D3AB00D53031 /* CockpitLeisureBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitLeisureBadge.swift; sourceTree = "<group>"; };
-		CD6D83762FD5D3AB00D53031 /* CockpitCompositionGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCompositionGridView.swift; sourceTree = "<group>"; };
-		CD6D83782FD5D3AB00D53031 /* DashboardMissionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardMissionCard.swift; sourceTree = "<group>"; };
-		CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/SmartRTHAssessment.swift; sourceTree = "<group>"; };
-		CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartBatteryBar.swift; sourceTree = "<group>"; };
-		CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartRTHBadge.swift; sourceTree = "<group>"; };
-		CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TrackingMode.swift; sourceTree = "<group>"; };
-		CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/DetectedObject.swift; sourceTree = "<group>"; };
-		CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/TacticalCornersShape.swift; sourceTree = "<group>"; };
-		CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift; sourceTree = "<group>"; };
-		CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitOrientedBoxView.swift; sourceTree = "<group>"; };
+		CD6D831B2FD5D3AB00D53031 /* Features/Connection/Models/KnownDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/KnownDrone+Identifiable.swift"; sourceTree = "<group>"; };
+		CD6D831D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTopBar.swift; sourceTree = "<group>"; };
+		CD6D831F2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitBottomBar.swift; sourceTree = "<group>"; };
+		CD6D83212FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTelemetryHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTelemetryHUD.swift; sourceTree = "<group>"; };
+		CD6D83232FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift; sourceTree = "<group>"; };
+		CD6D83252FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCameraCaptureView.swift; sourceTree = "<group>"; };
+		CD6D83272FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAttitudeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAttitudeIndicator.swift; sourceTree = "<group>"; };
+		CD6D83292FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMiniMap.swift; sourceTree = "<group>"; };
+		CD6D832B2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAlarmBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAlarmBanner.swift; sourceTree = "<group>"; };
+		CD6D832D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitFlightPlanOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitFlightPlanOverlay.swift; sourceTree = "<group>"; };
+		CD6D83402FD5D3AB00D53031 /* Features/Cockpit/Controllers/VisionTrackerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VisionTrackerService.swift; sourceTree = "<group>"; };
+		CD6D83422FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
+		CD6D83472FD5D3AB00D53031 /* Core/HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/HapticFeedback.swift; sourceTree = "<group>"; };
+		CD6D83492FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMissionStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMissionStatusBar.swift; sourceTree = "<group>"; };
+		CD6D83502FD5D3AB00D53031 /* Features/Connection/Views/DashboardHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardHeaderView.swift; sourceTree = "<group>"; };
+		CD6D83522FD5D3AB00D53031 /* Features/Connection/Views/DashboardDroneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardDroneCard.swift; sourceTree = "<group>"; };
+		CD6D83542FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardRemoteCard.swift; sourceTree = "<group>"; };
+		CD6D83562FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardPreflightCard.swift; sourceTree = "<group>"; };
+		CD6D83602FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitZoomControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitZoomControl.swift; sourceTree = "<group>"; };
+		CD6D83622FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitGameVectorBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitGameVectorBadge.swift; sourceTree = "<group>"; };
+		CD6D83702FD5D3AB00D53031 /* Core/MissionMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/MissionMode.swift; sourceTree = "<group>"; };
+		CD6D83722FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSurveillanceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSurveillanceBadge.swift; sourceTree = "<group>"; };
+		CD6D83742FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitLeisureBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitLeisureBadge.swift; sourceTree = "<group>"; };
+		CD6D83762FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCompositionGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCompositionGridView.swift; sourceTree = "<group>"; };
+		CD6D83782FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardMissionCard.swift; sourceTree = "<group>"; };
+		CD6D83B02FD5D3AB00D53031 /* Features/Cockpit/Controllers/CoreAIVisionTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/CoreAIVisionTracker.swift; sourceTree = "<group>"; };
+		CD6D83B22FD5D3AB00D53031 /* Resources/Models/yolo26n.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n.aimodel; sourceTree = "<group>"; };
+		CD6D83B42FD5D3AB00D53031 /* Resources/Models/yolo26n-seg.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Resources/Models/yolo26n-seg.aimodel"; sourceTree = "<group>"; };
+		CD6D83B62FD5D3AB00D53031 /* Resources/Models/yolo26n-obb.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Resources/Models/yolo26n-obb.aimodel"; sourceTree = "<group>"; };
+		CD6D83C02FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/SmartRTHAssessment.swift; sourceTree = "<group>"; };
+		CD6D83C22FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartBatteryBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartBatteryBar.swift; sourceTree = "<group>"; };
+		CD6D83C42FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartRTHBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartRTHBadge.swift; sourceTree = "<group>"; };
+		CD6D83D02FD5D3AB00D53031 /* Core/TrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TrackingMode.swift; sourceTree = "<group>"; };
+		CD6D83D22FD5D3AB00D53031 /* Features/Cockpit/Controllers/DetectedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/DetectedObject.swift; sourceTree = "<group>"; };
+		CD6D83D42FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/TacticalCornersShape.swift; sourceTree = "<group>"; };
+		CD6D83D62FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift; sourceTree = "<group>"; };
+		CD6D83D82FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitOrientedBoxView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,9 +152,9 @@
 				CD6D83302FD5D3AB00D53031 /* App */,
 				CD6D83312FD5D3AB00D53031 /* Core */,
 				CD6D83322FD5D3AB00D53031 /* Features */,
-				CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */,
-				CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */,
-				CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */,
+				CD6D83B22FD5D3AB00D53031 /* Resources/Models/yolo26n.aimodel */,
+				CD6D83B42FD5D3AB00D53031 /* Resources/Models/yolo26n-seg.aimodel */,
+				CD6D83B62FD5D3AB00D53031 /* Resources/Models/yolo26n-obb.aimodel */,
 				CD00575D29F580990092FAC0 /* Assets.xcassets */,
 				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
 				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
@@ -163,10 +163,18 @@
 			path = KILLERBEES;
 			sourceTree = "<group>";
 		};
+		CD00576029F580990092FAC0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CD00576129F580990092FAC0 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		CD6D83302FD5D3AB00D53031 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				CD00575929F580970092FAC0 /* KILLERBEESApp.swift */,
+				CD00575929F580970092FAC0 /* App/KILLERBEESApp.swift */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -174,11 +182,11 @@
 		CD6D83312FD5D3AB00D53031 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				CD35B5B02EDB54280053DDD9 /* DroneManager.swift */,
-				CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */,
-				CD6D83702FD5D3AB00D53031 /* MissionMode.swift */,
-				CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */,
-				CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */,
+				CD35B5B02EDB54280053DDD9 /* Core/DroneManager.swift */,
+				CD6D83472FD5D3AB00D53031 /* Core/HapticFeedback.swift */,
+				CD6D83702FD5D3AB00D53031 /* Core/MissionMode.swift */,
+				CD6D83C02FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift */,
+				CD6D83D02FD5D3AB00D53031 /* Core/TrackingMode.swift */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -201,30 +209,6 @@
 			name = Connection;
 			sourceTree = "<group>";
 		};
-		CD6D83352FD5D3AB00D53031 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				CD00575B29F580970092FAC0 /* ContentView.swift */,
-				CD6D83502FD5D3AB00D53031 /* DashboardHeaderView.swift */,
-				CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */,
-				CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */,
-				CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */,
-				CD6D83782FD5D3AB00D53031 /* DashboardMissionCard.swift */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
-		CD6D83362FD5D3AB00D53031 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */,
-				CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */,
-				CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */,
-				CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
 		CD6D83342FD5D3AB00D53031 /* Cockpit */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,33 +218,57 @@
 			name = Cockpit;
 			sourceTree = "<group>";
 		};
+		CD6D83352FD5D3AB00D53031 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CD00575B29F580970092FAC0 /* Features/Connection/Views/ContentView.swift */,
+				CD6D83502FD5D3AB00D53031 /* Features/Connection/Views/DashboardHeaderView.swift */,
+				CD6D83522FD5D3AB00D53031 /* Features/Connection/Views/DashboardDroneCard.swift */,
+				CD6D83542FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift */,
+				CD6D83562FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift */,
+				CD6D83782FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		CD6D83362FD5D3AB00D53031 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CD6D830C2FD5D3AB00D53031 /* Features/Connection/Models/Drone+Identifiable.swift */,
+				CD6D83162FD5D3AB00D53031 /* Features/Connection/Models/DiscoveredDrone+Identifiable.swift */,
+				CD6D831B2FD5D3AB00D53031 /* Features/Connection/Models/KnownDrone+Identifiable.swift */,
+				CD6D83142FD5D3AB00D53031 /* Features/Connection/Models/RemoteControl+Identifiable.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		CD6D83372FD5D3AB00D53031 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */,
-				CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */,
-				CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */,
-				CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */,
-				CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */,
-				CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */,
-				CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */,
-				CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */,
-				CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */,
-				CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */,
-				CD6D83102FD5D3AB00D53031 /* VideoSection.swift */,
-				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
-				CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */,
-				CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */,
-				CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */,
-				CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */,
-				CD6D83722FD5D3AB00D53031 /* CockpitSurveillanceBadge.swift */,
-				CD6D83742FD5D3AB00D53031 /* CockpitLeisureBadge.swift */,
-				CD6D83762FD5D3AB00D53031 /* CockpitCompositionGridView.swift */,
-				CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */,
-				CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */,
-				CD6D83D42FD5D3AB00D53031 /* TacticalCornersShape.swift */,
-				CD6D83D62FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift */,
-				CD6D83D82FD5D3AB00D53031 /* CockpitOrientedBoxView.swift */,
+				CD35B5AF2EDB54280053DDD9 /* Features/Cockpit/Views/DroneControlView.swift */,
+				CD6D831D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTopBar.swift */,
+				CD6D83212FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTelemetryHUD.swift */,
+				CD6D83272FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAttitudeIndicator.swift */,
+				CD6D83292FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMiniMap.swift */,
+				CD6D832D2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitFlightPlanOverlay.swift */,
+				CD6D83232FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift */,
+				CD6D83252FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCameraCaptureView.swift */,
+				CD6D832B2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAlarmBanner.swift */,
+				CD6D831F2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitBottomBar.swift */,
+				CD6D83102FD5D3AB00D53031 /* Features/Cockpit/Views/VideoSection.swift */,
+				CD35B5B22EDB54280053DDD9 /* Features/Cockpit/Views/VideoPlayerView.swift */,
+				CD6D83422FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAITrackingOverlay.swift */,
+				CD6D83492FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMissionStatusBar.swift */,
+				CD6D83602FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitZoomControl.swift */,
+				CD6D83622FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitGameVectorBadge.swift */,
+				CD6D83722FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSurveillanceBadge.swift */,
+				CD6D83742FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitLeisureBadge.swift */,
+				CD6D83762FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCompositionGridView.swift */,
+				CD6D83C22FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartBatteryBar.swift */,
+				CD6D83C42FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartRTHBadge.swift */,
+				CD6D83D42FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift */,
+				CD6D83D62FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift */,
+				CD6D83D82FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -268,20 +276,12 @@
 		CD6D83382FD5D3AB00D53031 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
-				CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */,
-				CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */,
-				CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */,
+				CD35B5B12EDB54280053DDD9 /* Features/Cockpit/Controllers/VideoController.swift */,
+				CD6D83402FD5D3AB00D53031 /* Features/Cockpit/Controllers/VisionTrackerService.swift */,
+				CD6D83B02FD5D3AB00D53031 /* Features/Cockpit/Controllers/CoreAIVisionTracker.swift */,
+				CD6D83D22FD5D3AB00D53031 /* Features/Cockpit/Controllers/DetectedObject.swift */,
 			);
 			name = Controllers;
-			sourceTree = "<group>";
-		};
-		CD00576029F580990092FAC0 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				CD00576129F580990092FAC0 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -317,7 +317,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					CD00575529F580970092FAC0 = {
 						CreatedOnToolsVersion = 14.3;
@@ -352,9 +352,9 @@
 			files = (
 				CD00576229F580990092FAC0 /* Preview Assets.xcassets in Resources */,
 				CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */,
-				CD6D83B32FD5D3AB00D53031 /* yolo26n.aimodel in Resources */,
-				CD6D83B52FD5D3AB00D53031 /* yolo26n-seg.aimodel in Resources */,
-				CD6D83B72FD5D3AB00D53031 /* yolo26n-obb.aimodel in Resources */,
+				CD6D83B32FD5D3AB00D53031 /* Resources/Models/yolo26n.aimodel in Resources */,
+				CD6D83B52FD5D3AB00D53031 /* Resources/Models/yolo26n-seg.aimodel in Resources */,
+				CD6D83B72FD5D3AB00D53031 /* Resources/Models/yolo26n-obb.aimodel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,50 +365,50 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */,
-				CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */,
-				CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */,
-				CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */,
-				CD6D831C2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift in Sources */,
-				CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */,
-				CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */,
-				CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */,
-				CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */,
-				CD6D831E2FD5D3AB00D53031 /* CockpitTopBar.swift in Sources */,
-				CD6D83222FD5D3AB00D53031 /* CockpitTelemetryHUD.swift in Sources */,
-				CD6D83282FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift in Sources */,
-				CD6D832A2FD5D3AB00D53031 /* CockpitMiniMap.swift in Sources */,
-				CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */,
-				CD6D83242FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift in Sources */,
-				CD6D83262FD5D3AB00D53031 /* CockpitCameraCaptureView.swift in Sources */,
-				CD6D832C2FD5D3AB00D53031 /* CockpitAlarmBanner.swift in Sources */,
-				CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */,
-				CD00575C29F580970092FAC0 /* ContentView.swift in Sources */,
-				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
-				CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */,
-				CD6D83B12FD5D3AB00D53031 /* CoreAIVisionTracker.swift in Sources */,
-				CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */,
-				CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */,
-				CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */,
-				CD6D83512FD5D3AB00D53031 /* DashboardHeaderView.swift in Sources */,
-				CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */,
-				CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */,
-				CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */,
-				CD6D83612FD5D3AB00D53031 /* CockpitZoomControl.swift in Sources */,
-				CD6D83632FD5D3AB00D53031 /* CockpitGameVectorBadge.swift in Sources */,
-				CD6D83712FD5D3AB00D53031 /* MissionMode.swift in Sources */,
-				CD6D83732FD5D3AB00D53031 /* CockpitSurveillanceBadge.swift in Sources */,
-				CD6D83752FD5D3AB00D53031 /* CockpitLeisureBadge.swift in Sources */,
-				CD6D83772FD5D3AB00D53031 /* CockpitCompositionGridView.swift in Sources */,
-				CD6D83792FD5D3AB00D53031 /* DashboardMissionCard.swift in Sources */,
-				CD6D83C12FD5D3AB00D53031 /* SmartRTHAssessment.swift in Sources */,
-				CD6D83C32FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift in Sources */,
-				CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */,
-				CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */,
-				CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */,
-				CD6D83D52FD5D3AB00D53031 /* TacticalCornersShape.swift in Sources */,
-				CD6D83D72FD5D3AB00D53031 /* CockpitThermalSilhouetteLayer.swift in Sources */,
-				CD6D83D92FD5D3AB00D53031 /* CockpitOrientedBoxView.swift in Sources */,
+				CD35B5B32EDB54280053DDD9 /* Features/Cockpit/Views/VideoPlayerView.swift in Sources */,
+				CD6D830F2FD5D3AB00D53031 /* Features/Connection/Models/Drone+Identifiable.swift in Sources */,
+				CD6D83152FD5D3AB00D53031 /* Features/Connection/Models/RemoteControl+Identifiable.swift in Sources */,
+				CD6D83172FD5D3AB00D53031 /* Features/Connection/Models/DiscoveredDrone+Identifiable.swift in Sources */,
+				CD6D831C2FD5D3AB00D53031 /* Features/Connection/Models/KnownDrone+Identifiable.swift in Sources */,
+				CD35B5B42EDB54280053DDD9 /* Features/Cockpit/Controllers/VideoController.swift in Sources */,
+				CD35B5B52EDB54280053DDD9 /* Features/Cockpit/Views/DroneControlView.swift in Sources */,
+				CD35B5B62EDB54280053DDD9 /* Core/DroneManager.swift in Sources */,
+				CD6D83112FD5D3AB00D53031 /* Features/Cockpit/Views/VideoSection.swift in Sources */,
+				CD6D831E2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTopBar.swift in Sources */,
+				CD6D83222FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitTelemetryHUD.swift in Sources */,
+				CD6D83282FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAttitudeIndicator.swift in Sources */,
+				CD6D832A2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMiniMap.swift in Sources */,
+				CD6D832E2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitFlightPlanOverlay.swift in Sources */,
+				CD6D83242FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift in Sources */,
+				CD6D83262FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCameraCaptureView.swift in Sources */,
+				CD6D832C2FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAlarmBanner.swift in Sources */,
+				CD6D83202FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitBottomBar.swift in Sources */,
+				CD00575C29F580970092FAC0 /* Features/Connection/Views/ContentView.swift in Sources */,
+				CD00575A29F580970092FAC0 /* App/KILLERBEESApp.swift in Sources */,
+				CD6D83412FD5D3AB00D53031 /* Features/Cockpit/Controllers/VisionTrackerService.swift in Sources */,
+				CD6D83B12FD5D3AB00D53031 /* Features/Cockpit/Controllers/CoreAIVisionTracker.swift in Sources */,
+				CD6D83432FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitAITrackingOverlay.swift in Sources */,
+				CD6D83462FD5D3AB00D53031 /* Core/HapticFeedback.swift in Sources */,
+				CD6D83482FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitMissionStatusBar.swift in Sources */,
+				CD6D83512FD5D3AB00D53031 /* Features/Connection/Views/DashboardHeaderView.swift in Sources */,
+				CD6D83532FD5D3AB00D53031 /* Features/Connection/Views/DashboardDroneCard.swift in Sources */,
+				CD6D83552FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift in Sources */,
+				CD6D83572FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift in Sources */,
+				CD6D83612FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitZoomControl.swift in Sources */,
+				CD6D83632FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitGameVectorBadge.swift in Sources */,
+				CD6D83712FD5D3AB00D53031 /* Core/MissionMode.swift in Sources */,
+				CD6D83732FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSurveillanceBadge.swift in Sources */,
+				CD6D83752FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitLeisureBadge.swift in Sources */,
+				CD6D83772FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitCompositionGridView.swift in Sources */,
+				CD6D83792FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift in Sources */,
+				CD6D83C12FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift in Sources */,
+				CD6D83C32FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartBatteryBar.swift in Sources */,
+				CD6D83C52FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitSmartRTHBadge.swift in Sources */,
+				CD6D83D12FD5D3AB00D53031 /* Core/TrackingMode.swift in Sources */,
+				CD6D83D32FD5D3AB00D53031 /* Features/Cockpit/Controllers/DetectedObject.swift in Sources */,
+				CD6D83D52FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift in Sources */,
+				CD6D83D72FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift in Sources */,
+				CD6D83D92FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,11 +547,14 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"KILLERBEES/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KILLERBEES/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -560,17 +563,15 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
-				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = "com.parrot.dronesdk";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = com.parrot.dronesdk;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = "$(inherited) -ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.momolas.KILLERBEES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -594,11 +595,14 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"KILLERBEES/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KILLERBEES/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -607,17 +611,15 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "KILLERBEES utilise le Bluetooth pour communiquer avec le drone et la télécommande.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "KILLERBEES utilise le réseau local pour communiquer avec le drone et la télécommande.";
-				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = "com.parrot.dronesdk";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedExternalAccessoryProtocols = com.parrot.dronesdk;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationLandscapeLeft";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = "$(inherited) -ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.momolas.KILLERBEES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;

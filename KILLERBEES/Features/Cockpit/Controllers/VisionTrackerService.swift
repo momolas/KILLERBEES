@@ -24,7 +24,7 @@ class VisionTrackerService {
     var isTargetLocked: Bool = false
 
     // Mode de Mission Actif
-    var activeMissionMode: MissionMode = .chasse
+    var activeMissionMode: MissionMode = .loisir
 
     // Alertes & Détections Surveillance
     var detectedHumansCount: Int = 0

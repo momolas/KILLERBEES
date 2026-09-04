@@ -56,8 +56,8 @@ class DroneManager {
     var maxZoomLevel: Double = 3.0
 
     // Mode de Mission Actif (Surveillance, Loisir, Chasse)
-    var activeMissionMode: MissionMode = .chasse
-    var isGameTrackingProfileActive: Bool = true
+    var activeMissionMode: MissionMode = .loisir
+    var isGameTrackingProfileActive: Bool = false
     var targetGroundCoordinate: CLLocationCoordinate2D?
 
     // Alertes de Sécurité
