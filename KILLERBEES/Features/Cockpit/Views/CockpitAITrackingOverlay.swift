@@ -373,15 +373,18 @@ struct CockpitAITrackingOverlay: View {
 
     private func colorForLabel(_ label: String) -> Color {
         switch label {
-        case "CIBLE", "CIBLE D'INTÉRÊT", "VOITURE", "CAMION", "BUS", "MOTO", "VÉLO":
+        case "VOITURE", "CAMION", "BUS", "MOTO", "VÉLO", "TRAIN", "HÉLICOPTÈRE", "VÉHICULE", "CAMION / BUS", "CIBLE", "CIBLE D'INTÉRÊT":
             return .cyan
+        case "BATEAU", "AVION":
+            return .mint
         case "HUMAIN":
             return .green
         case "CHIEN", "CHAT", "CHEVAL", "ANIMAL":
             return .yellow
-        case "BATEAU", "AVION":
-            return .mint
         default:
+            if label.contains("🐾") || label.contains("🦌") || label.contains("🐗") || label.contains("🦊") || label.contains("🐺") || label.contains("🦆") || label.contains("🐻") || label.contains("🐕") || label.contains("🐈") || label.contains("🐎") || label.contains("🐄") || label.contains("🐑") || label.contains("🐐") || label.contains("🦫") || label.contains("🐇") || label.contains("🐘") || label.contains("🦓") || label.contains("🦒") {
+                return .yellow
+            }
             return .green
         }
     }

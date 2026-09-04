@@ -190,9 +190,9 @@ class VisionTrackerService {
             // Priorité 1 : Moteur YOLO Core AI Segmentation (Masque thermique + Silhouette)
             if let tracker = coreAISegTracker, tracker.isModelReady {
                 let (objects, mask, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
-                if !objects.isEmpty {
+                let enriched = enrichDetectedObjects(objects, in: cgImage)
+                if !enriched.isEmpty {
                     self.segmentationMaskImage = mask
-                    let enriched = enrichDetectedObjects(objects, in: cgImage)
                     self.detectedObjects = enriched
                     updateSurveillanceTelemetry(with: enriched)
                     return
@@ -202,9 +202,9 @@ class VisionTrackerService {
             // Priorité 2 : Moteur YOLO Core AI OBB (Boîtes Orientées)
             if let tracker = coreAIOBBTracker, tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
-                if !objects.isEmpty {
+                let enriched = enrichDetectedObjects(objects, in: cgImage)
+                if !enriched.isEmpty {
                     self.segmentationMaskImage = nil
-                    let enriched = enrichDetectedObjects(objects, in: cgImage)
                     self.detectedObjects = enriched
                     updateSurveillanceTelemetry(with: enriched)
                     return
@@ -214,9 +214,9 @@ class VisionTrackerService {
             // Priorité 3 : Moteur YOLO Core AI Détection Standard
             if let tracker = coreAIDetectTracker, tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
-                if !objects.isEmpty {
+                let enriched = enrichDetectedObjects(objects, in: cgImage)
+                if !enriched.isEmpty {
                     self.segmentationMaskImage = nil
-                    let enriched = enrichDetectedObjects(objects, in: cgImage)
                     self.detectedObjects = enriched
                     updateSurveillanceTelemetry(with: enriched)
                     return
@@ -230,54 +230,60 @@ class VisionTrackerService {
         detectObjectsWithAppleVision(in: cgImage)
     }
 
+    /// Filtre strictement et enrichit les détections : UNIQUEMENT personnes, véhicules et animaux
     private func enrichDetectedObjects(_ rawObjects: [DetectedObject], in cgImage: CGImage) -> [DetectedObject] {
         var enriched: [DetectedObject] = []
 
         for (index, obj) in rawObjects.enumerated() {
             let swiftUIBox = obj.box
-            var label = obj.label.uppercased()
-            var conf = obj.confidence
             let clsLower = obj.label.lowercased()
+            var conf = obj.confidence
+            var finalLabel: String?
+            var isAnimal = false
 
-            if clsLower == "person" {
-                label = "HUMAIN"
-            } else if ["car", "truck", "bus", "motorcycle", "bicycle"].contains(clsLower) {
-                label = "VÉHICULE"
-            } else if ["dog", "cat", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "bird"].contains(clsLower) {
+            // Catégorie 1 : PERSONNES
+            if clsLower == "person" || clsLower == "humain" {
+                finalLabel = "HUMAIN"
+            }
+            // Catégorie 2 : VÉHICULES (COCO + DOTAv1 OBB)
+            else if let vehicleLabel = mapYOLOToVehicle(clsLower) {
+                finalLabel = vehicleLabel
+            }
+            // Catégorie 3 : ANIMAUX (COCO + Taxonomie faune sauvage)
+            else if let animalLabel = mapYOLOToAnimal(clsLower) {
+                isAnimal = true
                 let visionBox = convertSwiftUIRectToVision(swiftUIBox)
                 if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
-                    label = "\(species.icon) \(species.label)"
+                    finalLabel = "\(species.icon) \(species.label)"
                     conf = max(conf, species.confidence)
                 } else {
-                    switch clsLower {
-                    case "dog": label = "🐾 CANIDÉ"
-                    case "cat": label = "🐾 FÉLIN"
-                    case "horse": label = "🐎 ÉQUIDÉ"
-                    case "cow": label = "🐄 BOVIN"
-                    case "sheep": label = "🐑 MOUTON"
-                    case "bird": label = "🦆 OISEAU / GIBIER"
-                    case "bear": label = "🐻 OURS"
-                    default: label = "🐾 GIBIER"
-                    }
-                }
-
-                // En mode chasse : cap instantané issu de l'axe tête-queue OBB dès la 1ère image
-                if activeMissionMode == .chasse && index == 0 && lockedTargetBox == nil, let angleRad = obj.orientedAngleRad {
-                    let headingDeg = Double((angleRad * 180.0 / .pi + 360.0).truncatingRemainder(dividingBy: 360.0))
-                    self.targetHeadingDeg = headingDeg
-                    self.targetBearingCardinal = cardinalDirection(from: headingDeg)
+                    finalLabel = animalLabel
                 }
             } else if activeMissionMode == .chasse {
+                // Tentative d'identification d'espèce faune si le label brut n'était pas standard
                 let visionBox = convertSwiftUIRectToVision(swiftUIBox)
                 if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
-                    label = "\(species.icon) \(species.label)"
+                    isAnimal = true
+                    finalLabel = "\(species.icon) \(species.label)"
                     conf = max(conf, species.confidence)
                 }
             }
 
+            // Filtrage strict : tout objet n'appartenant pas aux 3 catégories autorisées est ignoré
+            guard let validLabel = finalLabel else {
+                continue
+            }
+
+            // En mode chasse : cap instantané issu de l'axe tête-queue OBB dès la 1ère image pour le gibier
+            if isAnimal && activeMissionMode == .chasse && index == 0 && lockedTargetBox == nil, let angleRad = obj.orientedAngleRad {
+                let headingDeg = Double((angleRad * 180.0 / .pi + 360.0).truncatingRemainder(dividingBy: 360.0))
+                self.targetHeadingDeg = headingDeg
+                self.targetBearingCardinal = cardinalDirection(from: headingDeg)
+            }
+
             enriched.append(DetectedObject(
                 box: swiftUIBox,
-                label: label,
+                label: validLabel,
                 confidence: conf,
                 orientedAngleRad: obj.orientedAngleRad,
                 orientedCorners: obj.orientedCorners,
@@ -286,6 +292,45 @@ class VisionTrackerService {
         }
 
         return enriched
+    }
+
+    private func mapYOLOToVehicle(_ label: String) -> String? {
+        switch label {
+        // COCO (yolo26n, yolo26n-seg)
+        case "car": return "VOITURE"
+        case "truck": return "CAMION"
+        case "bus": return "BUS"
+        case "motorcycle": return "MOTO"
+        case "bicycle": return "VÉLO"
+        case "airplane": return "AVION"
+        case "boat": return "BATEAU"
+        case "train": return "TRAIN"
+        // DOTAv1 (yolo26n-obb)
+        case "plane": return "AVION"
+        case "ship": return "BATEAU"
+        case "large vehicle": return "CAMION / BUS"
+        case "small vehicle": return "VOITURE"
+        case "helicopter": return "HÉLICOPTÈRE"
+        default:
+            return nil
+        }
+    }
+
+    private func mapYOLOToAnimal(_ label: String) -> String? {
+        switch label {
+        case "dog": return "🐾 CANIDÉ"
+        case "cat": return "🐾 FÉLIN"
+        case "horse": return "🐎 ÉQUIDÉ"
+        case "cow": return "🐄 BOVIN"
+        case "sheep": return "🐑 MOUTON"
+        case "bird": return "🦆 OISEAU / GIBIER"
+        case "bear": return "🐻 OURS"
+        case "elephant": return "🐘 ÉLÉPHANT"
+        case "zebra": return "🦓 ZÈBRE"
+        case "giraffe": return "🦒 GIRAFE"
+        default:
+            return nil
+        }
     }
 
     // MARK: - Calcul Mathématique OBB (Analyse d'Inertie des Moments de Silhouette)
@@ -375,73 +420,58 @@ class VisionTrackerService {
         var newObjects: [DetectedObject] = []
         var requestsToPerform: [VNRequest] = []
 
-        // 1. Requête Silhouettes Humaines (Prioritaire en Surveillance)
-        if activeMissionMode == .surveillance || activeMissionMode == .chasse {
-            let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
-                guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
-                for human in results where human.confidence > 0.4 {
-                    let box = self.convertVisionRectToSwiftUI(human.boundingBox)
-                    newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
-                }
+        // 1. Requête Silhouettes Humaines (Catégorie Personnes - Tous modes)
+        let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
+            guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
+            for human in results where human.confidence > 0.4 {
+                let box = self.convertVisionRectToSwiftUI(human.boundingBox)
+                newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
             }
-            humanRequest.upperBodyOnly = false
-            configureComputeDevices(for: humanRequest)
-            requestsToPerform.append(humanRequest)
         }
+        humanRequest.upperBodyOnly = false
+        configureComputeDevices(for: humanRequest)
+        requestsToPerform.append(humanRequest)
 
-        // 2. Requête Animaux (Prioritaire en Chasse & Traque)
-        if activeMissionMode == .chasse || activeMissionMode == .loisir {
-            let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
-                guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
-                for animal in results where animal.confidence > 0.35 {
-                    let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
-                    var label = "🐾 GIBIER"
-                    var conf = animal.confidence
+        // 2. Requête Animaux (Catégorie Animaux - Tous modes)
+        let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
+            guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
+            for animal in results where animal.confidence > 0.35 {
+                let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
+                var label = "🐾 GIBIER"
+                var conf = animal.confidence
 
-                    // Classification taxonomique précise de l'espèce
-                    if let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: animal.boundingBox) {
-                        label = "\(species.icon) \(species.label)"
-                        conf = max(conf, species.confidence)
-                    } else {
-                        let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
-                        if topLabel == "dog" {
-                            label = "🐾 QUADRUPÈDE"
-                        } else if topLabel == "cat" {
-                            label = "🐾 FÉLIN"
-                        }
+                // Classification taxonomique précise de l'espèce
+                if let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: animal.boundingBox) {
+                    label = "\(species.icon) \(species.label)"
+                    conf = max(conf, species.confidence)
+                } else {
+                    let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
+                    if topLabel == "dog" {
+                        label = "🐾 CANIDÉ"
+                    } else if topLabel == "cat" {
+                        label = "🐾 FÉLIN"
                     }
-                    newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
                 }
+                newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
             }
-            configureComputeDevices(for: animalRequest)
-            requestsToPerform.append(animalRequest)
         }
+        configureComputeDevices(for: animalRequest)
+        requestsToPerform.append(animalRequest)
 
-        // 3. Détection de Saillance / Cibles d'Intérêt (Tous modes)
+        // 3. Détection par Saillance Filtrée (Candidats Véhicules / Personnes / Animaux)
         let saliencyRequest = VNGenerateObjectnessBasedSaliencyImageRequest { [weak self] request, error in
             guard let self, error == nil,
                   let result = (request.results as? [VNSaliencyImageObservation])?.first,
                   let salientObjects = result.salientObjects else { return }
 
-            let defaultLabel: String
-            switch self.activeMissionMode {
-            case .surveillance: defaultLabel = "INTRUSION"
-            case .chasse: defaultLabel = "GIBIER"
-            case .loisir: defaultLabel = "SUJET"
-            }
-
             for salient in salientObjects where salient.confidence > 0.5 {
                 let box = self.convertVisionRectToSwiftUI(salient.boundingBox)
                 let alreadyCovered = newObjects.contains { $0.box.intersects(box) }
                 if !alreadyCovered && box.width > 0.06 && box.height > 0.06 {
-                    var label = defaultLabel
-                    var conf = salient.confidence
-                    if self.activeMissionMode == .chasse,
-                       let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: salient.boundingBox) {
-                        label = "\(species.icon) \(species.label)"
-                        conf = max(conf, species.confidence)
+                    // Vérification stricte : le candidat saillant DOIT être classifié comme personne, véhicule ou animal
+                    if let classified = self.classifySalientTarget(in: cgImage, visionRect: salient.boundingBox) {
+                        newObjects.append(DetectedObject(box: box, label: classified.label, confidence: max(salient.confidence, classified.confidence)))
                     }
-                    newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
                 }
             }
         }
@@ -775,6 +805,91 @@ class VisionTrackerService {
         return nil
     }
 
+    /// Classification d'un objet saillant : n'accepte QUE les personnes, les véhicules et les animaux
+    private func classifySalientTarget(
+        in cgImage: CGImage,
+        visionRect: CGRect
+    ) -> (label: String, confidence: Float)? {
+        guard visionRect.width > 0.02, visionRect.height > 0.02 else { return nil }
+
+        let originX = max(0.0, visionRect.origin.x - 0.02)
+        let originY = max(0.0, visionRect.origin.y - 0.02)
+        let width = min(1.0 - originX, visionRect.width + 0.04)
+        let height = min(1.0 - originY, visionRect.height + 0.04)
+
+        guard width > 0.02, height > 0.02 else { return nil }
+
+        let classifyRequest = VNClassifyImageRequest()
+        classifyRequest.regionOfInterest = CGRect(x: originX, y: originY, width: width, height: height)
+        configureComputeDevices(for: classifyRequest)
+
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([classifyRequest])
+            guard let observations = classifyRequest.results else { return nil }
+
+            for obs in observations where obs.confidence > 0.12 {
+                let id = obs.identifier.lowercased()
+
+                // 1. Personne
+                if isPersonIdentifier(id) {
+                    return ("HUMAIN", obs.confidence)
+                }
+
+                // 2. Véhicule
+                if let vehicleLabel = mapClassifierToVehicle(id) {
+                    return (vehicleLabel, obs.confidence)
+                }
+
+                // 3. Animal
+                if let animalMatch = mapToWildlifeTaxon(obs.identifier) {
+                    return ("\(animalMatch.icon) \(animalMatch.label)", obs.confidence)
+                }
+            }
+        } catch {
+            return nil
+        }
+        return nil
+    }
+
+    private func isPersonIdentifier(_ id: String) -> Bool {
+        id == "person" || id == "human" || id.contains("pedestrian") || id == "man" || id == "woman" || id == "child" || id.hasPrefix("person_")
+    }
+
+    private func mapClassifierToVehicle(_ id: String) -> String? {
+        if id.contains("car") || id.contains("automobile") || id.contains("sedan") || id.contains("coupe") || id.contains("suv") || id.contains("cab") || id.contains("taxi") {
+            return "VOITURE"
+        }
+        if id.contains("truck") || id.contains("pickup") || id.contains("trailer") || id.contains("lorry") {
+            return "CAMION"
+        }
+        if id.contains("bus") || id.contains("minibus") {
+            return "BUS"
+        }
+        if id.contains("motorcycle") || id.contains("motorbike") || id.contains("scooter") || id.contains("moped") {
+            return "MOTO"
+        }
+        if id.contains("bicycle") || id.contains("bike") || id.contains("tandem") {
+            return "VÉLO"
+        }
+        if id.contains("airplane") || id.contains("aircraft") || id.contains("plane") || id.contains("airliner") {
+            return "AVION"
+        }
+        if id.contains("helicopter") || id.contains("rotorcraft") {
+            return "HÉLICOPTÈRE"
+        }
+        if id.contains("boat") || id.contains("ship") || id.contains("yacht") || id.contains("vessel") || id.contains("canoe") || id.contains("kayak") {
+            return "BATEAU"
+        }
+        if id.contains("train") || id.contains("locomotive") || id.contains("tram") || id.contains("subway") {
+            return "TRAIN"
+        }
+        if id.contains("vehicle") || id.contains("van") {
+            return "VÉHICULE"
+        }
+        return nil
+    }
+
     private func mapToWildlifeTaxon(_ identifier: String) -> (label: String, icon: String)? {
         let id = identifier.lowercased()
 
@@ -841,6 +956,19 @@ class VisionTrackerService {
         // 16. Caprins
         if id == "goat" {
             return ("CHÈVRE", "🐐")
+        }
+        // 17. Éléphants, Zèbres, Girafes et autres animaux
+        if id == "elephant" {
+            return ("ÉLÉPHANT", "🐘")
+        }
+        if id == "zebra" {
+            return ("ZÈBRE", "🦓")
+        }
+        if id == "giraffe" {
+            return ("GIRAFE", "🦒")
+        }
+        if id.contains("animal") || id.contains("fauna") || id.contains("wildlife") {
+            return ("ANIMAL", "🐾")
         }
 
         return nil
