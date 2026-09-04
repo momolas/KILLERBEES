@@ -3,8 +3,9 @@
 //  KILLERBEES
 //
 //  Created by Jules
-//  Framework 100% Natif Apple Vision (https://developer.apple.com/documentation/vision)
-//  Optimisé pour .cpuAndNeuralEngine (Apple Neural Engine + CPU)
+//  Pipeline Hybride de Vision par Ordinateur : Apple Core AI (YOLO / ANE) & Apple Vision
+//  Filtrage strict des détections : Personnes, Véhicules et Animaux uniquement
+//  Accélération matérielle .cpuAndNeuralEngine pour un rendu cockpit 60 FPS sans saccade
 //
 
 import CoreGraphics
@@ -233,9 +234,10 @@ class VisionTrackerService {
         }
         #endif
 
-        // Priorité 4 : Repli sur Apple Vision (100% Apple natif)
+        // Aucun objet détecté par Core AI
         self.segmentationMaskImage = nil
-        detectObjectsWithAppleVision(in: cgImage)
+        self.detectedObjects = []
+        updateSurveillanceTelemetry(with: [])
     }
 
     /// Filtre strictement et enrichit les détections : UNIQUEMENT personnes, véhicules et animaux
@@ -422,78 +424,6 @@ class VisionTrackerService {
             CGPoint(x: box.minX, y: box.maxY)
         ]
         return (0.0, corners)
-    }
-
-    private func detectObjectsWithAppleVision(in cgImage: CGImage) {
-        var newObjects: [DetectedObject] = []
-        var requestsToPerform: [VNRequest] = []
-
-        // 1. Requête Silhouettes Humaines (Catégorie Personnes - Tous modes)
-        let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
-            guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
-            for human in results where human.confidence > 0.4 {
-                let box = self.convertVisionRectToSwiftUI(human.boundingBox)
-                newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
-            }
-        }
-        humanRequest.upperBodyOnly = false
-        configureComputeDevices(for: humanRequest)
-        requestsToPerform.append(humanRequest)
-
-        // 2. Requête Animaux (Catégorie Animaux - Tous modes)
-        let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
-            guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
-            for animal in results where animal.confidence > 0.35 {
-                let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
-                var label = "🐾 GIBIER"
-                var conf = animal.confidence
-
-                // Classification taxonomique précise de l'espèce
-                if let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: animal.boundingBox) {
-                    label = "\(species.icon) \(species.label)"
-                    conf = max(conf, species.confidence)
-                } else {
-                    let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
-                    if topLabel == "dog" {
-                        label = "🐾 CANIDÉ"
-                    } else if topLabel == "cat" {
-                        label = "🐾 FÉLIN"
-                    }
-                }
-                newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
-            }
-        }
-        configureComputeDevices(for: animalRequest)
-        requestsToPerform.append(animalRequest)
-
-        // 3. Détection par Saillance Filtrée (Candidats Véhicules / Personnes / Animaux)
-        let saliencyRequest = VNGenerateObjectnessBasedSaliencyImageRequest { [weak self] request, error in
-            guard let self, error == nil,
-                  let result = (request.results as? [VNSaliencyImageObservation])?.first,
-                  let salientObjects = result.salientObjects else { return }
-
-            for salient in salientObjects where salient.confidence > 0.5 {
-                let box = self.convertVisionRectToSwiftUI(salient.boundingBox)
-                let alreadyCovered = newObjects.contains { $0.box.intersects(box) }
-                if !alreadyCovered && box.width > 0.06 && box.height > 0.06 {
-                    // Vérification stricte : le candidat saillant DOIT être classifié comme personne, véhicule ou animal
-                    if let classified = self.classifySalientTarget(in: cgImage, visionRect: salient.boundingBox) {
-                        newObjects.append(DetectedObject(box: box, label: classified.label, confidence: max(salient.confidence, classified.confidence)))
-                    }
-                }
-            }
-        }
-        configureComputeDevices(for: saliencyRequest)
-        requestsToPerform.append(saliencyRequest)
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        do {
-            try handler.perform(requestsToPerform)
-            self.detectedObjects = newObjects
-            updateSurveillanceTelemetry(with: newObjects)
-        } catch {
-            print("Erreur analyse Apple Vision : \(error)")
-        }
     }
 
     private func updateSurveillanceTelemetry(with objects: [DetectedObject]) {
@@ -809,91 +739,6 @@ class VisionTrackerService {
             }
         } catch {
             return nil
-        }
-        return nil
-    }
-
-    /// Classification d'un objet saillant : n'accepte QUE les personnes, les véhicules et les animaux
-    private func classifySalientTarget(
-        in cgImage: CGImage,
-        visionRect: CGRect
-    ) -> (label: String, confidence: Float)? {
-        guard visionRect.width > 0.02, visionRect.height > 0.02 else { return nil }
-
-        let originX = max(0.0, visionRect.origin.x - 0.02)
-        let originY = max(0.0, visionRect.origin.y - 0.02)
-        let width = min(1.0 - originX, visionRect.width + 0.04)
-        let height = min(1.0 - originY, visionRect.height + 0.04)
-
-        guard width > 0.02, height > 0.02 else { return nil }
-
-        let classifyRequest = VNClassifyImageRequest()
-        classifyRequest.regionOfInterest = CGRect(x: originX, y: originY, width: width, height: height)
-        configureComputeDevices(for: classifyRequest)
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        do {
-            try handler.perform([classifyRequest])
-            guard let observations = classifyRequest.results else { return nil }
-
-            for obs in observations where obs.confidence > 0.12 {
-                let id = obs.identifier.lowercased()
-
-                // 1. Personne
-                if isPersonIdentifier(id) {
-                    return ("HUMAIN", obs.confidence)
-                }
-
-                // 2. Véhicule
-                if let vehicleLabel = mapClassifierToVehicle(id) {
-                    return (vehicleLabel, obs.confidence)
-                }
-
-                // 3. Animal
-                if let animalMatch = mapToWildlifeTaxon(obs.identifier) {
-                    return ("\(animalMatch.icon) \(animalMatch.label)", obs.confidence)
-                }
-            }
-        } catch {
-            return nil
-        }
-        return nil
-    }
-
-    private func isPersonIdentifier(_ id: String) -> Bool {
-        id == "person" || id == "human" || id.contains("pedestrian") || id == "man" || id == "woman" || id == "child" || id.hasPrefix("person_")
-    }
-
-    private func mapClassifierToVehicle(_ id: String) -> String? {
-        if id.contains("car") || id.contains("automobile") || id.contains("sedan") || id.contains("coupe") || id.contains("suv") || id.contains("cab") || id.contains("taxi") {
-            return "VOITURE"
-        }
-        if id.contains("truck") || id.contains("pickup") || id.contains("trailer") || id.contains("lorry") {
-            return "CAMION"
-        }
-        if id.contains("bus") || id.contains("minibus") {
-            return "BUS"
-        }
-        if id.contains("motorcycle") || id.contains("motorbike") || id.contains("scooter") || id.contains("moped") {
-            return "MOTO"
-        }
-        if id.contains("bicycle") || id.contains("bike") || id.contains("tandem") {
-            return "VÉLO"
-        }
-        if id.contains("airplane") || id.contains("aircraft") || id.contains("plane") || id.contains("airliner") {
-            return "AVION"
-        }
-        if id.contains("helicopter") || id.contains("rotorcraft") {
-            return "HÉLICOPTÈRE"
-        }
-        if id.contains("boat") || id.contains("ship") || id.contains("yacht") || id.contains("vessel") || id.contains("canoe") || id.contains("kayak") {
-            return "BATEAU"
-        }
-        if id.contains("train") || id.contains("locomotive") || id.contains("tram") || id.contains("subway") {
-            return "TRAIN"
-        }
-        if id.contains("vehicle") || id.contains("van") {
-            return "VÉHICULE"
         }
         return nil
     }

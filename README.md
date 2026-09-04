@@ -1,56 +1,118 @@
 # KILLERBEES
 
-KILLERBEES est une application iOS développée en SwiftUI permettant de détecter, connecter et contrôler des drones Parrot via le **GroundSdk** et **Swift Package Manager**.
+KILLERBEES est une station de contrôle tactique et de télémétrie iOS moderne pour drones Parrot (Anafi et compatibles), développée en SwiftUI et propulsée par un moteur de vision par ordinateur haute performance **Apple Core AI (Neural Engine / GPU)**.
 
-## 🚀 Fonctionnalités
+L'application intègre un suivi dynamique de cibles à haute fréquence, une segmentation de silhouette thermique, une détection de boîtes orientées (OBB), ainsi qu'une interface HUD militaire et cinématographique adaptée à différents profils de mission.
 
-- **Scan automatique** des drones à proximité.
-- **Connexion sécurisée** et gestion réactive du cycle de vie des drones.
-- **Streaming vidéo** en temps réel avec HUD via `UIViewRepresentable`.
-- **Pilotage** basique (Décollage / Atterrissage / Arrêt d'urgence).
-- **Interface Moderne** utilisant SwiftUI, `@Observable`, `@State` et `NavigationStack`.
-- **Accessibilité VoiceOver** intégrée sur les indicateurs et contrôles.
+---
 
-## 🛠 Architecture
+## 🎯 Reconnaissance Ciblée (3 Catégories Strictes)
 
-Le projet suit une architecture **MVVM** (Model-View-ViewModel) modulaire et réactive :
+Le système d'intelligence artificielle est configuré pour filtrer et n'accepter strictement que **trois catégories de cibles** (tous les autres objets, éléments de décor ou faux positifs sont automatiquement rejetés) :
 
-- **Models** : Objets et protocoles `Drone` / `DeviceState` fournis par GroundSdk.
-- **ViewModels** :
-  - `DroneManager` : Gère la découverte, la connexion et les ordres de vol.
-  - `VideoController` : Gère le flux vidéo live et le serveur de stream.
-- **Views** :
-  - `ContentView` : Liste réactive des drones détectés avec statut de connexion.
-  - `DroneRow` : Ligne d'affichage accessible pour chaque drone.
-  - `DroneControlView` : Écran principal de pilotage et de streaming.
-  - `VideoSection` / `VideoPlayerView` : Rendu du stream vidéo matériel.
-  - `ControlButtonsSection` : Boutons d'action contextuels (Décollage / Atterrissage).
+1. **👤 Personnes** :
+   - Détection des silhouettes humaines (`HUMAIN`) via YOLO COCO.
+   - Comptage en direct et alertes d'intrusion en mode Surveillance.
+
+2. **🚗 Véhicules** :
+   - Véhicules terrestres (`VOITURE`, `CAMION`, `BUS`, `MOTO`, `VÉLO`, `TRAIN`).
+   - Véhicules aériens et maritimes (`AVION`, `HÉLICOPTÈRE`, `BATEAU`).
+   - Détection de boîtes orientées (OBB) via `yolo26n-obb` (DOTAv1) et détection standard 2D via `yolo26n` (COCO).
+
+3. **🐾 Animaux & Gibier** :
+   - Animaux domestiques et sauvages (`CANIDÉ`, `FÉLIN`, `ÉQUIDÉ`, `BOVIN`, `MOUTON`, `GIBIER`, etc.).
+   - Classification taxonomique précise de la faune (sanglier, cerf, chevreuil, renard, loup, lièvre, oiseau/gibier, etc.).
+   - Calcul instantané du vecteur de fuite (cap en degrés, direction cardinale, vitesse estimée).
+
+---
+
+## 🚀 Fonctionnalités Clés
+
+### 🧠 Moteur d'Inférence 100% Core AI (Apple Neural Engine / GPU)
+- **Inférence Apple Silicon ANE (Apple Neural Engine)** :
+  - `yolo26n-seg.aimodel` : Segmentation d'instances avec masque thermique fluo en temps réel accéléré par `Accelerate` (`vDSP_vsma`).
+  - `yolo26n-obb.aimodel` : Boîtes englobantes orientées (OBB) avec calcul trigonométrique de l'axe et du cap de la cible.
+  - `yolo26n.aimodel` : Détection 2D ultra-rapide à faible latence.
+- **Verrouillage Tactique & Aimantation Magnétique (*Magnetic Snap*)** :
+  - Accrochage tactile au toucher direct ou aimantation automatique vers la cible la plus proche.
+  - Tracé manuel de zone d'intérêt par glissement (*drag-to-select*).
+  - Modes de suivi : **LOOK-AT** (cadrage dynamique par la nacelle) et **FOLLOW-ME** (poursuite dynamique du drone).
+  - Ré-accrochage intelligent automatique en cas de décrochage optique bref via Core AI.
+
+### 🎮 Cockpit HUD Tactique & Profils de Mission
+L'interface s'adapte en temps réel selon le mode de mission sélectionné :
+- **Mode Chasse** : Badge cinématique avec cap azimutal, vitesse du gibier en km/h, icône de l'espèce identifiée et profil de vol réactif (lacet à 120°/s).
+- **Mode Surveillance** : Détection d'intrusions, décompte des personnes, bouton de capture de preuve photo instantanée horodatée avec coordonnées GPS.
+- **Mode Loisir** : Profil cinématique 4K avec lacet doux (25°/s sans saccade) et grille des tiers 3x3 pour le cadrage photographique.
+- **Télémétrie Complète** : Niveaux de batterie (drone et SkyController), indicateurs GPS et satellites, qualité du lien radio, état FCC, RTH (Return-To-Home), bannières d'alarmes critiques et mini-carte satellite tactique avec ligne de visée.
+
+---
+
+## 🛠 Architecture & Stack Technique
+
+Le projet repose sur une architecture **MVVM** moderne et réactive, conforme aux règles strictes de concurrence Swift :
+
+```text
+KILLERBEES/
+├── Core/
+│   ├── DroneManager.swift          # Pilotage GroundSdk, profil de vol, télémétrie
+│   └── MissionMode.swift           # Définition des profils de vol et modes de mission
+├── Features/
+│   ├── Connection/                 # Découverte et appairage des drones
+│   │   ├── Views/ContentView.swift
+│   │   └── Views/DroneRow.swift
+│   └── Cockpit/                    # Station de pilotage HUD et vision IA
+│       ├── Controllers/
+│       │   ├── CoreAIVisionTracker.swift   # Moteur YOLO natif Core AI & Accelerate
+│       │   ├── VisionTrackerService.swift  # Pipeline IA, filtrage 3 catégories, tracking optique
+│       │   └── VideoController.swift       # Décodage et rendu du flux vidéo
+│       └── Views/
+│           ├── DroneControlView.swift         # Écran cockpit principal
+│           ├── CockpitAITrackingOverlay.swift # Réticules tactiques, boîtes OBB, masque thermique
+│           ├── CockpitTopBar.swift            # Barre d'état télémétrique
+│           ├── CockpitGameVectorBadge.swift   # Télémétrie gibier (cap, vitesse, espèce)
+│           ├── CockpitSurveillanceBadge.swift # Télémétrie sécurité & capture preuve
+│           ├── CockpitLeisureBadge.swift      # Outils cinématographiques & grille
+│           └── CockpitMiniMap.swift           # Mini-carte satellite avec ligne de visée
+└── Resources/
+    └── Models/                     # Modèles compilés .aimodel (YOLO Core AI)
+```
+
+---
 
 ## 📱 Prérequis
 
 - **Xcode 16.0+**
-- **iOS 26.0+**
-- **Swift 6.2+**
+- **iOS 26.0+** (cible recommandée : iOS 27.0+ pour Apple Core AI)
+- **Swift 6.2+** (concurrence stricte, `@Observable @MainActor`)
+- Appareil équipé d'une puce Apple Silicon (A16 Bionic ou ultérieure pour l'accélération ANE)
+
+---
 
 ## 📦 Installation & Dépendances
 
-Le projet utilise **Swift Package Manager (SPM)** pour ses dépendances :
+Le projet utilise **Swift Package Manager (SPM)** pour ses dépendances SDK :
 
-- [ParrotSDK (SPM)](https://github.com/momolas/ParrotSDK.git) fournissant `GroundSdk`, `ArsdkEngine` et `SdkCore`.
+- [ParrotSDK (SPM)](https://github.com/momolas/ParrotSDK.git) : Fournit `GroundSdk`, `ArsdkEngine` et `SdkCore`.
+- [SwiftProtobuf](https://github.com/apple/swift-protobuf.git) : Sérialisation des messages protocolaires.
 
-Pour ouvrir et lancer le projet :
-1. Clonez ce dépôt.
-2. Ouvrez `KILLERBEES.xcodeproj` directement dans Xcode.
-3. Les dépendances Swift Package Manager se résoudront automatiquement.
-4. Sélectionnez votre destination (Simulateur ou appareil iOS) et lancez l'application (`Cmd + R`).
+### Lancement du projet :
+1. Clonez le dépôt.
+2. Ouvrez `KILLERBEES.xcodeproj` dans Xcode.
+3. Attendez la résolution automatique des paquets SPM.
+4. Sélectionnez la cible de destination (**Appareil iOS** pour les vols réels avec GroundSdk) et compilez (`Cmd + B`).
 
-## ⚠️ Permissions requises
+---
 
-L'application utilise le Wi-Fi et le Bluetooth pour communiquer avec les drones. Assurez-vous que les permissions suivantes sont configurées pour les tests sur appareil réel :
-- **Local Network Usage Description** (`NSLocalNetworkUsageDescription`)
-- **Bluetooth Always Usage Description** (`NSBluetoothAlwaysUsageDescription`)
+## ⚠️ Permissions Requises
+
+- **Réseau Local** (`NSLocalNetworkUsageDescription`) : Communication Wi-Fi avec le point d'accès du drone Anafi ou du SkyController.
+- **Bluetooth** (`NSBluetoothAlwaysUsageDescription`) : Détection et appairage direct à faible latence.
+- **Appareil Photo / Photothèque** (`NSPhotoLibraryAddUsageDescription`) : Enregistrement des captures de vol et preuves géolocalisées.
+- **Localisation** (`NSLocationWhenInUseUsageDescription`) : Positionnement GPS de la station sol pour le calcul de distance relative et le Return-To-Home (RTH).
+
+---
 
 ## 👨‍💻 Auteurs & Maintenance
 
-Projet développé et maintenu par l'équipe KILLERBEES.
-Architecture et modernisation SwiftUI / SPM par Jules.
+Développé et maintenu par l'équipe **KILLERBEES**. Architecture moderne Swift & intégration Core AI par Jules.
