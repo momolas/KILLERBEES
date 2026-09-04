@@ -40,6 +40,8 @@
 		CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */; };
 		CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */; };
 		CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */; };
+		CD6D83612FD5D3AB00D53031 /* CockpitZoomControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */; };
+		CD6D83632FD5D3AB00D53031 /* CockpitGameVectorBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -82,6 +84,8 @@
 		CD6D83522FD5D3AB00D53031 /* DashboardDroneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardDroneCard.swift; sourceTree = "<group>"; };
 		CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardRemoteCard.swift; sourceTree = "<group>"; };
 		CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardPreflightCard.swift; sourceTree = "<group>"; };
+		CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitZoomControl.swift; sourceTree = "<group>"; };
+		CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitGameVectorBadge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +219,8 @@
 				CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */,
 				CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */,
 				CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */,
+				CD6D83602FD5D3AB00D53031 /* CockpitZoomControl.swift */,
+				CD6D83622FD5D3AB00D53031 /* CockpitGameVectorBadge.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -345,6 +351,8 @@
 				CD6D83532FD5D3AB00D53031 /* DashboardDroneCard.swift in Sources */,
 				CD6D83552FD5D3AB00D53031 /* DashboardRemoteCard.swift in Sources */,
 				CD6D83572FD5D3AB00D53031 /* DashboardPreflightCard.swift in Sources */,
+				CD6D83612FD5D3AB00D53031 /* CockpitZoomControl.swift in Sources */,
+				CD6D83632FD5D3AB00D53031 /* CockpitGameVectorBadge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

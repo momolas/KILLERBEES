@@ -27,6 +27,11 @@ class VisionTrackerService {
     var lockedTargetBox: CGRect? = nil
     var isTargetLocked: Bool = false
 
+    // Vecteur de fuite & Mouvement de la Cible (Gibier)
+    var targetHeadingDeg: Double?
+    var targetSpeedKmH: Double?
+    var targetBearingCardinal: String?
+
     var detectedBoxes: [CGRect] {
         detectedObjects.map(\.box)
     }
@@ -35,6 +40,9 @@ class VisionTrackerService {
     private var sequenceHandler = VNSequenceRequestHandler()
     private var isFirstDetection: Bool = true
     private var initialTargetArea: CGFloat = 1.0
+
+    private var previousBoxCenter: CGPoint?
+    private var previousTimestamp: TimeInterval?
 
     // Champ de vision (FOV) de la caméra de l'Anafi en radians
     private let horizontalFovRad: Double = 1.2043 // 69 degrés
@@ -48,13 +56,21 @@ class VisionTrackerService {
 
     func processFrame(
         _ cgImage: CGImage,
+        droneHeading: Double = 0.0,
+        droneAltitude: Double = 30.0,
         onTargetData: @escaping (Double, Double, Double, Double, Bool) -> Void
     ) {
         guard isTrackingActive, !isProcessing else { return }
         isProcessing = true
 
         if let currentTarget = lockedTargetBox {
-            trackLockedTarget(in: cgImage, currentBox: currentTarget, onTargetData: onTargetData)
+            trackLockedTarget(
+                in: cgImage,
+                currentBox: currentTarget,
+                droneHeading: droneHeading,
+                droneAltitude: droneAltitude,
+                onTargetData: onTargetData
+            )
             isProcessing = false
         } else {
             Task { [weak self] in
@@ -147,11 +163,11 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Poursuite Continue de Cible Verrouillée (VNTrackObjectRequest)
-
     private func trackLockedTarget(
         in cgImage: CGImage,
         currentBox: CGRect,
+        droneHeading: Double,
+        droneAltitude: Double,
         onTargetData: (Double, Double, Double, Double, Bool) -> Void
     ) {
         let visionBox = convertSwiftUIRectToVision(currentBox)
@@ -186,6 +202,13 @@ class VisionTrackerService {
             let centerX = newSwiftUIBox.midX
             let centerY = newSwiftUIBox.midY
 
+            // Calcul du vecteur de déplacement de la cible (Gibier)
+            calculateTargetMotion(
+                currentCenter: CGPoint(x: centerX, y: centerY),
+                droneHeading: droneHeading,
+                droneAltitude: droneAltitude
+            )
+
             let deltaX = Double(centerX - 0.5) // [-0.5, 0.5]
             let deltaY = Double(0.5 - centerY) // [-0.5, 0.5], positif vers le haut
 
@@ -202,6 +225,61 @@ class VisionTrackerService {
         } catch {
             print("Erreur suivi optique Apple Vision : \(error)")
         }
+    }
+
+    // MARK: - Analyse Dynamique du Mouvement (Vecteur de Fuite)
+
+    private func calculateTargetMotion(currentCenter: CGPoint, droneHeading: Double, droneAltitude: Double) {
+        let now = Date().timeIntervalSince1970
+        guard let prevCenter = previousBoxCenter, let prevT = previousTimestamp else {
+            previousBoxCenter = currentCenter
+            previousTimestamp = now
+            return
+        }
+
+        let dt = now - prevT
+        guard dt >= 0.04 else { return }
+
+        let dx = Double(currentCenter.x - prevCenter.x)
+        let dy = Double(currentCenter.y - prevCenter.y)
+        let pixelDistance = hypot(dx, dy)
+
+        previousBoxCenter = currentCenter
+        previousTimestamp = now
+
+        if pixelDistance > 0.003 {
+            let relativeAngleDeg = atan2(dx, -dy) * 180.0 / .pi
+            var trueHeading = (droneHeading + relativeAngleDeg).truncatingRemainder(dividingBy: 360.0)
+            if trueHeading < 0 { trueHeading += 360.0 }
+
+            if let existingHeading = targetHeadingDeg {
+                self.targetHeadingDeg = existingHeading * 0.6 + trueHeading * 0.4
+            } else {
+                self.targetHeadingDeg = trueHeading
+            }
+            self.targetBearingCardinal = cardinalDirection(from: self.targetHeadingDeg ?? trueHeading)
+
+            let groundMetersPerScreenUnit = max(10.0, droneAltitude) * 1.37
+            let groundDistanceMeters = pixelDistance * groundMetersPerScreenUnit
+            let instantaneousSpeedKmH = (groundDistanceMeters / dt) * 3.6
+
+            let clampedSpeed = min(75.0, instantaneousSpeedKmH)
+            if let existingSpeed = targetSpeedKmH {
+                self.targetSpeedKmH = existingSpeed * 0.6 + clampedSpeed * 0.4
+            } else {
+                self.targetSpeedKmH = clampedSpeed
+            }
+        } else {
+            if let speed = targetSpeedKmH {
+                self.targetSpeedKmH = max(0.0, speed * 0.85)
+            }
+        }
+    }
+
+    private func cardinalDirection(from degrees: Double) -> String {
+        let directions = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"]
+        let index = Int((degrees + 22.5) / 45.0) % 8
+        return directions[index]
     }
 
     // MARK: - Gestion du Verrouillage Tactique & Aimantation Magnétique (Magnetic Snap)
@@ -259,6 +337,11 @@ class VisionTrackerService {
         trackingRequest = nil
         isFirstDetection = true
         sequenceHandler = VNSequenceRequestHandler()
+        targetHeadingDeg = nil
+        targetSpeedKmH = nil
+        targetBearingCardinal = nil
+        previousBoxCenter = nil
+        previousTimestamp = nil
     }
 
     func toggleTracking() {

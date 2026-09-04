@@ -63,6 +63,12 @@ class DroneManager {
     var gimbalPitch: Double = 0.0
     var isRecording: Bool = false
     var canTakePhoto: Bool = true
+    var zoomLevel: Double = 1.0
+    var maxZoomLevel: Double = 3.0
+
+    // Profil Spécialisé Traque Gibier & Cible au Sol
+    var isGameTrackingProfileActive: Bool = false
+    var targetGroundCoordinate: CLLocationCoordinate2D?
 
     // Alertes de Sécurité
     var activeAlarmText: String?
@@ -390,6 +396,10 @@ class DroneManager {
             let state = camera.recordingState.functionState
             self.isRecording = (state == .started || state == .starting)
             self.canTakePhoto = camera.canStartPhotoCapture
+            if let zoom = camera.zoom {
+                self.zoomLevel = zoom.currentLevel
+                self.maxZoomLevel = zoom.maxLossLessLevel
+            }
         }
 
         // Surveillance des Alarmes de Sécurité
@@ -557,6 +567,94 @@ class DroneManager {
         } else if camera.canStartRecord {
             camera.startRecording()
         }
+    }
+
+    // MARK: - Contrôle du Zoom Caméra (Traque Discrète)
+
+    func setZoomLevel(_ level: Double) {
+        guard let camera = cameraRef?.value else { return }
+        camera.zoom?.control(mode: .level, target: level)
+        self.zoomLevel = level
+    }
+
+    func resetZoom() {
+        guard let camera = cameraRef?.value else { return }
+        camera.zoom?.resetLevel()
+        self.zoomLevel = 1.0
+    }
+
+    // MARK: - Profil de Vol Spécialisé Traque Gibier (120°/s)
+
+    func toggleGameTrackingFlightProfile() {
+        isGameTrackingProfileActive.toggle()
+        if isGameTrackingProfileActive {
+            applyGameTrackingFlightProfile()
+        } else {
+            resetFlightProfileToStandard()
+        }
+    }
+
+    func applyGameTrackingFlightProfile() {
+        guard let drone = connectedDrone else { return }
+        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { [weak self] manualCopter in
+            guard let self, let manualCopter else { return }
+            // Vitesse de lacet réactive à 120°/s pour ne pas perdre un animal en fuite
+            manualCopter.maxYawRotationSpeed.value = 120.0
+            // Inclinaison max à 30° (jusqu'à 50 km/h)
+            manualCopter.maxPitchRoll.value = 30.0
+            // Vitesse verticale 3.0 m/s
+            manualCopter.maxVerticalSpeed.value = 3.0
+            manualCopter.maxPitchRollVelocity?.value = 180.0
+            self.isGameTrackingProfileActive = true
+        }
+    }
+
+    func resetFlightProfileToStandard() {
+        guard let drone = connectedDrone else { return }
+        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { [weak self] manualCopter in
+            guard let self, let manualCopter else { return }
+            manualCopter.maxYawRotationSpeed.value = 60.0
+            manualCopter.maxPitchRoll.value = 20.0
+            manualCopter.maxVerticalSpeed.value = 2.0
+            self.isGameTrackingProfileActive = false
+        }
+    }
+
+    // MARK: - Calcul Position Sol de la Cible (Projection Géographique)
+
+    func updateTargetGroundPosition(azimuthRad: Double, elevationRad: Double) {
+        guard let droneCoord = droneCoordinate, let alt = altitude, alt > 1.0 else {
+            targetGroundCoordinate = nil
+            return
+        }
+
+        // Angle total d'élévation par rapport à l'horizon (gimbalPitch négatif vers le bas)
+        let gimbalPitchRad = gimbalPitch * .pi / 180.0
+        let totalElevationRad = gimbalPitchRad + elevationRad
+
+        // Angle de dépression vers le sol
+        let depressionAngleRad = abs(min(0.0, totalElevationRad))
+        let clampedDepression = max(0.08, depressionAngleRad) // Min ~4.5° pour éviter distance infinie
+
+        let distanceGroundMeters = alt / tan(clampedDepression)
+
+        // Cap effectif vers la cible (Cap drone + azimut cible dans l'image)
+        let targetBearingRad = (heading * .pi / 180.0) + azimuthRad
+
+        // Projection Great-Circle
+        let earthRadiusMeters = 6_378_137.0
+        let lat1 = droneCoord.latitude * .pi / 180.0
+        let lon1 = droneCoord.longitude * .pi / 180.0
+
+        let dOverR = distanceGroundMeters / earthRadiusMeters
+        let lat2 = asin(sin(lat1) * cos(dOverR) + cos(lat1) * sin(dOverR) * cos(targetBearingRad))
+        let lon2 = lon1 + atan2(sin(targetBearingRad) * sin(dOverR) * cos(lat1),
+                                cos(dOverR) - sin(lat1) * sin(lat2))
+
+        let targetLat = lat2 * 180.0 / .pi
+        let targetLon = lon2 * 180.0 / .pi
+
+        self.targetGroundCoordinate = CLLocationCoordinate2D(latitude: targetLat, longitude: targetLon)
     }
 
     // MARK: - Mod FCC (Puissance & Réglementation Wi-Fi)

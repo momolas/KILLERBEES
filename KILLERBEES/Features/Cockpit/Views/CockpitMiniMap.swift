@@ -14,6 +14,7 @@ struct CockpitMiniMap: View {
     let homeCoordinate: CLLocationCoordinate2D?
     let heading: Double
     let waypoints: [CLLocationCoordinate2D]
+    var targetCoordinate: CLLocationCoordinate2D? = nil
     var onAddWaypoint: ((CLLocationCoordinate2D) -> Void)?
     @Binding var isExpanded: Bool
 
@@ -34,6 +35,28 @@ struct CockpitMiniMap: View {
                                 .clipShape(.circle)
                                 .rotationEffect(.degrees(heading - 90))
                                 .shadow(radius: 3)
+                        }
+                    }
+
+                    // Position Cible Gibier au Sol
+                    if let targetCoord = targetCoordinate {
+                        Annotation("Gibier", coordinate: targetCoord) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.yellow)
+                                    .frame(width: 26, height: 26)
+                                    .shadow(color: Color.yellow.opacity(0.8), radius: 5)
+
+                                Image(systemName: "pawprint.fill")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundStyle(.black)
+                            }
+                        }
+
+                        // Ligne de visée drone -> gibier
+                        if let droneCoord = droneCoordinate {
+                            MapPolyline(coordinates: [droneCoord, targetCoord])
+                                .stroke(Color.yellow, style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
                         }
                     }
 

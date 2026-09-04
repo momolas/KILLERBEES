@@ -29,13 +29,21 @@ struct DroneControlView: View {
                 isDroneConnected: droneManager.isDroneConnected
             ) { image in
                 if visionService.isTrackingActive, let cgImage = image.cgImage {
-                    visionService.processFrame(cgImage) { azimuth, elevation, scale, confidence, isNew in
+                    visionService.processFrame(
+                        cgImage,
+                        droneHeading: droneManager.heading,
+                        droneAltitude: droneManager.altitude ?? 30.0
+                    ) { azimuth, elevation, scale, confidence, isNew in
                         droneManager.sendTargetDetection(
                             azimuth: azimuth,
                             elevation: elevation,
                             changeOfScale: scale,
                             confidence: confidence,
                             isNewTarget: isNew
+                        )
+                        droneManager.updateTargetGroundPosition(
+                            azimuthRad: azimuth,
+                            elevationRad: elevation
                         )
                     }
                 }
@@ -93,6 +101,20 @@ struct DroneControlView: View {
                 )
                 .padding(.top, 2)
 
+                // Badge Tactique Vecteur de Fuite (Gibier Traqué)
+                if visionService.isTargetLocked {
+                    CockpitGameVectorBadge(
+                        headingDeg: visionService.targetHeadingDeg,
+                        speedKmH: visionService.targetSpeedKmH,
+                        cardinal: visionService.targetBearingCardinal,
+                        isProfileActive: droneManager.isGameTrackingProfileActive,
+                        onToggleProfile: {
+                            droneManager.toggleGameTrackingFlightProfile()
+                        }
+                    )
+                    .padding(.top, 2)
+                }
+
                 // Télémétrie Supérieure (Altitude, Vitesse, Attitude)
                 HStack(alignment: .top) {
                     CockpitTelemetryHUD(
@@ -139,6 +161,7 @@ struct DroneControlView: View {
                         homeCoordinate: droneManager.homeCoordinate,
                         heading: droneManager.heading,
                         waypoints: droneManager.waypoints,
+                        targetCoordinate: droneManager.targetGroundCoordinate,
                         onAddWaypoint: { droneManager.addWaypoint($0) },
                         isExpanded: $isMapExpanded
                     )
@@ -213,6 +236,13 @@ struct DroneControlView: View {
                         .disabled(!droneManager.isDroneConnected)
                         .opacity(droneManager.isDroneConnected ? 1.0 : 0.35)
                         .accessibilityLabel("Activer le suivi par intelligence artificielle")
+
+                        CockpitZoomControl(
+                            currentZoom: droneManager.zoomLevel,
+                            onSelectZoom: { level in
+                                droneManager.setZoomLevel(level)
+                            }
+                        )
 
                         CockpitGimbalControl(
                             currentPitch: droneManager.gimbalPitch,
