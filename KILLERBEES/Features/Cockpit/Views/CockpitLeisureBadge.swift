@@ -33,7 +33,7 @@ struct CockpitLeisureBadge: View {
 
             Divider()
                 .frame(height: 18)
-                .overlay(Color.white.opacity(0.3))
+                .overlay(.white.opacity(0.3))
 
             // Bascule Grille Tiers (Cadrage Photo)
             Button(isGridEnabled ? "Grille Active" : "Grille 3x3", systemImage: isGridEnabled ? "grid.circle.fill" : "grid.circle") {
@@ -47,10 +47,10 @@ struct CockpitLeisureBadge: View {
             .foregroundStyle(isGridEnabled ? .white : .secondary)
             .padding(.horizontal, 8)
             .padding(.vertical, 5)
-            .background(isGridEnabled ? Color.purple.opacity(0.4) : Color.white.opacity(0.1))
+            .background(isGridEnabled ? .purple.opacity(0.4) : .white.opacity(0.1))
             .clipShape(.capsule)
             .overlay(
-                Capsule().strokeBorder(isGridEnabled ? Color.purple : Color.white.opacity(0.2), lineWidth: 1)
+                Capsule().strokeBorder(isGridEnabled ? .purple : .white.opacity(0.2), lineWidth: 1)
             )
         }
         .padding(.horizontal, 12)
@@ -59,7 +59,7 @@ struct CockpitLeisureBadge: View {
         .clipShape(.rect(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.purple.opacity(0.4), lineWidth: 1)
+                .strokeBorder(.purple.opacity(0.4), lineWidth: 1)
         )
     }
 }
