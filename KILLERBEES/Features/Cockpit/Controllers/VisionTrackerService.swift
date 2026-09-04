@@ -56,6 +56,7 @@ class VisionTrackerService {
     private var sequenceHandler = VNSequenceRequestHandler()
     private var isFirstDetection: Bool = true
     private var initialTargetArea: CGFloat = 1.0
+    private var trackingLossCounter: Int = 0
 
     private var previousBoxCenter: CGPoint?
     private var previousTimestamp: TimeInterval?
@@ -546,9 +547,11 @@ class VisionTrackerService {
             guard let results = request.results as? [VNDetectedObjectObservation],
                   let trackedObservation = results.first,
                   trackedObservation.confidence > 0.3 else {
+                handleTrackingLoss(in: cgImage, lastBox: currentBox)
                 return
             }
 
+            trackingLossCounter = 0
             let newVisionBox = trackedObservation.boundingBox
             let newSwiftUIBox = convertVisionRectToSwiftUI(newVisionBox)
             self.lockedTargetBox = newSwiftUIBox
@@ -589,6 +592,38 @@ class VisionTrackerService {
 
         } catch {
             print("Erreur suivi optique Apple Vision : \(error)")
+        }
+    }
+
+    // MARK: - Gestion du Décrochage & Ré-Acquisition Intelligente (YOLO)
+
+    private func handleTrackingLoss(in cgImage: CGImage, lastBox: CGRect) {
+        trackingLossCounter += 1
+
+        // 1. Décrochage bref (3 à 25 frames, ~0.1 à 0.8s) : tentative de ré-accrochage automatique via YOLO
+        if trackingLossCounter >= 3 && trackingLossCounter <= 25 {
+            if let yolo = (yoloSeg ?? yoloDetect) {
+                let yoloResult = yolo(cgImage)
+                if let candidate = yoloResult.boxes.first(where: {
+                    hypot($0.xywhn.midX - lastBox.midX, $0.xywhn.midY - lastBox.midY) < 0.18
+                }) {
+                    let reVisionBox = convertSwiftUIRectToVision(candidate.xywhn)
+                    let observation = VNDetectedObjectObservation(boundingBox: reVisionBox)
+                    let newRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
+                    newRequest.trackingLevel = .accurate
+                    configureComputeDevices(for: newRequest)
+                    self.trackingRequest = newRequest
+                    self.lockedTargetBox = candidate.xywhn
+                    self.trackingLossCounter = 0
+                    print("🎯 Ré-accrochage automatique de la cible via YOLO !")
+                    return
+                }
+            }
+        }
+
+        // 2. Décrochage prolongé (> 35 frames, > 1.2s) : perte définitive et notification haptique
+        if trackingLossCounter > 35 {
+            unlockTarget(silent: false)
         }
     }
 
@@ -709,6 +744,7 @@ class VisionTrackerService {
         targetSpeciesIcon = nil
         segmentationMaskImage = nil
         trackingFrameCounter = 0
+        trackingLossCounter = 0
         previousBoxCenter = nil
         previousTimestamp = nil
     }
@@ -753,12 +789,16 @@ class VisionTrackerService {
         in cgImage: CGImage,
         visionRect: CGRect
     ) -> (label: String, icon: String, confidence: Float)? {
-        let classifyRequest = VNClassifyImageRequest()
+        guard visionRect.width > 0.02, visionRect.height > 0.02 else { return nil }
+
         let originX = max(0.0, visionRect.origin.x - 0.02)
         let originY = max(0.0, visionRect.origin.y - 0.02)
         let width = min(1.0 - originX, visionRect.width + 0.04)
         let height = min(1.0 - originY, visionRect.height + 0.04)
 
+        guard width > 0.02, height > 0.02 else { return nil }
+
+        let classifyRequest = VNClassifyImageRequest()
         classifyRequest.regionOfInterest = CGRect(x: originX, y: originY, width: width, height: height)
         configureComputeDevices(for: classifyRequest)
 
@@ -769,7 +809,7 @@ class VisionTrackerService {
                 return nil
             }
 
-            for obs in observations where obs.confidence > 0.12 {
+            for obs in observations where obs.confidence > 0.10 {
                 if let match = mapToWildlifeTaxon(obs.identifier) {
                     return (match.label, match.icon, obs.confidence)
                 }
@@ -782,41 +822,72 @@ class VisionTrackerService {
 
     private func mapToWildlifeTaxon(_ identifier: String) -> (label: String, icon: String)? {
         let id = identifier.lowercased()
-        switch id {
-        case "boar", "pig":
+
+        // 1. Sanglier & Suidés
+        if id == "boar" || id.contains("boar") || id == "pig" || id.hasPrefix("pig_") || id == "warthog" || id == "swine" {
             return ("SANGLIER", "🐗")
-        case "roe":
-            return ("CHEVREUIL", "🦌")
-        case "deer":
-            return ("CERF / BICHE", "🦌")
-        case "elk", "moose":
-            return ("GRAND CERF / ÉLAN", "🦌")
-        case "fox":
-            return ("RENARD", "🦊")
-        case "coyote_wolf":
-            return ("LOUP", "🐺")
-        case "rabbit":
-            return ("LIÈVRE / LAPIN", "🐇")
-        case "rodent":
-            return ("RONGEUR", "🦫")
-        case "bird", "hummingbird":
-            return ("OISEAU / GIBIER", "🦆")
-        case "bear":
-            return ("OURS", "🐻")
-        case "dog", "bulldog", "sheepdog", "prairie_dog":
-            return ("CHIEN", "🐕")
-        case "cat", "adult_cat", "bobcat":
-            return ("FÉLIN / CHAT", "🐈")
-        case "horse", "jockey_horse":
-            return ("CHEVAL", "🐎")
-        case "cow":
-            return ("BOVIN", "🐄")
-        case "sheep":
-            return ("MOUTON", "🐑")
-        case "goat":
-            return ("CHÈVRE", "🐐")
-        default:
-            return nil
         }
+        // 2. Chevreuil & Bovidés des bois / Caprinés sauvages
+        if id == "roe" || id.hasPrefix("roe_") || id == "chamois" || id == "ibex" {
+            return ("CHEVREUIL", "🦌")
+        }
+        // 3. Cerf & Biche
+        if id == "deer" || id.contains("deer") || id == "stag" || id == "fawn" {
+            return ("CERF / BICHE", "🦌")
+        }
+        // 4. Grand Cerf & Élan
+        if id == "elk" || id == "moose" {
+            return ("GRAND CERF / ÉLAN", "🦌")
+        }
+        // 5. Renard
+        if id == "fox" || id.hasPrefix("fox_") {
+            return ("RENARD", "🦊")
+        }
+        // 6. Loup & Canidés sauvages
+        if id == "coyote_wolf" || id == "wolf" || (id.contains("wolf") && !id.contains("hound")) || id == "jackal" {
+            return ("LOUP", "🐺")
+        }
+        // 7. Lièvre & Lapin
+        if id == "rabbit" || id == "hare" || id.contains("hare") || id.contains("cottontail") {
+            return ("LIÈVRE / LAPIN", "🐇")
+        }
+        // 8. Blaireau & Rongeurs sauvages
+        if id == "badger" || id == "marmot" || id == "beaver" || id == "rodent" {
+            return ("BLAIREAU / RONGEUR", "🦫")
+        }
+        // 9. Gibier à plumes / Oiseaux
+        if id == "bird" || id.contains("bird") || id == "duck" || id == "pheasant" || id == "partridge" || id == "quail" {
+            return ("OISEAU / GIBIER", "🦆")
+        }
+        // 10. Ours
+        if id == "bear" || (id.contains("bear") && !id.contains("teddy") && !id.contains("polar")) {
+            return ("OURS", "🐻")
+        }
+        // 11. Chiens de chasse / Chiens errants
+        if id == "dog" || id == "bulldog" || id == "sheepdog" || id == "prairie_dog" {
+            return ("CHIEN", "🐕")
+        }
+        // 12. Félins sauvages / Chats
+        if id == "cat" || id == "adult_cat" || id == "bobcat" || id == "lynx" {
+            return ("FÉLIN / LYNX", "🐈")
+        }
+        // 13. Chevaux
+        if id == "horse" || id == "jockey_horse" {
+            return ("CHEVAL", "🐎")
+        }
+        // 14. Bovins
+        if id == "cow" || id == "bull" || id == "ox" {
+            return ("BOVIN", "🐄")
+        }
+        // 15. Ovins & Mouflons
+        if id == "sheep" || id == "ram" || id == "mouflon" {
+            return ("MOUTON / MOUFLON", "🐑")
+        }
+        // 16. Caprins
+        if id == "goat" {
+            return ("CHÈVRE", "🐐")
+        }
+
+        return nil
     }
 }
