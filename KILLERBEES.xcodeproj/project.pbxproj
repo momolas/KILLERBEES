@@ -15,13 +15,10 @@
 		CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B12EDB54280053DDD9 /* VideoController.swift */; };
 		CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5AF2EDB54280053DDD9 /* DroneControlView.swift */; };
 		CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD35B5B02EDB54280053DDD9 /* DroneManager.swift */; };
-		CD6D830E2FD5D3AB00D53031 /* DroneRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */; };
 		CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */; };
 		CD6D83112FD5D3AB00D53031 /* VideoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83102FD5D3AB00D53031 /* VideoSection.swift */; };
-		CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */; };
 		CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */; };
 		CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */; };
-		CD6D83192FD5D3AB00D53031 /* SkyControllerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */; };
 		CD6D831C2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */; };
 		CD6D831E2FD5D3AB00D53031 /* CockpitTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */; };
 		CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */; };
@@ -68,12 +65,9 @@
 		CD35B5B12EDB54280053DDD9 /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VideoController.swift; sourceTree = "<group>"; };
 		CD35B5B22EDB54280053DDD9 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoPlayerView.swift; sourceTree = "<group>"; };
 		CD6D830C2FD5D3AB00D53031 /* Drone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/Drone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DroneRow.swift; sourceTree = "<group>"; };
 		CD6D83102FD5D3AB00D53031 /* VideoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/VideoSection.swift; sourceTree = "<group>"; };
-		CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/ControlButtonsSection.swift; sourceTree = "<group>"; };
 		CD6D83142FD5D3AB00D53031 /* RemoteControl+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/RemoteControl+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D83162FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/DiscoveredDrone+Identifiable.swift"; sourceTree = "<group>"; };
-		CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/SkyControllerSection.swift; sourceTree = "<group>"; };
 		CD6D831A2FD5D3AB00D53031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD6D831B2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Features/Connection/Models/KnownDrone+Identifiable.swift"; sourceTree = "<group>"; };
 		CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTopBar.swift; sourceTree = "<group>"; };
@@ -198,9 +192,6 @@
 				CD6D83542FD5D3AB00D53031 /* DashboardRemoteCard.swift */,
 				CD6D83562FD5D3AB00D53031 /* DashboardPreflightCard.swift */,
 				CD6D83782FD5D3AB00D53031 /* DashboardMissionCard.swift */,
-				CD6D830D2FD5D3AB00D53031 /* DroneRow.swift */,
-				CD6D83182FD5D3AB00D53031 /* SkyControllerSection.swift */,
-				CD6D83122FD5D3AB00D53031 /* ControlButtonsSection.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -351,12 +342,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD35B5B32EDB54280053DDD9 /* VideoPlayerView.swift in Sources */,
-				CD6D830E2FD5D3AB00D53031 /* DroneRow.swift in Sources */,
 				CD6D830F2FD5D3AB00D53031 /* Drone+Identifiable.swift in Sources */,
 				CD6D83152FD5D3AB00D53031 /* RemoteControl+Identifiable.swift in Sources */,
 				CD6D83172FD5D3AB00D53031 /* DiscoveredDrone+Identifiable.swift in Sources */,
 				CD6D831C2FD5D3AB00D53031 /* KnownDrone+Identifiable.swift in Sources */,
-				CD6D83192FD5D3AB00D53031 /* SkyControllerSection.swift in Sources */,
 				CD35B5B42EDB54280053DDD9 /* VideoController.swift in Sources */,
 				CD35B5B52EDB54280053DDD9 /* DroneControlView.swift in Sources */,
 				CD35B5B62EDB54280053DDD9 /* DroneManager.swift in Sources */,
@@ -370,7 +359,6 @@
 				CD6D83262FD5D3AB00D53031 /* CockpitCameraCaptureView.swift in Sources */,
 				CD6D832C2FD5D3AB00D53031 /* CockpitAlarmBanner.swift in Sources */,
 				CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */,
-				CD6D83132FD5D3AB00D53031 /* ControlButtonsSection.swift in Sources */,
 				CD00575C29F580970092FAC0 /* ContentView.swift in Sources */,
 				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
 				CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */,

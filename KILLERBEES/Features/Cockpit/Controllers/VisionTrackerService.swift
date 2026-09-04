@@ -8,7 +8,6 @@
 //
 
 import CoreGraphics
-import CoreML
 import Foundation
 import SwiftUI
 import Vision

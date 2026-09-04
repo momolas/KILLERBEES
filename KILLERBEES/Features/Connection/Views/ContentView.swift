@@ -39,7 +39,7 @@ struct ContentView: View {
                     )
 
                     // Grille Bento Scrollable
-                    ScrollView(.vertical, showsIndicators: false) {
+                    ScrollView(.vertical) {
                         VStack(spacing: 14) {
                             // Tuiles Principales Côte à Côte
                             HStack(alignment: .top, spacing: 14) {
@@ -83,6 +83,7 @@ struct ContentView: View {
                         .padding(.top, 4)
                         .padding(.bottom, 16)
                     }
+                    .scrollIndicators(.hidden)
 
                     // Bouton Maître d'Entrée dans le Cockpit (FLY)
                     VStack(spacing: 6) {
@@ -110,7 +111,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: String.self) { droneUid in
                 if let drone = droneManager.drones.first(where: { $0.uid == droneUid }) ?? droneManager.connectedDrone {
                     DroneControlView(drone: drone)

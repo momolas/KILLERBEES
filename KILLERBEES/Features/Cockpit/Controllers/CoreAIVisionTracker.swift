@@ -14,7 +14,6 @@ import CoreImage
 import CoreVideo
 import Foundation
 import QuartzCore
-import UIKit
 
 @available(iOS 27.0, macOS 27.0, *)
 @Observable @MainActor
@@ -110,7 +109,7 @@ final class CoreAIVisionTracker {
         _ cgImage: CGImage,
         confidenceThreshold: Float = 0.25
     ) async -> (objects: [DetectedObject], maskImage: CGImage?, inferenceMs: Double) {
-        guard isModelReady, let inferenceFn else { return ([], nil, 0) }
+        guard isModelReady, inferenceFn != nil else { return ([], nil, 0) }
 
         let frameWidth = cgImage.width
         let frameHeight = cgImage.height
@@ -133,7 +132,7 @@ final class CoreAIVisionTracker {
         _ pixelBuffer: CVPixelBuffer,
         confidenceThreshold: Float = 0.25
     ) async -> (objects: [DetectedObject], maskImage: CGImage?, inferenceMs: Double) {
-        guard isModelReady, let inferenceFn else { return ([], nil, 0) }
+        guard isModelReady, inferenceFn != nil else { return ([], nil, 0) }
 
         let frameWidth = CVPixelBufferGetWidth(pixelBuffer)
         let frameHeight = CVPixelBufferGetHeight(pixelBuffer)
