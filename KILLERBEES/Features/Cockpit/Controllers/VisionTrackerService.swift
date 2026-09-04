@@ -101,27 +101,35 @@ class VisionTrackerService {
         #if canImport(CoreAI)
         if #available(iOS 27.0, macOS 27.0, *) {
             Task { @MainActor in
-                // 1. Modèle de Segmentation (Prioritaire pour masque thermique & silhouettes)
-                if let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "aimodel") {
-                    self.coreAISegTracker = await CoreAIVisionTracker(modelURL: segURL, task: .segment)
-                    print("⚡️ [CoreAI] yolo26n-seg.aimodel initialisé sur Apple Neural Engine.")
-                }
+                let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "aimodel")
+                let obbURL = Bundle.main.url(forResource: "yolo26n-obb", withExtension: "aimodel")
+                let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "aimodel")
 
-                // 2. Modèle OBB (Boîtes orientées / cap instantané)
-                if let obbURL = Bundle.main.url(forResource: "yolo26n-obb", withExtension: "aimodel") {
-                    self.coreAIOBBTracker = await CoreAIVisionTracker(modelURL: obbURL, task: .obb)
-                    print("⚡️ [CoreAI] yolo26n-obb.aimodel initialisé.")
-                }
+                async let seg = Self.createTracker(url: segURL, task: .segment)
+                async let obb = Self.createTracker(url: obbURL, task: .obb)
+                async let det = Self.createTracker(url: detURL, task: .detect)
 
-                // 3. Modèle de Détection standard
-                if let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "aimodel") {
-                    self.coreAIDetectTracker = await CoreAIVisionTracker(modelURL: detURL, task: .detect)
-                    print("⚡️ [CoreAI] yolo26n.aimodel initialisé.")
+                let (loadedSeg, loadedOBB, loadedDet) = await (seg, obb, det)
+                self.coreAISegTracker = loadedSeg
+                self.coreAIOBBTracker = loadedOBB
+                self.coreAIDetectTracker = loadedDet
+
+                if loadedSeg != nil || loadedOBB != nil || loadedDet != nil {
+                    print("⚡️ [CoreAI] Moteurs YOLO initialisés avec succès sur Apple Neural Engine / GPU.")
                 }
             }
         }
         #endif
     }
+
+    #if canImport(CoreAI)
+    @available(iOS 27.0, macOS 27.0, *)
+    private static func createTracker(url: URL?, task: CoreAIVisionTracker.ModelTask) async -> CoreAIVisionTracker? {
+        guard let url else { return nil }
+        let tracker = await CoreAIVisionTracker(modelURL: url, task: task)
+        return tracker.isModelReady ? tracker : nil
+    }
+    #endif
 
     private var isProcessing: Bool = false
 

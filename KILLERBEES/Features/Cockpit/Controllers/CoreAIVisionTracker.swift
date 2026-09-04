@@ -31,6 +31,26 @@ final class CoreAIVisionTracker {
     // Contexte de rendu partagé pour le pré-processing d'image
     private let ciContext = CIContext(options: [.workingColorSpace: NSNull()])
 
+    // Labels canoniques COCO (80 classes) pour yolo26n et yolo26n-seg
+    static let defaultCOCOLabels: [String] = [
+        "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+        "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
+        "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
+        "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
+        "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
+        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
+        "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
+        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
+        "hair drier", "toothbrush"
+    ]
+
+    // Labels canoniques DOTAv1 (15 classes) pour yolo26n-obb
+    static let defaultDOTALabels: [String] = [
+        "plane", "ship", "storage tank", "baseball diamond", "tennis court", "basketball court",
+        "ground track field", "harbor", "bridge", "large vehicle", "small vehicle", "helicopter",
+        "roundabout", "soccer ball field", "swimming pool"
+    ]
+
     enum ModelTask {
         case detect
         case segment
@@ -41,6 +61,7 @@ final class CoreAIVisionTracker {
 
     init(modelURL: URL, task: ModelTask = .detect) async {
         self.task = task
+        self.modelInputSize = (task == .obb) ? (1024, 1024) : (640, 640)
         await loadModel(from: modelURL)
     }
 
@@ -74,11 +95,30 @@ final class CoreAIVisionTracker {
                 self.protoName = fn.descriptor.outputNames[1]
             }
 
-            // 2. Extraction des noms de classes (labels COCO ou personnalisés)
+            // 2. Extraction des noms de classes (métadonnées CoreAI ou fallback metadata.json)
             if let namesVal = asset.metadata["names", String.self] {
                 self.labels = parseNames(from: namesVal)
             } else if let classesVal = asset.metadata["classes", String.self] {
                 self.labels = classesVal.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            }
+
+            // Fallback direct sur le fichier metadata.json dans le bundle .aimodel
+            if self.labels.isEmpty {
+                let metaURL = url.appending(path: "metadata.json")
+                if let data = try? Data(contentsOf: metaURL),
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    if let creator = json["creatorDefinedMetadata"] as? [String: Any],
+                       let namesStr = creator["names"] as? String {
+                        self.labels = parseNames(from: namesStr)
+                    } else if let namesStr = json["names"] as? String {
+                        self.labels = parseNames(from: namesStr)
+                    }
+                }
+            }
+
+            // Filet de sécurité : dictionnaires de labels officiels par tâche
+            if self.labels.isEmpty {
+                self.labels = (task == .obb) ? Self.defaultDOTALabels : Self.defaultCOCOLabels
             }
 
             // 3. Détermination des dimensions d'entrée
@@ -246,13 +286,21 @@ final class CoreAIVisionTracker {
         var planarFloats = [Float](repeating: 0, count: 3 * planeSize)
         let inv255: Float = 1.0 / 255.0
 
-        for i in 0..<planeSize {
-            let b = Float(pixelBytes[i * 4 + 0]) * inv255
-            let g = Float(pixelBytes[i * 4 + 1]) * inv255
-            let r = Float(pixelBytes[i * 4 + 2]) * inv255
-            planarFloats[0 * planeSize + i] = r
-            planarFloats[1 * planeSize + i] = g
-            planarFloats[2 * planeSize + i] = b
+        pixelBytes.withUnsafeBufferPointer { inBuf in
+            guard let basePtr = inBuf.baseAddress else { return }
+            planarFloats.withUnsafeMutableBufferPointer { outBuf in
+                guard let outPtr = outBuf.baseAddress else { return }
+                let rPlane = outPtr
+                let gPlane = outPtr.advanced(by: planeSize)
+                let bPlane = outPtr.advanced(by: 2 * planeSize)
+
+                for i in 0..<planeSize {
+                    let offset = i * 4
+                    bPlane[i] = Float(basePtr[offset + 0]) * inv255
+                    gPlane[i] = Float(basePtr[offset + 1]) * inv255
+                    rPlane[i] = Float(basePtr[offset + 2]) * inv255
+                }
+            }
         }
 
         return NDArray(scalars: planarFloats, shape: [1, 3, targetH, targetW])
@@ -366,13 +414,6 @@ final class CoreAIVisionTracker {
             let unpadW = w / gain
             let unpadH = h / gain
 
-            // Coordonnées normalisées de la bounding box alignée
-            let normX = max(0, min(1, (unpadCX - unpadW / 2) / inW))
-            let normY = max(0, min(1, (unpadCY - unpadH / 2) / inH))
-            let normW = max(0.01, min(1, unpadW / inW))
-            let normH = max(0.01, min(1, unpadH / inH))
-            let aabb = CGRect(x: normX, y: normY, width: normW, height: normH)
-
             // Calcul trigonométrique des 4 sommets orientés normalisés
             let cosA = CGFloat(cos(angleRad))
             let sinA = CGFloat(sin(angleRad))
@@ -385,6 +426,13 @@ final class CoreAIVisionTracker {
                 let ry = unpadCY + (dx * sinA + dy * cosA)
                 return CGPoint(x: max(0, min(1, rx / inW)), y: max(0, min(1, ry / inH)))
             }
+
+            // Coordonnées normalisées de la bounding box englobante AABB
+            let minX = corners.map(\.x).min() ?? max(0, min(1, (unpadCX - hw) / inW))
+            let maxX = corners.map(\.x).max() ?? max(0, min(1, (unpadCX + hw) / inW))
+            let minY = corners.map(\.y).min() ?? max(0, min(1, (unpadCY - hh) / inH))
+            let maxY = corners.map(\.y).max() ?? max(0, min(1, (unpadCY + hh) / inH))
+            let aabb = CGRect(x: minX, y: minY, width: max(0.01, maxX - minX), height: max(0.01, maxY - minY))
 
             let labelName = classIdx < labels.count ? labels[classIdx] : "Objet \(classIdx)"
             var object = DetectedObject(box: aabb, label: labelName, confidence: conf)
