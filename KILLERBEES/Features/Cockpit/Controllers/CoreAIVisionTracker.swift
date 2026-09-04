@@ -45,6 +45,14 @@ final class CoreAIVisionTracker {
         await loadModel(from: modelURL)
     }
 
+    convenience init?(named modelName: String, task: ModelTask = .detect) async {
+        guard let url = Bundle.main.url(forResource: modelName, withExtension: "aimodel") else {
+            print("⚠️ [CoreAI] Fichier \(modelName).aimodel non trouvé dans le bundle")
+            return nil
+        }
+        await self.init(modelURL: url, task: task)
+    }
+
     // MARK: - Initialisation & Spécialisation Matérielle
 
     private func loadModel(from url: URL) async {
@@ -99,6 +107,29 @@ final class CoreAIVisionTracker {
     // MARK: - Inférence sur Frame Vidéo
 
     func analyzeFrame(
+        _ cgImage: CGImage,
+        confidenceThreshold: Float = 0.25
+    ) async -> (objects: [DetectedObject], maskImage: CGImage?, inferenceMs: Double) {
+        guard isModelReady, let inferenceFn else { return ([], nil, 0) }
+
+        let frameWidth = cgImage.width
+        let frameHeight = cgImage.height
+        guard frameWidth > 0, frameHeight > 0 else { return ([], nil, 0) }
+
+        let ciImage = CIImage(cgImage: cgImage)
+        guard let inputTensor = makeInputNDArray(from: ciImage) else {
+            return ([], nil, 0)
+        }
+
+        return await runInference(
+            inputTensor: inputTensor,
+            frameWidth: frameWidth,
+            frameHeight: frameHeight,
+            confidenceThreshold: confidenceThreshold
+        )
+    }
+
+    func analyzeFrame(
         _ pixelBuffer: CVPixelBuffer,
         confidenceThreshold: Float = 0.25
     ) async -> (objects: [DetectedObject], maskImage: CGImage?, inferenceMs: Double) {
@@ -108,12 +139,26 @@ final class CoreAIVisionTracker {
         let frameHeight = CVPixelBufferGetHeight(pixelBuffer)
         guard frameWidth > 0, frameHeight > 0 else { return ([], nil, 0) }
 
-        // 1. Pré-processing Letterbox vers NDArray [1, 3, H, W]
-        guard let inputTensor = makeInputNDArray(from: pixelBuffer) else {
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        guard let inputTensor = makeInputNDArray(from: ciImage) else {
             return ([], nil, 0)
         }
 
-        // 2. Inférence temps réel sur Apple Silicon
+        return await runInference(
+            inputTensor: inputTensor,
+            frameWidth: frameWidth,
+            frameHeight: frameHeight,
+            confidenceThreshold: confidenceThreshold
+        )
+    }
+
+    private func runInference(
+        inputTensor: NDArray,
+        frameWidth: Int,
+        frameHeight: Int,
+        confidenceThreshold: Float
+    ) async -> (objects: [DetectedObject], maskImage: CGImage?, inferenceMs: Double) {
+        guard let inferenceFn else { return ([], nil, 0) }
         let t0 = CACurrentMediaTime()
         do {
             var outputs = try await inferenceFn.run(inputs: [inputName: inputTensor])
@@ -124,7 +169,6 @@ final class CoreAIVisionTracker {
                 return ([], nil, dt)
             }
 
-            // 3. Décodage selon la tâche
             switch task {
             case .detect:
                 let detected = decodeDetectionBoxes(
@@ -166,8 +210,7 @@ final class CoreAIVisionTracker {
 
     // MARK: - Pré-processing Letterbox Natif
 
-    private func makeInputNDArray(from pixelBuffer: CVPixelBuffer) -> NDArray? {
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+    private func makeInputNDArray(from ciImage: CIImage) -> NDArray? {
         let targetW = modelInputSize.width
         let targetH = modelInputSize.height
         guard targetW > 0, targetH > 0 else { return nil }
@@ -264,8 +307,21 @@ final class CoreAIVisionTracker {
                 height: max(0.01, normY2 - normY1)
             )
 
+            let corners = [
+                CGPoint(x: box.minX, y: box.minY),
+                CGPoint(x: box.maxX, y: box.minY),
+                CGPoint(x: box.maxX, y: box.maxY),
+                CGPoint(x: box.minX, y: box.maxY)
+            ]
             let labelName = classIdx < labels.count ? labels[classIdx] : "Objet \(classIdx)"
-            results.append(DetectedObject(box: box, label: labelName, confidence: conf))
+            results.append(DetectedObject(
+                box: box,
+                label: labelName,
+                confidence: conf,
+                orientedAngleRad: 0.0,
+                orientedCorners: corners,
+                hasSilhouetteMask: false
+            ))
         }
 
         return results
@@ -388,9 +444,17 @@ final class CoreAIVisionTracker {
                 height: max(0.01, normY2 - normY1)
             )
 
+            let corners = [
+                CGPoint(x: box.minX, y: box.minY),
+                CGPoint(x: box.maxX, y: box.minY),
+                CGPoint(x: box.maxX, y: box.maxY),
+                CGPoint(x: box.minX, y: box.maxY)
+            ]
             let labelName = classIdx < labels.count ? labels[classIdx] : "Objet \(classIdx)"
             var obj = DetectedObject(box: box, label: labelName, confidence: conf)
             obj.hasSilhouetteMask = true
+            obj.orientedCorners = corners
+            obj.orientedAngleRad = 0.0
             objects.append(obj)
 
             // 32 coefficients de masque

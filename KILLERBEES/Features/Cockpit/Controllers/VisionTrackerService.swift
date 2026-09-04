@@ -12,7 +12,9 @@ import CoreML
 import Foundation
 import SwiftUI
 import Vision
-import UltralyticsYOLO
+#if canImport(CoreAI)
+import CoreAI
+#endif
 
 struct DetectedObject: Identifiable, Sendable {
     let id = UUID()
@@ -65,64 +67,61 @@ class VisionTrackerService {
     private let horizontalFovRad: Double = 1.2043 // 69 degrés
     private let verticalFovRad: Double = 0.7330   // 42 degrés
 
-    // MARK: - Moteur Ultralytics YOLO26 (Apple Neural Engine)
-    private var yoloSeg: YOLO?
-    private var yoloDetect: YOLO?
-    private var isYoloSegReady: Bool = false
-    private var isYoloDetectReady: Bool = false
+    // MARK: - Moteur Apple Core AI Natif (Apple Neural Engine / GPU unifié)
+    @ObservationIgnored private var _coreAISegTracker: Any?
+    @ObservationIgnored private var _coreAIOBBTracker: Any?
+    @ObservationIgnored private var _coreAIDetectTracker: Any?
+
+    #if canImport(CoreAI)
+    @available(iOS 27.0, macOS 27.0, *)
+    private var coreAISegTracker: CoreAIVisionTracker? {
+        get { _coreAISegTracker as? CoreAIVisionTracker }
+        set { _coreAISegTracker = newValue }
+    }
+    @available(iOS 27.0, macOS 27.0, *)
+    private var coreAIOBBTracker: CoreAIVisionTracker? {
+        get { _coreAIOBBTracker as? CoreAIVisionTracker }
+        set { _coreAIOBBTracker = newValue }
+    }
+    @available(iOS 27.0, macOS 27.0, *)
+    private var coreAIDetectTracker: CoreAIVisionTracker? {
+        get { _coreAIDetectTracker as? CoreAIVisionTracker }
+        set { _coreAIDetectTracker = newValue }
+    }
+    #endif
 
     // Calque de silhouette d'instance (Effet vision thermique / nocturne)
     var segmentationMaskImage: CGImage? = nil
     var isThermalMaskEnabled: Bool = true
 
     init() {
-        setupYOLO()
+        setupCoreAI()
     }
 
-    private func setupYOLO() {
-        // 1. Modèle de Segmentation & OBB (Prioritaire)
-        let segIdentifier: String
-        if let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "mlmodelc") {
-            segIdentifier = segURL.path
-        } else if let segPackageURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "mlpackage") {
-            segIdentifier = segPackageURL.path
-        } else {
-            segIdentifier = "yolo26n-seg"
-        }
-
-        yoloSeg = YOLO(segIdentifier, task: .segment, useGpu: false) { [weak self] result in
+    private func setupCoreAI() {
+        #if canImport(CoreAI)
+        if #available(iOS 27.0, macOS 27.0, *) {
             Task { @MainActor in
-                switch result {
-                case .success:
-                    print("⚡️ Ultralytics YOLO26n-SEG (Segmentation & OBB sur Neural Engine) initialisé.")
-                    self?.isYoloSegReady = true
-                case .failure(let error):
-                    print("⚠️ Ultralytics YOLO26n-SEG indisponible (\(error)), repli sur détection.")
-                    self?.isYoloSegReady = false
+                // 1. Modèle de Segmentation (Prioritaire pour masque thermique & silhouettes)
+                if let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "aimodel") {
+                    self.coreAISegTracker = await CoreAIVisionTracker(modelURL: segURL, task: .segment)
+                    print("⚡️ [CoreAI] yolo26n-seg.aimodel initialisé sur Apple Neural Engine.")
+                }
+
+                // 2. Modèle OBB (Boîtes orientées / cap instantané)
+                if let obbURL = Bundle.main.url(forResource: "yolo26n-obb", withExtension: "aimodel") {
+                    self.coreAIOBBTracker = await CoreAIVisionTracker(modelURL: obbURL, task: .obb)
+                    print("⚡️ [CoreAI] yolo26n-obb.aimodel initialisé.")
+                }
+
+                // 3. Modèle de Détection standard
+                if let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "aimodel") {
+                    self.coreAIDetectTracker = await CoreAIVisionTracker(modelURL: detURL, task: .detect)
+                    print("⚡️ [CoreAI] yolo26n.aimodel initialisé.")
                 }
             }
         }
-
-        // 2. Modèle de Détection standard de secours
-        let detIdentifier: String
-        if let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "mlmodelc") {
-            detIdentifier = detURL.path
-        } else if let detPackageURL = Bundle.main.url(forResource: "yolo26n", withExtension: "mlpackage") {
-            detIdentifier = detPackageURL.path
-        } else {
-            detIdentifier = "yolo26n"
-        }
-
-        yoloDetect = YOLO(detIdentifier, task: .detect, useGpu: false) { [weak self] result in
-            Task { @MainActor in
-                switch result {
-                case .success:
-                    self?.isYoloDetectReady = true
-                case .failure:
-                    self?.isYoloDetectReady = false
-                }
-            }
-        }
+        #endif
     }
 
     private var isProcessing: Bool = false
@@ -154,7 +153,7 @@ class VisionTrackerService {
         } else {
             Task { [weak self] in
                 guard let self else { return }
-                self.detectObjects(in: cgImage)
+                await self.detectObjects(in: cgImage)
                 self.isProcessing = false
             }
         }
@@ -184,57 +183,62 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Détection d'Objets (YOLO26n-SEG + OBB + Repli Apple Vision)
+    // MARK: - Détection d'Objets (Apple Core AI + OBB + Repli Apple Vision)
 
-    private func detectObjects(in cgImage: CGImage) {
-        // Priorité 1 : Moteur YOLO26n-SEG (Segmentation + Boîtes + OBB)
-        if isYoloSegReady, let yoloSeg {
-            let segObjects = detectWithYOLOSeg(yoloSeg, in: cgImage)
-            if !segObjects.isEmpty {
-                self.detectedObjects = segObjects
-                updateSurveillanceTelemetry(with: segObjects)
-                return
+    private func detectObjects(in cgImage: CGImage) async {
+        #if canImport(CoreAI)
+        if #available(iOS 27.0, macOS 27.0, *) {
+            // Priorité 1 : Moteur YOLO Core AI Segmentation (Masque thermique + Silhouette)
+            if let tracker = coreAISegTracker, tracker.isModelReady {
+                let (objects, mask, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                if !objects.isEmpty {
+                    self.segmentationMaskImage = mask
+                    let enriched = enrichDetectedObjects(objects, in: cgImage)
+                    self.detectedObjects = enriched
+                    updateSurveillanceTelemetry(with: enriched)
+                    return
+                }
+            }
+
+            // Priorité 2 : Moteur YOLO Core AI OBB (Boîtes Orientées)
+            if let tracker = coreAIOBBTracker, tracker.isModelReady {
+                let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                if !objects.isEmpty {
+                    self.segmentationMaskImage = nil
+                    let enriched = enrichDetectedObjects(objects, in: cgImage)
+                    self.detectedObjects = enriched
+                    updateSurveillanceTelemetry(with: enriched)
+                    return
+                }
+            }
+
+            // Priorité 3 : Moteur YOLO Core AI Détection Standard
+            if let tracker = coreAIDetectTracker, tracker.isModelReady {
+                let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
+                if !objects.isEmpty {
+                    self.segmentationMaskImage = nil
+                    let enriched = enrichDetectedObjects(objects, in: cgImage)
+                    self.detectedObjects = enriched
+                    updateSurveillanceTelemetry(with: enriched)
+                    return
+                }
             }
         }
+        #endif
 
-        // Priorité 2 : Moteur YOLO26n Détection Standard
-        if isYoloDetectReady, let yoloDetect {
-            let detObjects = detectWithYOLODetect(yoloDetect, in: cgImage)
-            if !detObjects.isEmpty {
-                self.detectedObjects = detObjects
-                self.segmentationMaskImage = nil
-                updateSurveillanceTelemetry(with: detObjects)
-                return
-            }
-        }
-
-        // Priorité 3 : Repli sur Apple Vision
+        // Priorité 4 : Repli sur Apple Vision (100% Apple natif)
         self.segmentationMaskImage = nil
         detectObjectsWithAppleVision(in: cgImage)
     }
 
-    private func detectWithYOLOSeg(_ yolo: YOLO, in cgImage: CGImage) -> [DetectedObject] {
-        let result = yolo(cgImage)
-        guard !result.boxes.isEmpty else {
-            self.segmentationMaskImage = nil
-            return []
-        }
+    private func enrichDetectedObjects(_ rawObjects: [DetectedObject], in cgImage: CGImage) -> [DetectedObject] {
+        var enriched: [DetectedObject] = []
 
-        // Masque de silhouette combiné pour affichage thermique dans le cockpit
-        self.segmentationMaskImage = result.masks?.combinedMask
-        let rawMasks = result.masks?.masks
-
-        var objects: [DetectedObject] = []
-
-        for (index, box) in result.boxes.enumerated() where box.conf > 0.25 {
-            let swiftUIBox = box.xywhn
-            var label = box.cls.uppercased()
-            var conf = box.conf
-            let clsLower = box.cls.lowercased()
-
-            // Calcul de la boîte orientée (OBB) par analyse des moments de la silhouette
-            let instanceMask = (rawMasks != nil && index < rawMasks!.count) ? rawMasks![index] : nil
-            let (angleRad, corners) = calculateOrientation(from: instanceMask, box: swiftUIBox)
+        for (index, obj) in rawObjects.enumerated() {
+            let swiftUIBox = obj.box
+            var label = obj.label.uppercased()
+            var conf = obj.confidence
+            let clsLower = obj.label.lowercased()
 
             if clsLower == "person" {
                 label = "HUMAIN"
@@ -259,7 +263,7 @@ class VisionTrackerService {
                 }
 
                 // En mode chasse : cap instantané issu de l'axe tête-queue OBB dès la 1ère image
-                if activeMissionMode == .chasse && index == 0 && lockedTargetBox == nil {
+                if activeMissionMode == .chasse && index == 0 && lockedTargetBox == nil, let angleRad = obj.orientedAngleRad {
                     let headingDeg = Double((angleRad * 180.0 / .pi + 360.0).truncatingRemainder(dividingBy: 360.0))
                     self.targetHeadingDeg = headingDeg
                     self.targetBearingCardinal = cardinalDirection(from: headingDeg)
@@ -272,72 +276,17 @@ class VisionTrackerService {
                 }
             }
 
-            objects.append(DetectedObject(
+            enriched.append(DetectedObject(
                 box: swiftUIBox,
                 label: label,
                 confidence: conf,
-                orientedAngleRad: angleRad,
-                orientedCorners: corners,
-                hasSilhouetteMask: instanceMask != nil
+                orientedAngleRad: obj.orientedAngleRad,
+                orientedCorners: obj.orientedCorners,
+                hasSilhouetteMask: obj.hasSilhouetteMask
             ))
         }
 
-        return objects
-    }
-
-    private func detectWithYOLODetect(_ yolo: YOLO, in cgImage: CGImage) -> [DetectedObject] {
-        let result = yolo(cgImage)
-        guard !result.boxes.isEmpty else { return [] }
-
-        var objects: [DetectedObject] = []
-
-        for box in result.boxes where box.conf > 0.25 {
-            let swiftUIBox = box.xywhn
-            var label = box.cls.uppercased()
-            var conf = box.conf
-            let clsLower = box.cls.lowercased()
-
-            if clsLower == "person" {
-                label = "HUMAIN"
-            } else if ["car", "truck", "bus", "motorcycle", "bicycle"].contains(clsLower) {
-                label = "VÉHICULE"
-            } else if ["dog", "cat", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "bird"].contains(clsLower) {
-                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
-                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
-                    label = "\(species.icon) \(species.label)"
-                    conf = max(conf, species.confidence)
-                } else {
-                    switch clsLower {
-                    case "dog": label = "🐾 CANIDÉ"
-                    case "cat": label = "🐾 FÉLIN"
-                    case "horse": label = "🐎 ÉQUIDÉ"
-                    case "cow": label = "🐄 BOVIN"
-                    case "sheep": label = "🐑 MOUTON"
-                    case "bird": label = "🦆 OISEAU / GIBIER"
-                    case "bear": label = "🐻 OURS"
-                    default: label = "🐾 GIBIER"
-                    }
-                }
-            } else if activeMissionMode == .chasse {
-                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
-                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
-                    label = "\(species.icon) \(species.label)"
-                    conf = max(conf, species.confidence)
-                }
-            }
-
-            let (_, corners) = fallbackCorners(for: swiftUIBox)
-            objects.append(DetectedObject(
-                box: swiftUIBox,
-                label: label,
-                confidence: conf,
-                orientedAngleRad: 0.0,
-                orientedCorners: corners,
-                hasSilhouetteMask: false
-            ))
-        }
-
-        return objects
+        return enriched
     }
 
     // MARK: - Calcul Mathématique OBB (Analyse d'Inertie des Moments de Silhouette)
@@ -600,25 +549,32 @@ class VisionTrackerService {
     private func handleTrackingLoss(in cgImage: CGImage, lastBox: CGRect) {
         trackingLossCounter += 1
 
-        // 1. Décrochage bref (3 à 25 frames, ~0.1 à 0.8s) : tentative de ré-accrochage automatique via YOLO
+        // 1. Décrochage bref (3 à 25 frames, ~0.1 à 0.8s) : tentative de ré-accrochage automatique via Core AI
         if trackingLossCounter >= 3 && trackingLossCounter <= 25 {
-            if let yolo = (yoloSeg ?? yoloDetect) {
-                let yoloResult = yolo(cgImage)
-                if let candidate = yoloResult.boxes.first(where: {
-                    hypot($0.xywhn.midX - lastBox.midX, $0.xywhn.midY - lastBox.midY) < 0.18
-                }) {
-                    let reVisionBox = convertSwiftUIRectToVision(candidate.xywhn)
-                    let observation = VNDetectedObjectObservation(boundingBox: reVisionBox)
-                    let newRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
-                    newRequest.trackingLevel = .accurate
-                    configureComputeDevices(for: newRequest)
-                    self.trackingRequest = newRequest
-                    self.lockedTargetBox = candidate.xywhn
-                    self.trackingLossCounter = 0
-                    print("🎯 Ré-accrochage automatique de la cible via YOLO !")
+            #if canImport(CoreAI)
+            if #available(iOS 27.0, macOS 27.0, *) {
+                if let tracker = (coreAISegTracker ?? coreAIDetectTracker), tracker.isModelReady {
+                    Task { @MainActor [weak self] in
+                        guard let self else { return }
+                        let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.2)
+                        if let candidate = objects.first(where: {
+                            hypot($0.box.midX - lastBox.midX, $0.box.midY - lastBox.midY) < 0.18
+                        }) {
+                            let reVisionBox = self.convertSwiftUIRectToVision(candidate.box)
+                            let observation = VNDetectedObjectObservation(boundingBox: reVisionBox)
+                            let newRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
+                            newRequest.trackingLevel = .accurate
+                            self.configureComputeDevices(for: newRequest)
+                            self.trackingRequest = newRequest
+                            self.lockedTargetBox = candidate.box
+                            self.trackingLossCounter = 0
+                            print("🎯 Ré-accrochage automatique de la cible via Apple Core AI !")
+                        }
+                    }
                     return
                 }
             }
+            #endif
         }
 
         // 2. Décrochage prolongé (> 35 frames, > 1.2s) : perte définitive et notification haptique
@@ -805,7 +761,7 @@ class VisionTrackerService {
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
             try handler.perform([classifyRequest])
-            guard let observations = classifyRequest.results as? [VNClassificationObservation] else {
+            guard let observations = classifyRequest.results else {
                 return nil
             }
 

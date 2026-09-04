@@ -54,11 +54,6 @@
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
-		CD6D83812FD5D3AB00D53031 /* yolo26n.mlpackage in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83802FD5D3AB00D53031 /* yolo26n.mlpackage */; };
-		CD6D83862FD5D3AB00D53031 /* yolo26n.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83852FD5D3AB00D53031 /* yolo26n.mlmodelc */; };
-		CD6D83882FD5D3AB00D53031 /* yolo26n-seg.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83872FD5D3AB00D53031 /* yolo26n-seg.mlmodelc */; };
-		CD6D838A2FD5D3AB00D53031 /* yolo26n-obb.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83892FD5D3AB00D53031 /* yolo26n-obb.mlmodelc */; };
-		CD6D83832FD5D3AB00D53031 /* UltralyticsYOLO in Frameworks */ = {isa = PBXBuildFile; productRef = CD6D83822FD5D3AB00D53031 /* UltralyticsYOLO */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,10 +104,6 @@
 		CD6D83742FD5D3AB00D53031 /* CockpitLeisureBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitLeisureBadge.swift; sourceTree = "<group>"; };
 		CD6D83762FD5D3AB00D53031 /* CockpitCompositionGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCompositionGridView.swift; sourceTree = "<group>"; };
 		CD6D83782FD5D3AB00D53031 /* DashboardMissionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Connection/Views/DashboardMissionCard.swift; sourceTree = "<group>"; };
-		CD6D83802FD5D3AB00D53031 /* yolo26n.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n.mlpackage; sourceTree = "<group>"; };
-		CD6D83852FD5D3AB00D53031 /* yolo26n.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n.mlmodelc; sourceTree = "<group>"; };
-		CD6D83872FD5D3AB00D53031 /* yolo26n-seg.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-seg.mlmodelc; sourceTree = "<group>"; };
-		CD6D83892FD5D3AB00D53031 /* yolo26n-obb.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-obb.mlmodelc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +114,6 @@
 				CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */,
 				CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */,
 				CDD680703048551B002AF635 /* SdkCore in Frameworks */,
-				CD6D83832FD5D3AB00D53031 /* UltralyticsYOLO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,10 +142,6 @@
 				CD6D83302FD5D3AB00D53031 /* App */,
 				CD6D83312FD5D3AB00D53031 /* Core */,
 				CD6D83322FD5D3AB00D53031 /* Features */,
-				CD6D83802FD5D3AB00D53031 /* yolo26n.mlpackage */,
-				CD6D83852FD5D3AB00D53031 /* yolo26n.mlmodelc */,
-				CD6D83872FD5D3AB00D53031 /* yolo26n-seg.mlmodelc */,
-				CD6D83892FD5D3AB00D53031 /* yolo26n-obb.mlmodelc */,
 				CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */,
 				CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */,
 				CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */,
@@ -303,7 +289,6 @@
 				CDD6806B3048551B002AF635 /* GroundSdk */,
 				CDD6806C3048551B002AF635 /* ArsdkEngine */,
 				CDD6806D3048551B002AF635 /* SdkCore */,
-				CD6D83822FD5D3AB00D53031 /* UltralyticsYOLO */,
 			);
 			productName = KILLERBEES;
 			productReference = CD00575629F580970092FAC0 /* KILLERBEES.app */;
@@ -335,7 +320,6 @@
 			mainGroup = CD00574D29F580970092FAC0;
 			packageReferences = (
 				CDD6806A3048551B002AF635 /* XCRemoteSwiftPackageReference "ParrotSDK" */,
-				CD6D83842FD5D3AB00D53031 /* XCRemoteSwiftPackageReference "yolo-ios-app" */,
 			);
 			productRefGroup = CD00575729F580970092FAC0 /* Products */;
 			projectDirPath = "";
@@ -353,10 +337,6 @@
 			files = (
 				CD00576229F580990092FAC0 /* Preview Assets.xcassets in Resources */,
 				CD00575E29F580990092FAC0 /* Assets.xcassets in Resources */,
-				CD6D83812FD5D3AB00D53031 /* yolo26n.mlpackage in Resources */,
-				CD6D83862FD5D3AB00D53031 /* yolo26n.mlmodelc in Resources */,
-				CD6D83882FD5D3AB00D53031 /* yolo26n-seg.mlmodelc in Resources */,
-				CD6D838A2FD5D3AB00D53031 /* yolo26n-obb.mlmodelc in Resources */,
 				CD6D83B32FD5D3AB00D53031 /* yolo26n.aimodel in Resources */,
 				CD6D83B52FD5D3AB00D53031 /* yolo26n-seg.aimodel in Resources */,
 				CD6D83B72FD5D3AB00D53031 /* yolo26n-obb.aimodel in Resources */,
@@ -662,14 +642,6 @@
 				kind = branch;
 			};
 		};
-		CD6D83842FD5D3AB00D53031 /* XCRemoteSwiftPackageReference "yolo-ios-app" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ultralytics/yolo-ios-app.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -687,11 +659,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CDD6806A3048551B002AF635 /* XCRemoteSwiftPackageReference "ParrotSDK" */;
 			productName = SdkCore;
-		};
-		CD6D83822FD5D3AB00D53031 /* UltralyticsYOLO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CD6D83842FD5D3AB00D53031 /* XCRemoteSwiftPackageReference "yolo-ios-app" */;
-			productName = UltralyticsYOLO;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
