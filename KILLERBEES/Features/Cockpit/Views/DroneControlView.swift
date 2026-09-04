@@ -66,6 +66,8 @@ struct DroneControlView: View {
                     isTargetLocked: visionService.isTargetLocked,
                     trackingMode: droneManager.selectedTrackingMode,
                     trackingIssues: droneManager.trackingIssues,
+                    segmentationMask: visionService.segmentationMaskImage,
+                    isThermalMaskEnabled: visionService.isThermalMaskEnabled,
                     onSelectPoint: {
                         visionService.lockTarget(at: $0)
                         droneManager.startPilotingTracking()

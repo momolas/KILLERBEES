@@ -1,0 +1,103 @@
+[
+  {
+    "shortDescription" : "Ultralytics YOLO26n-obb model trained on \/home\/mason\/code\/ultralytics\/ultralytics\/cfg\/datasets\/DOTAv1.yaml",
+    "metadataOutputVersion" : "3.0",
+    "outputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float32",
+        "formattedType" : "MultiArray (Float32 1 × 300 × 7)",
+        "shortDescription" : "",
+        "shape" : "[1, 300, 7]",
+        "name" : "var_1561",
+        "type" : "MultiArray"
+      }
+    ],
+    "version" : "8.4.104",
+    "modelParameters" : [
+
+    ],
+    "author" : "Ultralytics",
+    "specificationVersion" : 7,
+    "storagePrecision" : "Mixed (Float16, Palettized (8 bits))",
+    "license" : "AGPL-3.0 License (https:\/\/ultralytics.com\/license)",
+    "mlProgramOperationTypeHistogram" : {
+      "Transpose" : 1,
+      "Ios16.floorDiv" : 2,
+      "Ios16.maxPool" : 3,
+      "UpsampleNearestNeighbor" : 2,
+      "Ios16.softmax" : 2,
+      "Ios16.sin" : 1,
+      "Ios16.gatherAlongAxis" : 3,
+      "Split" : 14,
+      "Ios16.add" : 23,
+      "Concat" : 26,
+      "Ios16.reduceMax" : 1,
+      "Ios16.sigmoid" : 1,
+      "Tile" : 2,
+      "ExpandDims" : 3,
+      "Ios16.gatherNd" : 1,
+      "Ios16.sub" : 3,
+      "Ios16.cast" : 3,
+      "Ios16.conv" : 111,
+      "Ios16.constexprLutToDense" : 104,
+      "Ios16.matmul" : 4,
+      "Ios16.topk" : 2,
+      "Ios16.reshape" : 16,
+      "Ios16.silu" : 93,
+      "Stack" : 1,
+      "Ios16.mul" : 10,
+      "Ios16.cos" : 1
+    },
+    "computePrecision" : "Mixed (Float16, Float32, Int32)",
+    "stateSchema" : [
+
+    ],
+    "isUpdatable" : "0",
+    "availability" : {
+      "macOS" : "13.0",
+      "tvOS" : "16.0",
+      "visionOS" : "1.0",
+      "watchOS" : "9.0",
+      "iOS" : "16.0",
+      "macCatalyst" : "16.0"
+    },
+    "modelType" : {
+      "name" : "MLModelType_mlProgram"
+    },
+    "inputSchema" : [
+      {
+        "height" : "640",
+        "colorspace" : "RGB",
+        "isOptional" : "0",
+        "width" : "640",
+        "isColor" : "1",
+        "formattedType" : "Image (Color 640 × 640)",
+        "hasSizeFlexibility" : "0",
+        "type" : "Image",
+        "shortDescription" : "",
+        "name" : "image"
+      }
+    ],
+    "userDefinedMetadata" : {
+      "batch" : "1",
+      "head" : "OBB26",
+      "com.github.apple.coremltools.version" : "9.0",
+      "docs" : "https:\/\/docs.ultralytics.com",
+      "names" : "{0: 'plane', 1: 'ship', 2: 'storage tank', 3: 'baseball diamond', 4: 'tennis court', 5: 'basketball court', 6: 'ground track field', 7: 'harbor', 8: 'bridge', 9: 'large vehicle', 10: 'small vehicle', 11: 'helicopter', 12: 'roundabout', 13: 'soccer ball field', 14: 'swimming pool'}",
+      "imgsz" : "[640, 640]",
+      "com.github.apple.coremltools.conversion_date" : "2026-07-23",
+      "channels" : "3",
+      "stride" : "32",
+      "date" : "2026-07-23T20:54:38.573986",
+      "args" : "{'batch': 1, 'quantize': 8, 'dynamic': False, 'nms': False}",
+      "com.github.apple.coremltools.source_dialect" : "TorchScript",
+      "com.github.apple.coremltools.source" : "torch==2.7.0",
+      "task" : "obb",
+      "end2end" : "True"
+    },
+    "generatedClassName" : "yolo26n_obb",
+    "method" : "predict"
+  }
+]

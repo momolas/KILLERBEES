@@ -12,12 +12,16 @@ import CoreML
 import Foundation
 import SwiftUI
 import Vision
+import UltralyticsYOLO
 
 struct DetectedObject: Identifiable, Sendable {
     let id = UUID()
     let box: CGRect // Coordonnées normalisées SwiftUI [0, 1] (origine haut-gauche)
     let label: String
     let confidence: Float
+    var orientedAngleRad: Float? = nil // Angle d'orientation OBB en radians
+    var orientedCorners: [CGPoint]? = nil // 4 sommets OBB normalisés [0, 1]
+    var hasSilhouetteMask: Bool = false // Silhouette détourée au pixel près
 }
 
 @Observable @MainActor
@@ -60,7 +64,65 @@ class VisionTrackerService {
     private let horizontalFovRad: Double = 1.2043 // 69 degrés
     private let verticalFovRad: Double = 0.7330   // 42 degrés
 
-    init() {}
+    // MARK: - Moteur Ultralytics YOLO26 (Apple Neural Engine)
+    private var yoloSeg: YOLO?
+    private var yoloDetect: YOLO?
+    private var isYoloSegReady: Bool = false
+    private var isYoloDetectReady: Bool = false
+
+    // Calque de silhouette d'instance (Effet vision thermique / nocturne)
+    var segmentationMaskImage: CGImage? = nil
+    var isThermalMaskEnabled: Bool = true
+
+    init() {
+        setupYOLO()
+    }
+
+    private func setupYOLO() {
+        // 1. Modèle de Segmentation & OBB (Prioritaire)
+        let segIdentifier: String
+        if let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "mlmodelc") {
+            segIdentifier = segURL.path
+        } else if let segPackageURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "mlpackage") {
+            segIdentifier = segPackageURL.path
+        } else {
+            segIdentifier = "yolo26n-seg"
+        }
+
+        yoloSeg = YOLO(segIdentifier, task: .segment, useGpu: false) { [weak self] result in
+            Task { @MainActor in
+                switch result {
+                case .success:
+                    print("⚡️ Ultralytics YOLO26n-SEG (Segmentation & OBB sur Neural Engine) initialisé.")
+                    self?.isYoloSegReady = true
+                case .failure(let error):
+                    print("⚠️ Ultralytics YOLO26n-SEG indisponible (\(error)), repli sur détection.")
+                    self?.isYoloSegReady = false
+                }
+            }
+        }
+
+        // 2. Modèle de Détection standard de secours
+        let detIdentifier: String
+        if let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "mlmodelc") {
+            detIdentifier = detURL.path
+        } else if let detPackageURL = Bundle.main.url(forResource: "yolo26n", withExtension: "mlpackage") {
+            detIdentifier = detPackageURL.path
+        } else {
+            detIdentifier = "yolo26n"
+        }
+
+        yoloDetect = YOLO(detIdentifier, task: .detect, useGpu: false) { [weak self] result in
+            Task { @MainActor in
+                switch result {
+                case .success:
+                    self?.isYoloDetectReady = true
+                case .failure:
+                    self?.isYoloDetectReady = false
+                }
+            }
+        }
+    }
 
     private var isProcessing: Bool = false
 
@@ -121,9 +183,246 @@ class VisionTrackerService {
         }
     }
 
-    // MARK: - Détection Native Apple Vision (Humains, Animaux, Cibles Saillantes)
+    // MARK: - Détection d'Objets (YOLO26n-SEG + OBB + Repli Apple Vision)
 
     private func detectObjects(in cgImage: CGImage) {
+        // Priorité 1 : Moteur YOLO26n-SEG (Segmentation + Boîtes + OBB)
+        if isYoloSegReady, let yoloSeg {
+            let segObjects = detectWithYOLOSeg(yoloSeg, in: cgImage)
+            if !segObjects.isEmpty {
+                self.detectedObjects = segObjects
+                updateSurveillanceTelemetry(with: segObjects)
+                return
+            }
+        }
+
+        // Priorité 2 : Moteur YOLO26n Détection Standard
+        if isYoloDetectReady, let yoloDetect {
+            let detObjects = detectWithYOLODetect(yoloDetect, in: cgImage)
+            if !detObjects.isEmpty {
+                self.detectedObjects = detObjects
+                self.segmentationMaskImage = nil
+                updateSurveillanceTelemetry(with: detObjects)
+                return
+            }
+        }
+
+        // Priorité 3 : Repli sur Apple Vision
+        self.segmentationMaskImage = nil
+        detectObjectsWithAppleVision(in: cgImage)
+    }
+
+    private func detectWithYOLOSeg(_ yolo: YOLO, in cgImage: CGImage) -> [DetectedObject] {
+        let result = yolo(cgImage)
+        guard !result.boxes.isEmpty else {
+            self.segmentationMaskImage = nil
+            return []
+        }
+
+        // Masque de silhouette combiné pour affichage thermique dans le cockpit
+        self.segmentationMaskImage = result.masks?.combinedMask
+        let rawMasks = result.masks?.masks
+
+        var objects: [DetectedObject] = []
+
+        for (index, box) in result.boxes.enumerated() where box.conf > 0.25 {
+            let swiftUIBox = box.xywhn
+            var label = box.cls.uppercased()
+            var conf = box.conf
+            let clsLower = box.cls.lowercased()
+
+            // Calcul de la boîte orientée (OBB) par analyse des moments de la silhouette
+            let instanceMask = (rawMasks != nil && index < rawMasks!.count) ? rawMasks![index] : nil
+            let (angleRad, corners) = calculateOrientation(from: instanceMask, box: swiftUIBox)
+
+            if clsLower == "person" {
+                label = "HUMAIN"
+            } else if ["car", "truck", "bus", "motorcycle", "bicycle"].contains(clsLower) {
+                label = "VÉHICULE"
+            } else if ["dog", "cat", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "bird"].contains(clsLower) {
+                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
+                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
+                    label = "\(species.icon) \(species.label)"
+                    conf = max(conf, species.confidence)
+                } else {
+                    switch clsLower {
+                    case "dog": label = "🐾 CANIDÉ"
+                    case "cat": label = "🐾 FÉLIN"
+                    case "horse": label = "🐎 ÉQUIDÉ"
+                    case "cow": label = "🐄 BOVIN"
+                    case "sheep": label = "🐑 MOUTON"
+                    case "bird": label = "🦆 OISEAU / GIBIER"
+                    case "bear": label = "🐻 OURS"
+                    default: label = "🐾 GIBIER"
+                    }
+                }
+
+                // En mode chasse : cap instantané issu de l'axe tête-queue OBB dès la 1ère image
+                if activeMissionMode == .chasse && index == 0 && lockedTargetBox == nil {
+                    let headingDeg = Double((angleRad * 180.0 / .pi + 360.0).truncatingRemainder(dividingBy: 360.0))
+                    self.targetHeadingDeg = headingDeg
+                    self.targetBearingCardinal = cardinalDirection(from: headingDeg)
+                }
+            } else if activeMissionMode == .chasse {
+                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
+                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
+                    label = "\(species.icon) \(species.label)"
+                    conf = max(conf, species.confidence)
+                }
+            }
+
+            objects.append(DetectedObject(
+                box: swiftUIBox,
+                label: label,
+                confidence: conf,
+                orientedAngleRad: angleRad,
+                orientedCorners: corners,
+                hasSilhouetteMask: instanceMask != nil
+            ))
+        }
+
+        return objects
+    }
+
+    private func detectWithYOLODetect(_ yolo: YOLO, in cgImage: CGImage) -> [DetectedObject] {
+        let result = yolo(cgImage)
+        guard !result.boxes.isEmpty else { return [] }
+
+        var objects: [DetectedObject] = []
+
+        for box in result.boxes where box.conf > 0.25 {
+            let swiftUIBox = box.xywhn
+            var label = box.cls.uppercased()
+            var conf = box.conf
+            let clsLower = box.cls.lowercased()
+
+            if clsLower == "person" {
+                label = "HUMAIN"
+            } else if ["car", "truck", "bus", "motorcycle", "bicycle"].contains(clsLower) {
+                label = "VÉHICULE"
+            } else if ["dog", "cat", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "bird"].contains(clsLower) {
+                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
+                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
+                    label = "\(species.icon) \(species.label)"
+                    conf = max(conf, species.confidence)
+                } else {
+                    switch clsLower {
+                    case "dog": label = "🐾 CANIDÉ"
+                    case "cat": label = "🐾 FÉLIN"
+                    case "horse": label = "🐎 ÉQUIDÉ"
+                    case "cow": label = "🐄 BOVIN"
+                    case "sheep": label = "🐑 MOUTON"
+                    case "bird": label = "🦆 OISEAU / GIBIER"
+                    case "bear": label = "🐻 OURS"
+                    default: label = "🐾 GIBIER"
+                    }
+                }
+            } else if activeMissionMode == .chasse {
+                let visionBox = convertSwiftUIRectToVision(swiftUIBox)
+                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: visionBox) {
+                    label = "\(species.icon) \(species.label)"
+                    conf = max(conf, species.confidence)
+                }
+            }
+
+            let (_, corners) = fallbackCorners(for: swiftUIBox)
+            objects.append(DetectedObject(
+                box: swiftUIBox,
+                label: label,
+                confidence: conf,
+                orientedAngleRad: 0.0,
+                orientedCorners: corners,
+                hasSilhouetteMask: false
+            ))
+        }
+
+        return objects
+    }
+
+    // MARK: - Calcul Mathématique OBB (Analyse d'Inertie des Moments de Silhouette)
+
+    private func calculateOrientation(from mask: [[Float]]?, box: CGRect) -> (angleRad: Float, corners: [CGPoint]) {
+        guard let mask = mask, !mask.isEmpty, !mask[0].isEmpty else {
+            return fallbackCorners(for: box)
+        }
+
+        let h = mask.count
+        let w = mask[0].count
+
+        var m00: Float = 0
+        var m10: Float = 0
+        var m01: Float = 0
+
+        let minX = max(0, min(w - 1, Int(box.minX * CGFloat(w))))
+        let maxX = max(0, min(w - 1, Int(box.maxX * CGFloat(w))))
+        let minY = max(0, min(h - 1, Int(box.minY * CGFloat(h))))
+        let maxY = max(0, min(h - 1, Int(box.maxY * CGFloat(h))))
+
+        guard maxX > minX, maxY > minY else { return fallbackCorners(for: box) }
+
+        let stepX = max(1, (maxX - minX) / 24)
+        let stepY = max(1, (maxY - minY) / 24)
+
+        for y in stride(from: minY, through: maxY, by: stepY) {
+            for x in stride(from: minX, through: maxX, by: stepX) {
+                if mask[y][x] > 0.45 {
+                    m00 += 1
+                    m10 += Float(x)
+                    m01 += Float(y)
+                }
+            }
+        }
+
+        guard m00 >= 4 else { return fallbackCorners(for: box) }
+
+        let cx = m10 / m00
+        let cy = m01 / m00
+
+        var mu20: Float = 0
+        var mu02: Float = 0
+        var mu11: Float = 0
+
+        for y in stride(from: minY, through: maxY, by: stepY) {
+            let dy = Float(y) - cy
+            for x in stride(from: minX, through: maxX, by: stepX) {
+                if mask[y][x] > 0.45 {
+                    let dx = Float(x) - cx
+                    mu20 += dx * dx
+                    mu02 += dy * dy
+                    mu11 += dx * dy
+                }
+            }
+        }
+
+        // Angle d'orientation principal theta
+        let angleRad = 0.5 * atan2(2.0 * mu11, mu20 - mu02)
+        let normalizedCx = CGFloat(cx / Float(w))
+        let normalizedCy = CGFloat(cy / Float(h))
+        let halfW = box.width / 2.0
+        let halfH = box.height / 2.0
+
+        let cosA = CGFloat(cos(angleRad))
+        let sinA = CGFloat(sin(angleRad))
+
+        let p1 = CGPoint(x: normalizedCx - halfW * cosA + halfH * sinA, y: normalizedCy - halfW * sinA - halfH * cosA)
+        let p2 = CGPoint(x: normalizedCx + halfW * cosA + halfH * sinA, y: normalizedCy + halfW * sinA - halfH * cosA)
+        let p3 = CGPoint(x: normalizedCx + halfW * cosA - halfH * sinA, y: normalizedCy + halfW * sinA + halfH * cosA)
+        let p4 = CGPoint(x: normalizedCx - halfW * cosA - halfH * sinA, y: normalizedCy - halfW * sinA + halfH * cosA)
+
+        return (angleRad, [p1, p2, p3, p4])
+    }
+
+    private func fallbackCorners(for box: CGRect) -> (angleRad: Float, corners: [CGPoint]) {
+        let corners = [
+            CGPoint(x: box.minX, y: box.minY),
+            CGPoint(x: box.maxX, y: box.minY),
+            CGPoint(x: box.maxX, y: box.maxY),
+            CGPoint(x: box.minX, y: box.maxY)
+        ]
+        return (0.0, corners)
+    }
+
+    private func detectObjectsWithAppleVision(in cgImage: CGImage) {
         var newObjects: [DetectedObject] = []
         var requestsToPerform: [VNRequest] = []
 
@@ -204,17 +503,19 @@ class VisionTrackerService {
         do {
             try handler.perform(requestsToPerform)
             self.detectedObjects = newObjects
-
-            // Mise à jour de la télémétrie de surveillance
-            if activeMissionMode == .surveillance {
-                self.detectedHumansCount = newObjects.filter { $0.label == "HUMAIN" }.count
-                self.hasIntruderAlert = self.detectedHumansCount > 0
-            } else {
-                self.detectedHumansCount = 0
-                self.hasIntruderAlert = false
-            }
+            updateSurveillanceTelemetry(with: newObjects)
         } catch {
             print("Erreur analyse Apple Vision : \(error)")
+        }
+    }
+
+    private func updateSurveillanceTelemetry(with objects: [DetectedObject]) {
+        if activeMissionMode == .surveillance {
+            self.detectedHumansCount = objects.filter { $0.label == "HUMAIN" }.count
+            self.hasIntruderAlert = self.detectedHumansCount > 0
+        } else {
+            self.detectedHumansCount = 0
+            self.hasIntruderAlert = false
         }
     }
 
@@ -406,6 +707,7 @@ class VisionTrackerService {
         targetBearingCardinal = nil
         targetSpeciesName = nil
         targetSpeciesIcon = nil
+        segmentationMaskImage = nil
         trackingFrameCounter = 0
         previousBoxCenter = nil
         previousTimestamp = nil
