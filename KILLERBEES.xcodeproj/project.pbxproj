@@ -33,6 +33,10 @@
 		CD6D832C2FD5D3AB00D53031 /* CockpitAlarmBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */; };
 		CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */; };
 		CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */; };
+		CD6D83B12FD5D3AB00D53031 /* CoreAIVisionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */; };
+		CD6D83B32FD5D3AB00D53031 /* yolo26n.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */; };
+		CD6D83B52FD5D3AB00D53031 /* yolo26n-seg.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */; };
+		CD6D83B72FD5D3AB00D53031 /* yolo26n-obb.aimodel in Resources */ = {isa = PBXBuildFile; fileRef = CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */; };
 		CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */; };
 		CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */; };
 		CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */; };
@@ -87,6 +91,10 @@
 		CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAlarmBanner.swift; sourceTree = "<group>"; };
 		CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitFlightPlanOverlay.swift; sourceTree = "<group>"; };
 		CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/VisionTrackerService.swift; sourceTree = "<group>"; };
+		CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/CoreAIVisionTracker.swift; sourceTree = "<group>"; };
+		CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n.aimodel; sourceTree = "<group>"; };
+		CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-seg.aimodel; sourceTree = "<group>"; };
+		CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Models/yolo26n-obb.aimodel; sourceTree = "<group>"; };
 		CD6D83422FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAITrackingOverlay.swift; sourceTree = "<group>"; };
 		CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/HapticFeedback.swift; sourceTree = "<group>"; };
 		CD6D83492FD5D3AB00D53031 /* CockpitMissionStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMissionStatusBar.swift; sourceTree = "<group>"; };
@@ -148,6 +156,9 @@
 				CD6D83852FD5D3AB00D53031 /* yolo26n.mlmodelc */,
 				CD6D83872FD5D3AB00D53031 /* yolo26n-seg.mlmodelc */,
 				CD6D83892FD5D3AB00D53031 /* yolo26n-obb.mlmodelc */,
+				CD6D83B22FD5D3AB00D53031 /* yolo26n.aimodel */,
+				CD6D83B42FD5D3AB00D53031 /* yolo26n-seg.aimodel */,
+				CD6D83B62FD5D3AB00D53031 /* yolo26n-obb.aimodel */,
 				CD00575D29F580990092FAC0 /* Assets.xcassets */,
 				CD00575F29F580990092FAC0 /* KILLERBEES.entitlements */,
 				CD6D831A2FD5D3AB00D53031 /* Info.plist */,
@@ -259,6 +270,7 @@
 			children = (
 				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
 				CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */,
+				CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -345,6 +357,9 @@
 				CD6D83862FD5D3AB00D53031 /* yolo26n.mlmodelc in Resources */,
 				CD6D83882FD5D3AB00D53031 /* yolo26n-seg.mlmodelc in Resources */,
 				CD6D838A2FD5D3AB00D53031 /* yolo26n-obb.mlmodelc in Resources */,
+				CD6D83B32FD5D3AB00D53031 /* yolo26n.aimodel in Resources */,
+				CD6D83B52FD5D3AB00D53031 /* yolo26n-seg.aimodel in Resources */,
+				CD6D83B72FD5D3AB00D53031 /* yolo26n-obb.aimodel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +394,7 @@
 				CD00575C29F580970092FAC0 /* ContentView.swift in Sources */,
 				CD00575A29F580970092FAC0 /* KILLERBEESApp.swift in Sources */,
 				CD6D83412FD5D3AB00D53031 /* VisionTrackerService.swift in Sources */,
+				CD6D83B12FD5D3AB00D53031 /* CoreAIVisionTracker.swift in Sources */,
 				CD6D83432FD5D3AB00D53031 /* CockpitAITrackingOverlay.swift in Sources */,
 				CD6D83462FD5D3AB00D53031 /* HapticFeedback.swift in Sources */,
 				CD6D83482FD5D3AB00D53031 /* CockpitMissionStatusBar.swift in Sources */,
