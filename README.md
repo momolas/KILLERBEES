@@ -44,6 +44,15 @@ L'interface s'adapte en temps réel selon le mode de mission sélectionné :
 - **Mode Chasse** : Badge cinématique avec cap azimutal, vitesse du gibier en km/h, icône de l'espèce identifiée et profil de vol réactif (lacet à 120°/s).
 - **Mode Surveillance** : Détection d'intrusions, décompte des personnes, bouton de capture de preuve photo instantanée horodatée avec coordonnées GPS.
 - **Mode Loisir** : Profil cinématique 4K avec lacet doux (25°/s sans saccade) et grille des tiers 3x3 pour le cadrage photographique.
+- **🎯 Horizon Artificiel Militaire Central (Pitch Ladder & Heading Tape)** :
+  - Échelle de tangage militaire (*Pitch Ladder*) projetée au centre de l'image vidéo avec échelons de montée continus et de descente pointillés (±10°, ±20°, ±30°).
+  - Réticule central d'axe drone fixe (*Boresight Watermark* `— ⚬ —`).
+  - Ruban de cap militaire supérieur (*Heading Tape*) avec boîte numérique du cap exact et graduations cardinales défilantes.
+  - Indicateur d'arc de roulis supérieur (*Roll Sky Pointer*) avec triangle d'assiette mobile.
+- **👁️ Mode "HUD Épuré" (Declutter / Clean Screen)** :
+  - Bouton à bascule rapide dans la barre supérieure permettant de masquer instantanément les widgets secondaires (mini-carte, jauges de télémétrie annexes, barre de vol, sélecteurs) pour ne conserver que la vidéo plein écran, la visée IA et l'horizon militaire central.
+- **🎮 Pilotage de Nacelle Natif SkyController** :
+  - Suppression du slider tactile rigide au profit du contrôle direct et fluide via les molettes physiques de la radiocommande SkyController, libérant le champ de vision.
 - **Télémétrie Complète** : Niveaux de batterie (drone et SkyController), indicateurs GPS et satellites, qualité du lien radio, état FCC, bannières d'alarmes critiques et mini-carte satellite tactique avec ligne de visée.
 - **⚡ Smart RTH & Point de Non-Retour Dynamique** :
   - Calcul trigonométrique en temps réel de la distance et du temps de vol requis pour regagner le point de départ (Home).
@@ -75,15 +84,16 @@ KILLERBEES/
 │       │   ├── VideoController.swift       # Décodage et rendu du flux vidéo
 │       │   └── DetectedObject.swift        # Modèle de données d'objet détecté (boîtes, OBB, masque)
 │       └── Views/
-│           ├── DroneControlView.swift         # Écran cockpit principal
-│           ├── CockpitAITrackingOverlay.swift # Réticules tactiques, boîtes OBB, masque thermique
-│           ├── CockpitTopBar.swift            # Barre d'état télémétrique
-│           ├── CockpitSmartBatteryBar.swift   # Jauge intelligente avec marqueur Point de Non-Retour
-│           ├── CockpitSmartRTHBadge.swift     # Badge HUD d'alerte et de télémétrie RTH (vent, distance, ETA)
-│           ├── CockpitGameVectorBadge.swift   # Télémétrie gibier (cap, vitesse, espèce)
-│           ├── CockpitSurveillanceBadge.swift # Télémétrie sécurité & capture preuve
-│           ├── CockpitLeisureBadge.swift      # Outils cinématographiques & grille
-│           └── CockpitMiniMap.swift           # Mini-carte satellite avec ligne de visée
+│           ├── DroneControlView.swift              # Écran cockpit principal
+│           ├── CockpitMilitaryPitchLadderHUD.swift # Horizon militaire central (Pitch Ladder, Boresight, Heading Tape)
+│           ├── CockpitAITrackingOverlay.swift      # Réticules tactiques, boîtes OBB, masque thermique
+│           ├── CockpitTopBar.swift                 # Barre d'état télémétrique avec bouton Declutter
+│           ├── CockpitSmartBatteryBar.swift        # Jauge intelligente avec marqueur Point de Non-Retour
+│           ├── CockpitSmartRTHBadge.swift          # Badge HUD d'alerte et de télémétrie RTH (vent, distance, ETA)
+│           ├── CockpitGameVectorBadge.swift        # Télémétrie gibier (cap, vitesse, espèce)
+│           ├── CockpitSurveillanceBadge.swift      # Télémétrie sécurité & capture preuve
+│           ├── CockpitLeisureBadge.swift           # Outils cinématographiques & grille
+│           └── CockpitMiniMap.swift                # Mini-carte satellite avec ligne de visée
 └── Resources/
     └── Models/                     # Modèles compilés .aimodel (YOLO Core AI)
 ```

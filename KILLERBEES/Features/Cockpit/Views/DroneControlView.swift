@@ -16,6 +16,7 @@ struct DroneControlView: View {
     @State private var visionService = VisionTrackerService()
     @State private var isMapExpanded = false
     @State private var isLeisureGridEnabled = false
+    @State private var isDeclutterMode = false
     @State private var showErrorAlert = false
 
     init(drone: Drone) {
@@ -58,7 +59,15 @@ struct DroneControlView: View {
             }
             .ignoresSafeArea()
 
-            // 2. Superposition IA Tactile (Réticules & Verrouillage Cible)
+            // 2. Horizon Artificiel Militaire Central (Pitch Ladder & Heading Tape HUD)
+            CockpitMilitaryPitchLadderHUD(
+                pitch: droneManager.pitch,
+                roll: droneManager.roll,
+                heading: droneManager.heading
+            )
+            .ignoresSafeArea()
+
+            // 3. Superposition IA Tactile (Réticules & Verrouillage Cible)
             if droneManager.isDroneConnected && visionService.isTrackingActive {
                 CockpitAITrackingOverlay(
                     detectedObjects: visionService.detectedObjects,
@@ -85,7 +94,7 @@ struct DroneControlView: View {
                 .ignoresSafeArea()
             }
 
-            // 3. HUD superposé (Cockpit Overlay)
+            // 4. HUD superposé (Cockpit Overlay)
             VStack {
                 // Barre Supérieure
                 CockpitTopBar(
@@ -101,166 +110,178 @@ struct DroneControlView: View {
                     activeMissionMode: droneManager.activeMissionMode,
                     droneConnectionState: droneManager.droneConnectionState,
                     smartRTH: droneManager.smartRTH,
+                    isDeclutterMode: isDeclutterMode,
+                    onToggleDeclutter: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            isDeclutterMode.toggle()
+                        }
+                    },
                     onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
                     onSelectMissionMode: { droneManager.setMissionMode($0) },
                     onDismiss: { dismiss() }
                 )
                 .padding(.top, 8)
 
-                // Bannière d'Alerte Vol (si active)
+                // Bannière d'Alerte Vol (si active) - toujours prioritaire même en mode HUD épuré
                 CockpitAlarmBanner(
                     message: droneManager.activeAlarmText,
                     isCritical: droneManager.isAlarmCritical
                 )
                 .padding(.top, 2)
 
-                // Badge Smart RTH & Point de Non-Retour (si en vol ou RTH actif)
-                if droneManager.flyingState == .flying || droneManager.isRthActive {
-                    CockpitSmartRTHBadge(
-                        smartRTH: droneManager.smartRTH,
-                        isRthActive: droneManager.isRthActive,
-                        onTriggerRth: {
-                            HapticFeedback.tap()
-                            droneManager.triggerReturnHome()
-                        },
-                        onCancelRth: {
-                            HapticFeedback.tap()
-                            droneManager.cancelReturnHome()
-                        },
-                        onCancelAutoTrigger: {
-                            HapticFeedback.tap()
-                            droneManager.cancelRthAutoTrigger()
-                        }
-                    )
-                    .padding(.top, 2)
-                }
-
-                // Badges Spécifiques au Mode de Mission (Surveillance, Loisir, Chasse)
-                switch droneManager.activeMissionMode {
-                case .chasse:
-                    if visionService.isTargetLocked {
-                        CockpitGameVectorBadge(
-                            headingDeg: visionService.targetHeadingDeg,
-                            speedKmH: visionService.targetSpeedKmH,
-                            cardinal: visionService.targetBearingCardinal,
-                            speciesName: visionService.targetSpeciesName,
-                            speciesIcon: visionService.targetSpeciesIcon,
-                            isProfileActive: droneManager.isGameTrackingProfileActive,
-                            onToggleProfile: {
-                                droneManager.toggleGameTrackingFlightProfile()
+                if !isDeclutterMode {
+                    // Badge Smart RTH & Point de Non-Retour (si en vol ou RTH actif)
+                    if droneManager.flyingState == .flying || droneManager.isRthActive {
+                        CockpitSmartRTHBadge(
+                            smartRTH: droneManager.smartRTH,
+                            isRthActive: droneManager.isRthActive,
+                            onTriggerRth: {
+                                HapticFeedback.tap()
+                                droneManager.triggerReturnHome()
+                            },
+                            onCancelRth: {
+                                HapticFeedback.tap()
+                                droneManager.cancelReturnHome()
+                            },
+                            onCancelAutoTrigger: {
+                                HapticFeedback.tap()
+                                droneManager.cancelRthAutoTrigger()
                             }
                         )
                         .padding(.top, 2)
                     }
 
-                case .surveillance:
-                    CockpitSurveillanceBadge(
-                        hasIntruderAlert: visionService.hasIntruderAlert,
-                        detectedHumansCount: visionService.detectedHumansCount,
-                        onCaptureSnapshot: {
-                            droneManager.takePhoto()
+                    // Badges Spécifiques au Mode de Mission (Surveillance, Loisir, Chasse)
+                    switch droneManager.activeMissionMode {
+                    case .chasse:
+                        if visionService.isTargetLocked {
+                            CockpitGameVectorBadge(
+                                headingDeg: visionService.targetHeadingDeg,
+                                speedKmH: visionService.targetSpeedKmH,
+                                cardinal: visionService.targetBearingCardinal,
+                                speciesName: visionService.targetSpeciesName,
+                                speciesIcon: visionService.targetSpeciesIcon,
+                                isProfileActive: droneManager.isGameTrackingProfileActive,
+                                onToggleProfile: {
+                                    droneManager.toggleGameTrackingFlightProfile()
+                                }
+                            )
+                            .padding(.top, 2)
                         }
-                    )
-                    .padding(.top, 2)
 
-                case .loisir:
-                    CockpitLeisureBadge(
-                        isGridEnabled: $isLeisureGridEnabled,
-                        isRecording: droneManager.isRecording
-                    )
-                    .padding(.top, 2)
+                    case .surveillance:
+                        CockpitSurveillanceBadge(
+                            hasIntruderAlert: visionService.hasIntruderAlert,
+                            detectedHumansCount: visionService.detectedHumansCount,
+                            onCaptureSnapshot: {
+                                droneManager.takePhoto()
+                            }
+                        )
+                        .padding(.top, 2)
+
+                    case .loisir:
+                        CockpitLeisureBadge(
+                            isGridEnabled: $isLeisureGridEnabled,
+                            isRecording: droneManager.isRecording
+                        )
+                        .padding(.top, 2)
+                    }
+
+                    // Télémétrie Supérieure (Altitude, Vitesse, Attitude)
+                    HStack(alignment: .top) {
+                        CockpitTelemetryHUD(
+                            altitude: droneManager.altitude,
+                            verticalSpeed: droneManager.verticalSpeed,
+                            groundSpeed: droneManager.groundSpeed
+                        )
+
+                        Spacer()
+
+                        // Horizon Artificiel & Boussole
+                        CockpitAttitudeIndicator(
+                            pitch: droneManager.pitch,
+                            roll: droneManager.roll,
+                            heading: droneManager.heading
+                        )
+                        .padding(.trailing)
+                    }
+                    .padding(.top, 4)
                 }
-
-                // Télémétrie Supérieure (Altitude, Vitesse, Attitude)
-                HStack(alignment: .top) {
-                    CockpitTelemetryHUD(
-                        altitude: droneManager.altitude,
-                        verticalSpeed: droneManager.verticalSpeed,
-                        groundSpeed: droneManager.groundSpeed
-                    )
-
-                    Spacer()
-
-                    // Horizon Artificiel & Boussole
-                    CockpitAttitudeIndicator(
-                        pitch: droneManager.pitch,
-                        roll: droneManager.roll,
-                        heading: droneManager.heading
-                    )
-                    .padding(.trailing)
-                }
-                .padding(.top, 4)
 
                 Spacer()
 
-                // Bandeau de Mission Autonome MAVLink (si waypoints ou mission active)
-                if isMapExpanded || !droneManager.waypoints.isEmpty || droneManager.isFlightPlanActive {
-                    CockpitFlightPlanOverlay(
-                        flightPlanState: droneManager.flightPlanState,
-                        flightPlanUploadState: droneManager.flightPlanUploadState,
-                        waypointCount: droneManager.waypoints.count,
-                        currentMissionItem: droneManager.latestMissionItemExecuted,
-                        isFlightPlanActive: droneManager.isFlightPlanActive,
-                        onUploadMission: { droneManager.uploadWaypointMission() },
-                        onStartMission: { droneManager.startFlightPlan() },
-                        onPauseMission: { droneManager.pauseFlightPlan() },
-                        onClearWaypoints: { droneManager.clearWaypoints() }
-                    )
-                    .padding(.bottom, 6)
+                if !isDeclutterMode {
+                    // Bandeau de Mission Autonome MAVLink (si waypoints ou mission active)
+                    if isMapExpanded || !droneManager.waypoints.isEmpty || droneManager.isFlightPlanActive {
+                        CockpitFlightPlanOverlay(
+                            flightPlanState: droneManager.flightPlanState,
+                            flightPlanUploadState: droneManager.flightPlanUploadState,
+                            waypointCount: droneManager.waypoints.count,
+                            currentMissionItem: droneManager.latestMissionItemExecuted,
+                            isFlightPlanActive: droneManager.isFlightPlanActive,
+                            onUploadMission: { droneManager.uploadWaypointMission() },
+                            onStartMission: { droneManager.startFlightPlan() },
+                            onPauseMission: { droneManager.pauseFlightPlan() },
+                            onClearWaypoints: { droneManager.clearWaypoints() }
+                        )
+                        .padding(.bottom, 6)
+                    }
                 }
 
-                // Zone Médiane / Basse : Mini-Carte (Gauche), Commandes Caméra & Nacelle (Droite), Barre de Vol (Centre)
+                // Zone Médiane / Basse : Mini-Carte (Gauche), Commandes Caméra (Droite), Barre de Vol (Centre)
                 HStack(alignment: .bottom, spacing: 12) {
-                    // Mini-Carte MapKit PiP (Bas Gauche)
-                    CockpitMiniMap(
-                        droneCoordinate: droneManager.droneCoordinate,
-                        homeCoordinate: droneManager.homeCoordinate,
-                        heading: droneManager.heading,
-                        waypoints: droneManager.waypoints,
-                        targetCoordinate: droneManager.targetGroundCoordinate,
-                        onAddWaypoint: { droneManager.addWaypoint($0) },
-                        isExpanded: $isMapExpanded
-                    )
-                    .padding(.leading)
-
-                    Spacer()
-
-                    // Commandes de Vol Décollage / Atterrissage / RTH & Bandeau de Mission
-                    VStack(spacing: 8) {
-                        CockpitMissionStatusBar(
-                            isConnected: droneManager.isDroneConnected,
-                            isTargetLocked: visionService.isTargetLocked,
-                            isTrackingActive: visionService.isTrackingActive,
-                            trackingMode: droneManager.selectedTrackingMode,
-                            flyingState: droneManager.flyingState,
-                            altitude: droneManager.altitude
+                    if !isDeclutterMode {
+                        // Mini-Carte MapKit PiP (Bas Gauche)
+                        CockpitMiniMap(
+                            droneCoordinate: droneManager.droneCoordinate,
+                            homeCoordinate: droneManager.homeCoordinate,
+                            heading: droneManager.heading,
+                            waypoints: droneManager.waypoints,
+                            targetCoordinate: droneManager.targetGroundCoordinate,
+                            onAddWaypoint: { droneManager.addWaypoint($0) },
+                            isExpanded: $isMapExpanded
                         )
+                        .padding(.leading)
 
-                        CockpitBottomBar(
-                            flyingState: droneManager.flyingState,
-                            isRthActive: droneManager.isRthActive,
-                            onTakeOff: {
-                                HapticFeedback.tap()
-                                droneManager.takeOff()
-                            },
-                            onLand: {
-                                HapticFeedback.tap()
-                                droneManager.land()
-                            },
-                            onToggleRth: {
-                                HapticFeedback.tap()
-                                if droneManager.isRthActive {
-                                    droneManager.cancelReturnHome()
-                                } else {
-                                    droneManager.triggerReturnHome()
+                        Spacer()
+
+                        // Commandes de Vol Décollage / Atterrissage / RTH & Bandeau de Mission
+                        VStack(spacing: 8) {
+                            CockpitMissionStatusBar(
+                                isConnected: droneManager.isDroneConnected,
+                                isTargetLocked: visionService.isTargetLocked,
+                                isTrackingActive: visionService.isTrackingActive,
+                                trackingMode: droneManager.selectedTrackingMode,
+                                flyingState: droneManager.flyingState,
+                                altitude: droneManager.altitude
+                            )
+
+                            CockpitBottomBar(
+                                flyingState: droneManager.flyingState,
+                                isRthActive: droneManager.isRthActive,
+                                onTakeOff: {
+                                    HapticFeedback.tap()
+                                    droneManager.takeOff()
+                                },
+                                onLand: {
+                                    HapticFeedback.tap()
+                                    droneManager.land()
+                                },
+                                onToggleRth: {
+                                    HapticFeedback.tap()
+                                    if droneManager.isRthActive {
+                                        droneManager.cancelReturnHome()
+                                    } else {
+                                        droneManager.triggerReturnHome()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
 
                     Spacer()
 
-                    // Contrôles Nacelle, IA Tracking & Déclencheurs Médias (Droite)
+                    // Contrôles IA Tracking & Déclencheurs Médias (Droite) - Slider rigide de nacelle supprimé
                     HStack(alignment: .center, spacing: 10) {
                         // Bouton IA Tracking
                         Button {
@@ -293,19 +314,14 @@ struct DroneControlView: View {
                         .opacity(droneManager.isDroneConnected ? 1.0 : 0.35)
                         .accessibilityLabel("Activer le suivi par intelligence artificielle")
 
-                        CockpitZoomControl(
-                            currentZoom: droneManager.zoomLevel,
-                            onSelectZoom: { level in
-                                droneManager.setZoomLevel(level)
-                            }
-                        )
-
-                        CockpitGimbalControl(
-                            currentPitch: droneManager.gimbalPitch,
-                            onPitchChange: { newPitch in
-                                droneManager.setGimbalPitch(newPitch)
-                            }
-                        )
+                        if !isDeclutterMode {
+                            CockpitZoomControl(
+                                currentZoom: droneManager.zoomLevel,
+                                onSelectZoom: { level in
+                                    droneManager.setZoomLevel(level)
+                                }
+                            )
+                        }
 
                         CockpitCameraCaptureView(
                             isRecording: droneManager.isRecording,

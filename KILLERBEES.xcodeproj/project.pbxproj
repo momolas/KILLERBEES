@@ -23,7 +23,7 @@
 		CD6D831E2FD5D3AB00D53031 /* CockpitTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */; };
 		CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */; };
 		CD6D83222FD5D3AB00D53031 /* CockpitTelemetryHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */; };
-		CD6D83242FD5D3AB00D53031 /* CockpitGimbalControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83232FD5D3AB00D53031 /* CockpitGimbalControl.swift */; };
+		CD6D83242FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */; };
 		CD6D83262FD5D3AB00D53031 /* CockpitCameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */; };
 		CD6D83282FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */; };
 		CD6D832A2FD5D3AB00D53031 /* CockpitMiniMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */; };
@@ -78,7 +78,7 @@
 		CD6D831D2FD5D3AB00D53031 /* CockpitTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTopBar.swift; sourceTree = "<group>"; };
 		CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitBottomBar.swift; sourceTree = "<group>"; };
 		CD6D83212FD5D3AB00D53031 /* CockpitTelemetryHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitTelemetryHUD.swift; sourceTree = "<group>"; };
-		CD6D83232FD5D3AB00D53031 /* CockpitGimbalControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitGimbalControl.swift; sourceTree = "<group>"; };
+		CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMilitaryPitchLadderHUD.swift; sourceTree = "<group>"; };
 		CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitCameraCaptureView.swift; sourceTree = "<group>"; };
 		CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitAttitudeIndicator.swift; sourceTree = "<group>"; };
 		CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitMiniMap.swift; sourceTree = "<group>"; };
@@ -237,7 +237,7 @@
 				CD6D83272FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift */,
 				CD6D83292FD5D3AB00D53031 /* CockpitMiniMap.swift */,
 				CD6D832D2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift */,
-				CD6D83232FD5D3AB00D53031 /* CockpitGimbalControl.swift */,
+				CD6D83232FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift */,
 				CD6D83252FD5D3AB00D53031 /* CockpitCameraCaptureView.swift */,
 				CD6D832B2FD5D3AB00D53031 /* CockpitAlarmBanner.swift */,
 				CD6D831F2FD5D3AB00D53031 /* CockpitBottomBar.swift */,
@@ -370,7 +370,7 @@
 				CD6D83282FD5D3AB00D53031 /* CockpitAttitudeIndicator.swift in Sources */,
 				CD6D832A2FD5D3AB00D53031 /* CockpitMiniMap.swift in Sources */,
 				CD6D832E2FD5D3AB00D53031 /* CockpitFlightPlanOverlay.swift in Sources */,
-				CD6D83242FD5D3AB00D53031 /* CockpitGimbalControl.swift in Sources */,
+				CD6D83242FD5D3AB00D53031 /* CockpitMilitaryPitchLadderHUD.swift in Sources */,
 				CD6D83262FD5D3AB00D53031 /* CockpitCameraCaptureView.swift in Sources */,
 				CD6D832C2FD5D3AB00D53031 /* CockpitAlarmBanner.swift in Sources */,
 				CD6D83202FD5D3AB00D53031 /* CockpitBottomBar.swift in Sources */,

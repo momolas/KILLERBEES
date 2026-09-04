@@ -21,6 +21,8 @@ struct CockpitTopBar: View {
     let activeMissionMode: MissionMode
     let droneConnectionState: DeviceState.ConnectionState
     let smartRTH: SmartRTHAssessment?
+    var isDeclutterMode: Bool = false
+    var onToggleDeclutter: (() -> Void)? = nil
     let onToggleFcc: () -> Void
     let onSelectMissionMode: (MissionMode) -> Void
     let onDismiss: () -> Void
@@ -34,6 +36,21 @@ struct CockpitTopBar: View {
                 .padding(12)
                 .background(.ultraThinMaterial)
                 .clipShape(.circle)
+
+            if let onToggleDeclutter {
+                Button(
+                    isDeclutterMode ? "Afficher HUD" : "Masquer HUD",
+                    systemImage: isDeclutterMode ? "eye.slash.fill" : "eye",
+                    action: onToggleDeclutter
+                )
+                .labelStyle(.iconOnly)
+                .font(.headline)
+                .foregroundStyle(isDeclutterMode ? .orange : .white)
+                .padding(12)
+                .background(.ultraThinMaterial)
+                .clipShape(.circle)
+                .accessibilityLabel(isDeclutterMode ? "Afficher tous les widgets du HUD" : "Masquer les widgets secondaires (mode HUD épuré)")
+            }
 
             Spacer()
 
@@ -100,60 +117,62 @@ struct CockpitTopBar: View {
             .background(.ultraThinMaterial)
             .clipShape(.capsule)
 
-            Spacer()
+            if !isDeclutterMode {
+                Spacer()
 
-            // Sélecteur Tactique de Mode de Mission (Surveillance, Loisir, Chasse)
-            Menu {
-                ForEach(MissionMode.allCases) { mode in
-                    Button {
-                        HapticFeedback.tap()
-                        onSelectMissionMode(mode)
-                    } label: {
-                        Label(mode.title, systemImage: mode.icon)
+                // Sélecteur Tactique de Mode de Mission (Surveillance, Loisir, Chasse)
+                Menu {
+                    ForEach(MissionMode.allCases) { mode in
+                        Button {
+                            HapticFeedback.tap()
+                            onSelectMissionMode(mode)
+                        } label: {
+                            Label(mode.title, systemImage: mode.icon)
+                        }
                     }
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: activeMissionMode.icon)
+                            .font(.caption2)
+                        Text(activeMissionMode.rawValue.uppercased())
+                            .font(.caption2)
+                            .bold()
+                    }
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 6)
+                    .background(activeMissionMode.accentColor.opacity(0.35))
+                    .foregroundStyle(.white)
+                    .clipShape(.capsule)
+                    .overlay(
+                        Capsule().strokeBorder(activeMissionMode.accentColor.opacity(0.8), lineWidth: 1)
+                    )
                 }
-            } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: activeMissionMode.icon)
-                        .font(.caption2)
-                    Text(activeMissionMode.rawValue.uppercased())
-                        .font(.caption2)
-                        .bold()
-                }
-                .padding(.horizontal, 9)
-                .padding(.vertical, 6)
-                .background(activeMissionMode.accentColor.opacity(0.35))
-                .foregroundStyle(.white)
-                .clipShape(.capsule)
-                .overlay(
-                    Capsule().strokeBorder(activeMissionMode.accentColor.opacity(0.8), lineWidth: 1)
-                )
-            }
-            .accessibilityLabel("Mode de mission \(activeMissionMode.title)")
+                .accessibilityLabel("Mode de mission \(activeMissionMode.title)")
 
-            Spacer()
+                Spacer()
 
-            // Badge & Sélecteur Réglementaire RF (Mod FCC)
-            Button {
-                onToggleFcc()
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: isFccMode ? "bolt.fill" : "globe.europe.africa.fill")
-                        .font(.caption2)
-                    Text(isFccMode ? "FCC 1W" : "CE 100mW")
-                        .font(.caption2)
-                        .bold()
+                // Badge & Sélecteur Réglementaire RF (Mod FCC)
+                Button {
+                    onToggleFcc()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: isFccMode ? "bolt.fill" : "globe.europe.africa.fill")
+                            .font(.caption2)
+                        Text(isFccMode ? "FCC 1W" : "CE 100mW")
+                            .font(.caption2)
+                            .bold()
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .background(isFccMode ? .purple.opacity(0.4) : .blue.opacity(0.3))
+                    .foregroundStyle(.white)
+                    .clipShape(.capsule)
+                    .overlay(
+                        Capsule().strokeBorder(isFccMode ? .purple : .blue.opacity(0.6), lineWidth: 1)
+                    )
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
-                .background(isFccMode ? Color.purple.opacity(0.4) : Color.blue.opacity(0.3))
-                .foregroundStyle(.white)
-                .clipShape(.capsule)
-                .overlay(
-                    Capsule().strokeBorder(isFccMode ? Color.purple : Color.blue.opacity(0.6), lineWidth: 1)
-                )
+                .accessibilityLabel(isFccMode ? "Mode FCC activé à un watt" : "Mode CE standard à cent milliwatts")
             }
-            .accessibilityLabel(isFccMode ? "Mode FCC activé à un watt" : "Mode CE standard à cent milliwatts")
 
             Spacer()
 
