@@ -62,6 +62,7 @@ KILLERBEES/
 ├── Core/
 │   ├── DroneManager.swift          # Pilotage GroundSdk, profil de vol, télémétrie
 │   ├── SmartRTHAssessment.swift    # Moteur de calcul dynamique du point de non-retour et Smart RTH
+│   ├── TrackingMode.swift          # Modes de suivi de cible (Look-At, Follow-Me)
 │   └── MissionMode.swift           # Définition des profils de vol et modes de mission
 ├── Features/
 │   ├── Connection/                 # Découverte et appairage des drones
@@ -71,7 +72,8 @@ KILLERBEES/
 │       ├── Controllers/
 │       │   ├── CoreAIVisionTracker.swift   # Moteur YOLO natif Core AI & Accelerate
 │       │   ├── VisionTrackerService.swift  # Pipeline IA, filtrage 3 catégories, tracking optique
-│       │   └── VideoController.swift       # Décodage et rendu du flux vidéo
+│       │   ├── VideoController.swift       # Décodage et rendu du flux vidéo
+│       │   └── DetectedObject.swift        # Modèle de données d'objet détecté (boîtes, OBB, masque)
 │       └── Views/
 │           ├── DroneControlView.swift         # Écran cockpit principal
 │           ├── CockpitAITrackingOverlay.swift # Réticules tactiques, boîtes OBB, masque thermique

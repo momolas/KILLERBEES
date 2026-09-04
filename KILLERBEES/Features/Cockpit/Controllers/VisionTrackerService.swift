@@ -16,16 +16,6 @@ import Vision
 import CoreAI
 #endif
 
-struct DetectedObject: Identifiable, Sendable {
-    let id = UUID()
-    let box: CGRect // Coordonnées normalisées SwiftUI [0, 1] (origine haut-gauche)
-    let label: String
-    let confidence: Float
-    var orientedAngleRad: Float? = nil // Angle d'orientation OBB en radians
-    var orientedCorners: [CGPoint]? = nil // 4 sommets OBB normalisés [0, 1]
-    var hasSilhouetteMask: Bool = false // Silhouette détourée au pixel près
-}
-
 @Observable @MainActor
 class VisionTrackerService {
     var isTrackingActive: Bool = false

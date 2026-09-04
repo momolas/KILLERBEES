@@ -37,7 +37,7 @@ struct CockpitSmartBatteryBar: View {
                     // Temps de vol restant estimé avant point de non-retour
                     if let rth = smartRTH, let safeTime = rth.safeTimeMarginSeconds {
                         let minutes = Int(safeTime) / 60
-                        Text("(\(minutes)m)")
+                        Text("(\(minutes.formatted()))m")
                             .font(.system(size: 10, weight: .semibold, design: .monospaced))
                             .foregroundStyle(.secondary)
                     }
@@ -46,13 +46,15 @@ struct CockpitSmartBatteryBar: View {
                 // Barre de jauge avec marqueur Home (Point de non-retour)
                 ZStack(alignment: .leading) {
                     // Fond de la barre
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(Color.white.opacity(0.15))
+                    Rectangle()
+                        .fill(.white.opacity(0.15))
+                        .clipShape(.rect(cornerRadius: 3))
                         .frame(width: 80, height: 6)
 
                     // Barre de progression actuelle
-                    RoundedRectangle(cornerRadius: 3)
+                    Rectangle()
                         .fill(gaugeGradient)
+                        .clipShape(.rect(cornerRadius: 3))
                         .frame(width: max(2, 80 * CGFloat(min(100, max(0, level))) / 100.0), height: 6)
 
                     // Marqueur vertical du Point de Non-Retour (RTH seuil)
@@ -61,13 +63,13 @@ struct CockpitSmartBatteryBar: View {
                         let markerX = 80 * thresholdRatio
 
                         Rectangle()
-                            .fill(Color.yellow)
+                            .fill(.yellow)
                             .frame(width: 1.5, height: 8)
                             .offset(x: markerX - 0.75)
                             .overlay(alignment: .top) {
                                 Image(systemName: "house.fill")
                                     .font(.system(size: 6))
-                                    .foregroundStyle(Color.yellow)
+                                    .foregroundStyle(.yellow)
                                     .offset(y: -7)
                             }
                     }

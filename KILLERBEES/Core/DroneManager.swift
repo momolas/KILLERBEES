@@ -8,26 +8,6 @@
 import CoreLocation
 import Foundation
 import GroundSdk
-enum TrackingMode: String, CaseIterable, Identifiable, Sendable {
-    case lookAt = "LOOK-AT"
-    case followMe = "FOLLOW-ME"
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .lookAt: return "Cadrage Look-At"
-        case .followMe: return "Poursuite Follow-Me"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .lookAt: return "scope"
-        case .followMe: return "figure.run"
-        }
-    }
-}
 
 @Observable @MainActor
 class DroneManager {

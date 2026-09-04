@@ -51,6 +51,8 @@
 		CD6D83C12FD5D3AB00D53031 /* SmartRTHAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */; };
 		CD6D83C32FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */; };
 		CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */; };
+		CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */; };
+		CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */; };
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
@@ -104,6 +106,8 @@
 		CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/SmartRTHAssessment.swift; sourceTree = "<group>"; };
 		CD6D83C22FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartBatteryBar.swift; sourceTree = "<group>"; };
 		CD6D83C42FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitSmartRTHBadge.swift; sourceTree = "<group>"; };
+		CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TrackingMode.swift; sourceTree = "<group>"; };
+		CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/DetectedObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +172,7 @@
 				CD6D83472FD5D3AB00D53031 /* HapticFeedback.swift */,
 				CD6D83702FD5D3AB00D53031 /* MissionMode.swift */,
 				CD6D83C02FD5D3AB00D53031 /* SmartRTHAssessment.swift */,
+				CD6D83D02FD5D3AB00D53031 /* TrackingMode.swift */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -257,6 +262,7 @@
 				CD35B5B12EDB54280053DDD9 /* VideoController.swift */,
 				CD6D83402FD5D3AB00D53031 /* VisionTrackerService.swift */,
 				CD6D83B02FD5D3AB00D53031 /* CoreAIVisionTracker.swift */,
+				CD6D83D22FD5D3AB00D53031 /* DetectedObject.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -389,6 +395,8 @@
 				CD6D83C12FD5D3AB00D53031 /* SmartRTHAssessment.swift in Sources */,
 				CD6D83C32FD5D3AB00D53031 /* CockpitSmartBatteryBar.swift in Sources */,
 				CD6D83C52FD5D3AB00D53031 /* CockpitSmartRTHBadge.swift in Sources */,
+				CD6D83D12FD5D3AB00D53031 /* TrackingMode.swift in Sources */,
+				CD6D83D32FD5D3AB00D53031 /* DetectedObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

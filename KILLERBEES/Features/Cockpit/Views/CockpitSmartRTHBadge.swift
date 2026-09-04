@@ -32,7 +32,7 @@ struct CockpitSmartRTHBadge: View {
 
                 Divider()
                     .frame(height: 12)
-                    .background(Color.white.opacity(0.3))
+                    .background(.white.opacity(0.3))
 
                 // 2. Temps de vol de retour estimé (ETA)
                 HStack(spacing: 3) {
@@ -40,9 +40,7 @@ struct CockpitSmartRTHBadge: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
 
-                    let minutes = Int(rth.estimatedTimeToHomeSeconds) / 60
-                    let seconds = Int(rth.estimatedTimeToHomeSeconds) % 60
-                    Text("\(minutes)m\(seconds < 10 ? "0" : "")\(seconds)s")
+                    Text(Duration.seconds(rth.estimatedTimeToHomeSeconds), format: .time(pattern: .minuteSecond))
                         .font(.system(size: 11, weight: .semibold, design: .monospaced))
                         .foregroundStyle(.white)
                 }
@@ -51,7 +49,7 @@ struct CockpitSmartRTHBadge: View {
                 if rth.windSpeedKmh > 3.0 {
                     Divider()
                         .frame(height: 12)
-                        .background(Color.white.opacity(0.3))
+                        .background(.white.opacity(0.3))
 
                     HStack(spacing: 3) {
                         Image(systemName: rth.headwindKmh > 2.0 ? "arrow.up.right.circle.fill" : "arrow.down.right.circle.fill")
@@ -71,13 +69,13 @@ struct CockpitSmartRTHBadge: View {
 
                 Divider()
                     .frame(height: 12)
-                    .background(Color.white.opacity(0.3))
+                    .background(.white.opacity(0.3))
 
                 // 4. Statut Tactique & Actions
                 if isRthActive {
                     HStack(spacing: 4) {
                         Circle()
-                            .fill(Color.orange)
+                            .fill(.orange)
                             .frame(width: 6, height: 6)
                         Text("RTH EN COURS")
                             .font(.system(size: 9, weight: .black))
@@ -87,7 +85,7 @@ struct CockpitSmartRTHBadge: View {
                             .font(.system(size: 8, weight: .bold))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.red.opacity(0.4))
+                            .background(.red.opacity(0.4))
                             .clipShape(.capsule)
                             .foregroundStyle(.white)
                     }
@@ -102,7 +100,7 @@ struct CockpitSmartRTHBadge: View {
                         }
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
-                        .background(Color.red)
+                        .background(.red)
                         .clipShape(.capsule)
                         .foregroundStyle(.white)
                     }
@@ -111,32 +109,32 @@ struct CockpitSmartRTHBadge: View {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .font(.caption2)
                             .symbolEffect(.pulse)
-                        Text("RTH AUTO DANS \(Int(rth.autoTriggerDelaySeconds))s")
+                        Text("RTH AUTO DANS \(Int(rth.autoTriggerDelaySeconds).formatted())s")
                             .font(.system(size: 9, weight: .black))
 
                         Button("Annuler", action: onCancelAutoTrigger)
                             .font(.system(size: 8, weight: .bold))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.orange.opacity(0.4))
+                            .background(.orange.opacity(0.4))
                             .clipShape(.capsule)
                             .foregroundStyle(.white)
                     }
                     .padding(.horizontal, 6)
                     .padding(.vertical, 3)
-                    .background(Color.orange.opacity(0.35))
+                    .background(.orange.opacity(0.35))
                     .clipShape(.capsule)
                     .foregroundStyle(.white)
                 } else {
                     HStack(spacing: 3) {
                         Text("RTH SEUIL \(rth.batteryRequiredPercent)%")
                             .font(.system(size: 9, weight: .bold))
-                            .foregroundStyle(Color.mint)
+                            .foregroundStyle(.mint)
 
                         if rth.batteryMarginPoints > 0 {
                             Text("(+\(rth.batteryMarginPoints)%)")
                                 .font(.system(size: 8, weight: .semibold))
-                                .foregroundStyle(Color.green)
+                                .foregroundStyle(.green)
                         }
                     }
                 }
@@ -156,7 +154,7 @@ struct CockpitSmartRTHBadge: View {
             let km = meters / 1000.0
             return "\(km.formatted(.number.precision(.fractionLength(1)))) km"
         } else {
-            return "\(Int(meters)) m"
+            return "\(Int(meters).formatted()) m"
         }
     }
 
@@ -168,9 +166,9 @@ struct CockpitSmartRTHBadge: View {
     }
 
     private func badgeBorderColor(for rth: SmartRTHAssessment) -> Color {
-        if isRthActive { return Color.orange.opacity(0.7) }
-        if rth.isPointOfNoReturnPassed { return Color.red.opacity(0.8) }
-        if rth.homeReachability == .warning { return Color.yellow.opacity(0.7) }
-        return Color.white.opacity(0.2)
+        if isRthActive { return .orange.opacity(0.7) }
+        if rth.isPointOfNoReturnPassed { return .red.opacity(0.8) }
+        if rth.homeReachability == .warning { return .yellow.opacity(0.7) }
+        return .white.opacity(0.2)
     }
 }
