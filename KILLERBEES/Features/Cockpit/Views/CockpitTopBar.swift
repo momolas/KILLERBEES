@@ -18,8 +18,10 @@ struct CockpitTopBar: View {
     let radioSignalQuality: Int?
     let isRthActive: Bool
     let isFccMode: Bool
+    let activeMissionMode: MissionMode
     let droneConnectionState: DeviceState.ConnectionState
     let onToggleFcc: () -> Void
+    let onSelectMissionMode: (MissionMode) -> Void
     let onDismiss: () -> Void
 
     var body: some View {
@@ -96,6 +98,37 @@ struct CockpitTopBar: View {
             .padding(.vertical, 8)
             .background(.ultraThinMaterial)
             .clipShape(.capsule)
+
+            Spacer()
+
+            // Sélecteur Tactique de Mode de Mission (Surveillance, Loisir, Chasse)
+            Menu {
+                ForEach(MissionMode.allCases) { mode in
+                    Button {
+                        HapticFeedback.tap()
+                        onSelectMissionMode(mode)
+                    } label: {
+                        Label(mode.title, systemImage: mode.icon)
+                    }
+                }
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: activeMissionMode.icon)
+                        .font(.caption2)
+                    Text(activeMissionMode.rawValue.uppercased())
+                        .font(.caption2)
+                        .bold()
+                }
+                .padding(.horizontal, 9)
+                .padding(.vertical, 6)
+                .background(activeMissionMode.accentColor.opacity(0.35))
+                .foregroundStyle(.white)
+                .clipShape(.capsule)
+                .overlay(
+                    Capsule().strokeBorder(activeMissionMode.accentColor.opacity(0.8), lineWidth: 1)
+                )
+            }
+            .accessibilityLabel("Mode de mission \(activeMissionMode.title)")
 
             Spacer()
 

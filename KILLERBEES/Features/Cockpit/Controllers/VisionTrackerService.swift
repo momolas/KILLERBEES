@@ -27,7 +27,14 @@ class VisionTrackerService {
     var lockedTargetBox: CGRect? = nil
     var isTargetLocked: Bool = false
 
-    // Vecteur de fuite & Mouvement de la Cible (Gibier)
+    // Mode de Mission Actif
+    var activeMissionMode: MissionMode = .chasse
+
+    // Alertes & Détections Surveillance
+    var detectedHumansCount: Int = 0
+    var hasIntruderAlert: Bool = false
+
+    // Vecteur de fuite & Mouvement de la Cible (Gibier / Chasse)
     var targetHeadingDeg: Double?
     var targetSpeedKmH: Double?
     var targetBearingCardinal: String?
@@ -58,8 +65,12 @@ class VisionTrackerService {
         _ cgImage: CGImage,
         droneHeading: Double = 0.0,
         droneAltitude: Double = 30.0,
+        missionMode: MissionMode? = nil,
         onTargetData: @escaping (Double, Double, Double, Double, Bool) -> Void
     ) {
+        if let missionMode {
+            self.activeMissionMode = missionMode
+        }
         guard isTrackingActive, !isProcessing else { return }
         isProcessing = true
 
@@ -109,55 +120,79 @@ class VisionTrackerService {
 
     private func detectObjects(in cgImage: CGImage) {
         var newObjects: [DetectedObject] = []
+        var requestsToPerform: [VNRequest] = []
 
-        // 1. Requête Native Apple : Détection de Silhouettes et Corps Humains
-        let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
-            guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
-            for human in results where human.confidence > 0.4 {
-                let box = self.convertVisionRectToSwiftUI(human.boundingBox)
-                newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
-            }
-        }
-        humanRequest.upperBodyOnly = false
-        configureComputeDevices(for: humanRequest)
-
-        // 2. Requête Native Apple : Reconnaissance d'Animaux
-        let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
-            guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
-            for animal in results where animal.confidence > 0.4 {
-                let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
-                let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
-                let frenchLabel: String
-                switch topLabel {
-                case "dog": frenchLabel = "CHIEN"
-                case "cat": frenchLabel = "CHAT"
-                default: frenchLabel = "ANIMAL"
+        // 1. Requête Silhouettes Humaines (Prioritaire en Surveillance)
+        if activeMissionMode == .surveillance || activeMissionMode == .chasse {
+            let humanRequest = VNDetectHumanRectanglesRequest { [weak self] request, error in
+                guard let self, error == nil, let results = request.results as? [VNHumanObservation] else { return }
+                for human in results where human.confidence > 0.4 {
+                    let box = self.convertVisionRectToSwiftUI(human.boundingBox)
+                    newObjects.append(DetectedObject(box: box, label: "HUMAIN", confidence: human.confidence))
                 }
-                newObjects.append(DetectedObject(box: box, label: frenchLabel, confidence: animal.confidence))
             }
+            humanRequest.upperBodyOnly = false
+            configureComputeDevices(for: humanRequest)
+            requestsToPerform.append(humanRequest)
         }
-        configureComputeDevices(for: animalRequest)
 
-        // 3. Requête Native Apple : Détection de Saillance / Cibles d'Intérêt (Véhicules, Objets Mobiles)
+        // 2. Requête Animaux (Prioritaire en Chasse & Traque)
+        if activeMissionMode == .chasse || activeMissionMode == .loisir {
+            let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
+                guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
+                for animal in results where animal.confidence > 0.4 {
+                    let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
+                    let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
+                    let frenchLabel: String
+                    switch topLabel {
+                    case "dog": frenchLabel = "CHIEN"
+                    case "cat": frenchLabel = "CHAT"
+                    default: frenchLabel = "GIBIER"
+                    }
+                    newObjects.append(DetectedObject(box: box, label: frenchLabel, confidence: animal.confidence))
+                }
+            }
+            configureComputeDevices(for: animalRequest)
+            requestsToPerform.append(animalRequest)
+        }
+
+        // 3. Détection de Saillance / Cibles d'Intérêt (Tous modes)
         let saliencyRequest = VNGenerateObjectnessBasedSaliencyImageRequest { [weak self] request, error in
             guard let self, error == nil,
                   let result = (request.results as? [VNSaliencyImageObservation])?.first,
                   let salientObjects = result.salientObjects else { return }
 
+            let defaultLabel: String
+            switch self.activeMissionMode {
+            case .surveillance: defaultLabel = "INTRUSION"
+            case .chasse: defaultLabel = "GIBIER"
+            case .loisir: defaultLabel = "SUJET"
+            }
+
             for salient in salientObjects where salient.confidence > 0.5 {
                 let box = self.convertVisionRectToSwiftUI(salient.boundingBox)
                 let alreadyCovered = newObjects.contains { $0.box.intersects(box) }
                 if !alreadyCovered && box.width > 0.06 && box.height > 0.06 {
-                    newObjects.append(DetectedObject(box: box, label: "CIBLE", confidence: salient.confidence))
+                    newObjects.append(DetectedObject(box: box, label: defaultLabel, confidence: salient.confidence))
                 }
             }
         }
         configureComputeDevices(for: saliencyRequest)
+        requestsToPerform.append(saliencyRequest)
 
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
-            try handler.perform([humanRequest, animalRequest, saliencyRequest])
+            try handler.perform(requestsToPerform)
             self.detectedObjects = newObjects
+
+            // Mise à jour de la télémétrie de surveillance
+            if activeMissionMode == .surveillance {
+                self.detectedHumansCount = newObjects.filter { $0.label == "HUMAIN" }.count
+                self.hasIntruderAlert = self.detectedHumansCount > 0
+            } else {
+                self.detectedHumansCount = 0
+                self.hasIntruderAlert = false
+            }
         } catch {
             print("Erreur analyse Apple Vision : \(error)")
         }

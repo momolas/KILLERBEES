@@ -68,7 +68,15 @@ struct ContentView: View {
                                 .frame(maxWidth: .infinity, alignment: .top)
                             }
 
-                            // 3. Tuile Bento Checklist Pré-vol
+                            // 3. Tuile Bento Sélecteur de Mission (Surveillance, Loisir, Chasse)
+                            DashboardMissionCard(
+                                selectedMode: droneManager.activeMissionMode,
+                                onSelectMode: { mode in
+                                    droneManager.setMissionMode(mode)
+                                }
+                            )
+
+                            // 4. Tuile Bento Checklist Pré-vol
                             DashboardPreflightCard(isFccMode: droneManager.isFccMode)
                         }
                         .padding(.horizontal)

@@ -15,6 +15,7 @@ struct DroneControlView: View {
     @State private var videoController = VideoController()
     @State private var visionService = VisionTrackerService()
     @State private var isMapExpanded = false
+    @State private var isLeisureGridEnabled = false
     @State private var showErrorAlert = false
 
     init(drone: Drone) {
@@ -24,28 +25,35 @@ struct DroneControlView: View {
     var body: some View {
         ZStack {
             // 1. Flux vidéo bord-à-bord plein écran avec flux IA
-            VideoSection(
-                stream: videoController.currentStream,
-                isDroneConnected: droneManager.isDroneConnected
-            ) { image in
-                if visionService.isTrackingActive, let cgImage = image.cgImage {
-                    visionService.processFrame(
-                        cgImage,
-                        droneHeading: droneManager.heading,
-                        droneAltitude: droneManager.altitude ?? 30.0
-                    ) { azimuth, elevation, scale, confidence, isNew in
-                        droneManager.sendTargetDetection(
-                            azimuth: azimuth,
-                            elevation: elevation,
-                            changeOfScale: scale,
-                            confidence: confidence,
-                            isNewTarget: isNew
-                        )
-                        droneManager.updateTargetGroundPosition(
-                            azimuthRad: azimuth,
-                            elevationRad: elevation
-                        )
+            ZStack {
+                VideoSection(
+                    stream: videoController.currentStream,
+                    isDroneConnected: droneManager.isDroneConnected
+                ) { image in
+                    if visionService.isTrackingActive, let cgImage = image.cgImage {
+                        visionService.processFrame(
+                            cgImage,
+                            droneHeading: droneManager.heading,
+                            droneAltitude: droneManager.altitude ?? 30.0,
+                            missionMode: droneManager.activeMissionMode
+                        ) { azimuth, elevation, scale, confidence, isNew in
+                            droneManager.sendTargetDetection(
+                                azimuth: azimuth,
+                                elevation: elevation,
+                                changeOfScale: scale,
+                                confidence: confidence,
+                                isNewTarget: isNew
+                            )
+                            droneManager.updateTargetGroundPosition(
+                                azimuthRad: azimuth,
+                                elevationRad: elevation
+                            )
+                        }
                     }
+                }
+
+                if isLeisureGridEnabled {
+                    CockpitCompositionGridView()
                 }
             }
             .ignoresSafeArea()
@@ -88,8 +96,10 @@ struct DroneControlView: View {
                     radioSignalQuality: droneManager.radioSignalQuality,
                     isRthActive: droneManager.isRthActive,
                     isFccMode: droneManager.isFccMode,
+                    activeMissionMode: droneManager.activeMissionMode,
                     droneConnectionState: droneManager.droneConnectionState,
                     onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
+                    onSelectMissionMode: { droneManager.setMissionMode($0) },
                     onDismiss: { dismiss() }
                 )
                 .padding(.top, 8)
@@ -101,16 +111,36 @@ struct DroneControlView: View {
                 )
                 .padding(.top, 2)
 
-                // Badge Tactique Vecteur de Fuite (Gibier Traqué)
-                if visionService.isTargetLocked {
-                    CockpitGameVectorBadge(
-                        headingDeg: visionService.targetHeadingDeg,
-                        speedKmH: visionService.targetSpeedKmH,
-                        cardinal: visionService.targetBearingCardinal,
-                        isProfileActive: droneManager.isGameTrackingProfileActive,
-                        onToggleProfile: {
-                            droneManager.toggleGameTrackingFlightProfile()
+                // Badges Spécifiques au Mode de Mission (Surveillance, Loisir, Chasse)
+                switch droneManager.activeMissionMode {
+                case .chasse:
+                    if visionService.isTargetLocked {
+                        CockpitGameVectorBadge(
+                            headingDeg: visionService.targetHeadingDeg,
+                            speedKmH: visionService.targetSpeedKmH,
+                            cardinal: visionService.targetBearingCardinal,
+                            isProfileActive: droneManager.isGameTrackingProfileActive,
+                            onToggleProfile: {
+                                droneManager.toggleGameTrackingFlightProfile()
+                            }
+                        )
+                        .padding(.top, 2)
+                    }
+
+                case .surveillance:
+                    CockpitSurveillanceBadge(
+                        hasIntruderAlert: visionService.hasIntruderAlert,
+                        detectedHumansCount: visionService.detectedHumansCount,
+                        onCaptureSnapshot: {
+                            droneManager.takePhoto()
                         }
+                    )
+                    .padding(.top, 2)
+
+                case .loisir:
+                    CockpitLeisureBadge(
+                        isGridEnabled: $isLeisureGridEnabled,
+                        isRecording: droneManager.isRecording
                     )
                     .padding(.top, 2)
                 }

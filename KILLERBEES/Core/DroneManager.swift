@@ -66,8 +66,9 @@ class DroneManager {
     var zoomLevel: Double = 1.0
     var maxZoomLevel: Double = 3.0
 
-    // Profil Spécialisé Traque Gibier & Cible au Sol
-    var isGameTrackingProfileActive: Bool = false
+    // Mode de Mission Actif (Surveillance, Loisir, Chasse)
+    var activeMissionMode: MissionMode = .chasse
+    var isGameTrackingProfileActive: Bool = true
     var targetGroundCoordinate: CLLocationCoordinate2D?
 
     // Alertes de Sécurité
@@ -304,6 +305,7 @@ class DroneManager {
 
             if state.connectionState == .connected {
                 self.connectionError = nil
+                self.applyFlightProfile(for: self.activeMissionMode)
             } else {
                 self.stopPilotingTracking()
                 if state.connectionState == .disconnected {
@@ -583,41 +585,39 @@ class DroneManager {
         self.zoomLevel = 1.0
     }
 
-    // MARK: - Profil de Vol Spécialisé Traque Gibier (120°/s)
+    // MARK: - Profils de Vol Multi-Missions (Surveillance, Loisir, Chasse)
+
+    func setMissionMode(_ mode: MissionMode) {
+        self.activeMissionMode = mode
+        applyFlightProfile(for: mode)
+    }
+
+    func applyFlightProfile(for mode: MissionMode) {
+        guard let drone = connectedDrone else { return }
+        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { [weak self] manualCopter in
+            guard let self, let manualCopter else { return }
+            manualCopter.maxYawRotationSpeed.value = mode.maxYawSpeed
+            manualCopter.maxPitchRoll.value = mode.maxPitchRoll
+            manualCopter.maxVerticalSpeed.value = mode.maxVerticalSpeed
+            manualCopter.maxPitchRollVelocity?.value = (mode == .chasse ? 180.0 : (mode == .loisir ? 90.0 : 130.0))
+            self.isGameTrackingProfileActive = (mode == .chasse)
+        }
+    }
 
     func toggleGameTrackingFlightProfile() {
-        isGameTrackingProfileActive.toggle()
-        if isGameTrackingProfileActive {
-            applyGameTrackingFlightProfile()
+        if activeMissionMode == .chasse {
+            setMissionMode(.surveillance)
         } else {
-            resetFlightProfileToStandard()
+            setMissionMode(.chasse)
         }
     }
 
     func applyGameTrackingFlightProfile() {
-        guard let drone = connectedDrone else { return }
-        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { [weak self] manualCopter in
-            guard let self, let manualCopter else { return }
-            // Vitesse de lacet réactive à 120°/s pour ne pas perdre un animal en fuite
-            manualCopter.maxYawRotationSpeed.value = 120.0
-            // Inclinaison max à 30° (jusqu'à 50 km/h)
-            manualCopter.maxPitchRoll.value = 30.0
-            // Vitesse verticale 3.0 m/s
-            manualCopter.maxVerticalSpeed.value = 3.0
-            manualCopter.maxPitchRollVelocity?.value = 180.0
-            self.isGameTrackingProfileActive = true
-        }
+        setMissionMode(.chasse)
     }
 
     func resetFlightProfileToStandard() {
-        guard let drone = connectedDrone else { return }
-        _ = drone.getPilotingItf(PilotingItfs.manualCopter) { [weak self] manualCopter in
-            guard let self, let manualCopter else { return }
-            manualCopter.maxYawRotationSpeed.value = 60.0
-            manualCopter.maxPitchRoll.value = 20.0
-            manualCopter.maxVerticalSpeed.value = 2.0
-            self.isGameTrackingProfileActive = false
-        }
+        setMissionMode(.loisir)
     }
 
     // MARK: - Calcul Position Sol de la Cible (Projection Géographique)
