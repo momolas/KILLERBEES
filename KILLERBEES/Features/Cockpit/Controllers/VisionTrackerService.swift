@@ -39,6 +39,11 @@ class VisionTrackerService {
     var targetSpeedKmH: Double?
     var targetBearingCardinal: String?
 
+    // Identification Précise de l'Espèce (Taxonomie Apple Vision)
+    var targetSpeciesName: String?
+    var targetSpeciesIcon: String?
+    private var trackingFrameCounter: Int = 0
+
     var detectedBoxes: [CGRect] {
         detectedObjects.map(\.box)
     }
@@ -140,16 +145,24 @@ class VisionTrackerService {
         if activeMissionMode == .chasse || activeMissionMode == .loisir {
             let animalRequest = VNRecognizeAnimalsRequest { [weak self] request, error in
                 guard let self, error == nil, let results = request.results as? [VNRecognizedObjectObservation] else { return }
-                for animal in results where animal.confidence > 0.4 {
+                for animal in results where animal.confidence > 0.35 {
                     let box = self.convertVisionRectToSwiftUI(animal.boundingBox)
-                    let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
-                    let frenchLabel: String
-                    switch topLabel {
-                    case "dog": frenchLabel = "CHIEN"
-                    case "cat": frenchLabel = "CHAT"
-                    default: frenchLabel = "GIBIER"
+                    var label = "🐾 GIBIER"
+                    var conf = animal.confidence
+
+                    // Classification taxonomique précise de l'espèce
+                    if let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: animal.boundingBox) {
+                        label = "\(species.icon) \(species.label)"
+                        conf = max(conf, species.confidence)
+                    } else {
+                        let topLabel = animal.labels.first?.identifier.lowercased() ?? "animal"
+                        if topLabel == "dog" {
+                            label = "🐾 QUADRUPÈDE"
+                        } else if topLabel == "cat" {
+                            label = "🐾 FÉLIN"
+                        }
                     }
-                    newObjects.append(DetectedObject(box: box, label: frenchLabel, confidence: animal.confidence))
+                    newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
                 }
             }
             configureComputeDevices(for: animalRequest)
@@ -173,7 +186,14 @@ class VisionTrackerService {
                 let box = self.convertVisionRectToSwiftUI(salient.boundingBox)
                 let alreadyCovered = newObjects.contains { $0.box.intersects(box) }
                 if !alreadyCovered && box.width > 0.06 && box.height > 0.06 {
-                    newObjects.append(DetectedObject(box: box, label: defaultLabel, confidence: salient.confidence))
+                    var label = defaultLabel
+                    var conf = salient.confidence
+                    if self.activeMissionMode == .chasse,
+                       let species = self.classifyWildlifeSpecies(in: cgImage, visionRect: salient.boundingBox) {
+                        label = "\(species.icon) \(species.label)"
+                        conf = max(conf, species.confidence)
+                    }
+                    newObjects.append(DetectedObject(box: box, label: label, confidence: conf))
                 }
             }
         }
@@ -253,6 +273,15 @@ class VisionTrackerService {
             let currentArea = newSwiftUIBox.width * newSwiftUIBox.height
             let changeOfScale = Double((currentArea - initialTargetArea) / initialTargetArea)
             let confidence = Double(trackedObservation.confidence)
+
+            // Affinage périodique de l'espèce sur la cible verrouillée (toutes les 12 frames)
+            trackingFrameCounter += 1
+            if trackingFrameCounter % 12 == 0 {
+                if let species = classifyWildlifeSpecies(in: cgImage, visionRect: newVisionBox) {
+                    self.targetSpeciesName = species.label
+                    self.targetSpeciesIcon = species.icon
+                }
+            }
 
             onTargetData(azimuth, elevation, changeOfScale, confidence, isFirstDetection)
             isFirstDetection = false
@@ -375,6 +404,9 @@ class VisionTrackerService {
         targetHeadingDeg = nil
         targetSpeedKmH = nil
         targetBearingCardinal = nil
+        targetSpeciesName = nil
+        targetSpeciesIcon = nil
+        trackingFrameCounter = 0
         previousBoxCenter = nil
         previousTimestamp = nil
     }
@@ -411,5 +443,78 @@ class VisionTrackerService {
             width: swiftUIRect.size.width,
             height: swiftUIRect.size.height
         )
+    }
+
+    // MARK: - Classification Taxonomique Apple Vision (1300+ Taxons)
+
+    private func classifyWildlifeSpecies(
+        in cgImage: CGImage,
+        visionRect: CGRect
+    ) -> (label: String, icon: String, confidence: Float)? {
+        let classifyRequest = VNClassifyImageRequest()
+        let originX = max(0.0, visionRect.origin.x - 0.02)
+        let originY = max(0.0, visionRect.origin.y - 0.02)
+        let width = min(1.0 - originX, visionRect.width + 0.04)
+        let height = min(1.0 - originY, visionRect.height + 0.04)
+
+        classifyRequest.regionOfInterest = CGRect(x: originX, y: originY, width: width, height: height)
+        configureComputeDevices(for: classifyRequest)
+
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([classifyRequest])
+            guard let observations = classifyRequest.results as? [VNClassificationObservation] else {
+                return nil
+            }
+
+            for obs in observations where obs.confidence > 0.12 {
+                if let match = mapToWildlifeTaxon(obs.identifier) {
+                    return (match.label, match.icon, obs.confidence)
+                }
+            }
+        } catch {
+            return nil
+        }
+        return nil
+    }
+
+    private func mapToWildlifeTaxon(_ identifier: String) -> (label: String, icon: String)? {
+        let id = identifier.lowercased()
+        switch id {
+        case "boar", "pig":
+            return ("SANGLIER", "🐗")
+        case "roe":
+            return ("CHEVREUIL", "🦌")
+        case "deer":
+            return ("CERF / BICHE", "🦌")
+        case "elk", "moose":
+            return ("GRAND CERF / ÉLAN", "🦌")
+        case "fox":
+            return ("RENARD", "🦊")
+        case "coyote_wolf":
+            return ("LOUP", "🐺")
+        case "rabbit":
+            return ("LIÈVRE / LAPIN", "🐇")
+        case "rodent":
+            return ("RONGEUR", "🦫")
+        case "bird", "hummingbird":
+            return ("OISEAU / GIBIER", "🦆")
+        case "bear":
+            return ("OURS", "🐻")
+        case "dog", "bulldog", "sheepdog", "prairie_dog":
+            return ("CHIEN", "🐕")
+        case "cat", "adult_cat", "bobcat":
+            return ("FÉLIN / CHAT", "🐈")
+        case "horse", "jockey_horse":
+            return ("CHEVAL", "🐎")
+        case "cow":
+            return ("BOVIN", "🐄")
+        case "sheep":
+            return ("MOUTON", "🐑")
+        case "goat":
+            return ("CHÈVRE", "🐐")
+        default:
+            return nil
+        }
     }
 }

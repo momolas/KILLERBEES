@@ -119,6 +119,8 @@ struct DroneControlView: View {
                             headingDeg: visionService.targetHeadingDeg,
                             speedKmH: visionService.targetSpeedKmH,
                             cardinal: visionService.targetBearingCardinal,
+                            speciesName: visionService.targetSpeciesName,
+                            speciesIcon: visionService.targetSpeciesIcon,
                             isProfileActive: droneManager.isGameTrackingProfileActive,
                             onToggleProfile: {
                                 droneManager.toggleGameTrackingFlightProfile()

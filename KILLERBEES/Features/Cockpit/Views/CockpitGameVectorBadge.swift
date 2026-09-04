@@ -12,18 +12,25 @@ struct CockpitGameVectorBadge: View {
     let headingDeg: Double?
     let speedKmH: Double?
     let cardinal: String?
+    var speciesName: String? = nil
+    var speciesIcon: String? = nil
     let isProfileActive: Bool
     let onToggleProfile: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            // Icône Gibier & Statut
+            // Icône Gibier / Espèce & Statut
             HStack(spacing: 6) {
-                Image(systemName: "pawprint.fill")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(.yellow)
+                if let icon = speciesIcon {
+                    Text(icon)
+                        .font(.system(size: 13))
+                } else {
+                    Image(systemName: "pawprint.fill")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.yellow)
+                }
 
-                Text("GIBIER TRAQUÉ")
+                Text(speciesName ?? "GIBIER TRAQUÉ")
                     .font(.system(size: 10, weight: .black))
                     .foregroundStyle(.yellow)
             }
