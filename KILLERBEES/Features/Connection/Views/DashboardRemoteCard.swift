@@ -50,19 +50,19 @@ struct DashboardRemoteCard: View {
             }
 
             Divider()
-                .background(Color.white.opacity(0.1))
+                .background(.white.opacity(0.1))
 
             if isConnected {
                 HStack(spacing: 20) {
                     // Batterie Radiocommande
                     VStack(alignment: .leading, spacing: 4) {
                         Text("BATTERIE RC")
-                            .font(.system(size: 9, weight: .bold))
+                            .font(.caption2.bold())
                             .foregroundStyle(.white.opacity(0.5))
 
                         HStack(spacing: 6) {
                             Image(systemName: "battery.100")
-                                .foregroundStyle(batteryLevel != nil && batteryLevel! > 20 ? .green : .orange)
+                                .foregroundStyle((batteryLevel ?? 0) > 20 ? .green : .orange)
                             Text(batteryLevel.map { "\($0)%" } ?? "--")
                                 .font(.title3)
                                 .bold()
@@ -75,7 +75,7 @@ struct DashboardRemoteCard: View {
                     // Portée Radio
                     VStack(alignment: .leading, spacing: 4) {
                         Text("LIAISON RF")
-                            .font(.system(size: 9, weight: .bold))
+                            .font(.caption2.bold())
                             .foregroundStyle(.white.opacity(0.5))
 
                         HStack(spacing: 6) {
@@ -103,9 +103,9 @@ struct DashboardRemoteCard: View {
         .padding(16)
         .background(.ultraThinMaterial)
         .clipShape(.rect(cornerRadius: 16))
-        .overlay(
+        .overlay {
             RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(isConnected ? Color.green.opacity(0.3) : Color.white.opacity(0.12), lineWidth: 1)
-        )
+                .strokeBorder(isConnected ? .green.opacity(0.3) : .white.opacity(0.12), lineWidth: 1)
+        }
     }
 }

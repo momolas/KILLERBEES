@@ -16,8 +16,7 @@ import Foundation
 import QuartzCore
 
 @available(iOS 27.0, macOS 27.0, *)
-@Observable @MainActor
-final class CoreAIVisionTracker {
+actor CoreAIVisionTracker {
     private var model: AIModel?
     private var inferenceFn: InferenceFunction?
     private var inputName: String = "images"
@@ -50,12 +49,6 @@ final class CoreAIVisionTracker {
         "ground track field", "harbor", "bridge", "large vehicle", "small vehicle", "helicopter",
         "roundabout", "soccer ball field", "swimming pool"
     ]
-
-    enum ModelTask {
-        case detect
-        case segment
-        case obb
-    }
 
     let task: ModelTask
 

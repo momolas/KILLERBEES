@@ -91,7 +91,7 @@ class VisionTrackerService {
     private func setupCoreAI() {
         #if canImport(CoreAI)
         if #available(iOS 27.0, macOS 27.0, *) {
-            Task { @MainActor in
+            Task {
                 let segURL = Bundle.main.url(forResource: "yolo26n-seg", withExtension: "aimodel")
                 let obbURL = Bundle.main.url(forResource: "yolo26n-obb", withExtension: "aimodel")
                 let detURL = Bundle.main.url(forResource: "yolo26n", withExtension: "aimodel")
@@ -115,10 +115,10 @@ class VisionTrackerService {
 
     #if canImport(CoreAI)
     @available(iOS 27.0, macOS 27.0, *)
-    private static func createTracker(url: URL?, task: CoreAIVisionTracker.ModelTask) async -> CoreAIVisionTracker? {
+    private static func createTracker(url: URL?, task: ModelTask) async -> CoreAIVisionTracker? {
         guard let url else { return nil }
         let tracker = await CoreAIVisionTracker(modelURL: url, task: task)
-        return tracker.isModelReady ? tracker : nil
+        return await tracker.isModelReady ? tracker : nil
     }
     #endif
 
@@ -190,7 +190,7 @@ class VisionTrackerService {
         #if canImport(CoreAI)
         if #available(iOS 27.0, macOS 27.0, *) {
             // Priorité 1 : Moteur YOLO Core AI Segmentation (Masque thermique + Silhouette)
-            if let tracker = coreAISegTracker, tracker.isModelReady {
+            if let tracker = coreAISegTracker, await tracker.isModelReady {
                 let (objects, mask, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
                 guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
@@ -203,7 +203,7 @@ class VisionTrackerService {
             }
 
             // Priorité 2 : Moteur YOLO Core AI OBB (Boîtes Orientées)
-            if let tracker = coreAIOBBTracker, tracker.isModelReady {
+            if let tracker = coreAIOBBTracker, await tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
                 guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
@@ -216,7 +216,7 @@ class VisionTrackerService {
             }
 
             // Priorité 3 : Moteur YOLO Core AI Détection Standard
-            if let tracker = coreAIDetectTracker, tracker.isModelReady {
+            if let tracker = coreAIDetectTracker, await tracker.isModelReady {
                 let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.25)
                 guard isTrackingActive, lockedTargetBox == nil else { return }
                 let enriched = enrichDetectedObjects(objects, in: cgImage)
@@ -519,7 +519,7 @@ class VisionTrackerService {
         if trackingLossCounter >= 3 && trackingLossCounter <= 25 {
             #if canImport(CoreAI)
             if #available(iOS 27.0, macOS 27.0, *) {
-                if let tracker = (coreAISegTracker ?? coreAIDetectTracker), tracker.isModelReady {
+                if let tracker = (coreAISegTracker ?? coreAIDetectTracker), await tracker.isModelReady {
                     let (objects, _, _) = await tracker.analyzeFrame(cgImage, confidenceThreshold: 0.2)
                     guard isTrackingActive else { return }
                     if let candidate = objects.first(where: {

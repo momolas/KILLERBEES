@@ -723,7 +723,7 @@ class DroneManager {
         var lines = ["QGC WPL 120"]
 
         // Élément 0 : Point de départ (Home / 1er Waypoint)
-        let home = waypoints.first!
+        guard let home = waypoints.first else { return }
         lines.append(String(format: "0\t1\t0\t16\t0\t0\t0\t0\t%.7f\t%.7f\t%.1f\t1", home.latitude, home.longitude, altitude))
 
         // Élément 1 : Commande Décollage (NAV_TAKEOFF = 22)
@@ -740,11 +740,11 @@ class DroneManager {
         lines.append(String(format: "%d\t0\t3\t20\t0\t0\t0\t0\t0\t0\t0\t1", rthIndex))
 
         let content = lines.joined(separator: "\n") + "\n"
-        let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("mission.mavlink")
+        let tempUrl = URL.temporaryDirectory.appending(path: "mission.mavlink")
 
         do {
             try content.write(to: tempUrl, atomically: true, encoding: .utf8)
-            flightPlan.uploadFlightPlan(filepath: tempUrl.path)
+            flightPlan.uploadFlightPlan(filepath: tempUrl.path())
         } catch {
             print("Erreur écriture fichier MAVLink : \(error)")
         }

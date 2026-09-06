@@ -96,14 +96,17 @@ struct CockpitMiniMap: View {
                 }
                 .mapStyle(.hybrid(elevation: .realistic))
                 .clipShape(.rect(cornerRadius: 16))
-                .overlay(
+                .overlay {
                     RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(Color.white.opacity(0.3), lineWidth: 1.5)
-                )
+                        .strokeBorder(.white.opacity(0.3), lineWidth: 1.5)
+                }
                 .onTapGesture { screenCoord in
                     guard isExpanded, let coord = mapProxy.convert(screenCoord, from: .local) else { return }
                     onAddWaypoint?(coord)
                 }
+                .accessibilityLabel("Mini-carte tactique")
+                .accessibilityHint(isExpanded ? "Touchez la carte pour ajouter un waypoint de mission" : "Agrandissez la carte pour interagir")
+                .accessibilityAddTraits(.isButton)
             }
 
             // Bouton agrandissement / réduction
@@ -114,7 +117,7 @@ struct CockpitMiniMap: View {
                 }
             }
             .labelStyle(.iconOnly)
-            .font(.system(size: 11, weight: .bold))
+            .font(.caption2.bold())
             .foregroundStyle(.white)
             .padding(6)
             .background(.ultraThinMaterial)

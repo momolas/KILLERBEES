@@ -22,7 +22,7 @@ struct CockpitTelemetryHUD: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text(altitude != nil ? (altitude! >= 0 ? altitude! : 0.0) : 0.0, format: .number.precision(.fractionLength(1)))
+                        Text(max(altitude ?? 0.0, 0.0), format: .number.precision(.fractionLength(1)))
                             .font(.headline)
                             .bold()
                             .foregroundStyle(.white)
@@ -34,16 +34,17 @@ struct CockpitTelemetryHUD: View {
                     if let vSpeed = verticalSpeed, abs(vSpeed) > 0.2 {
                         HStack(spacing: 2) {
                             Image(systemName: vSpeed > 0 ? "arrow.up" : "arrow.down")
-                                .font(.system(size: 8))
+                                .font(.caption2)
                             Text(abs(vSpeed), format: .number.precision(.fractionLength(1)))
-                                .font(.system(size: 9))
+                                .font(.caption2)
+                                .bold()
                             Text("m/s")
-                                .font(.system(size: 8))
+                                .font(.caption2)
                         }
                         .foregroundStyle(vSpeed > 0 ? .green : .orange)
                     } else {
                         Text("ALTITUDE")
-                            .font(.system(size: 9))
+                            .font(.caption2)
                             .bold()
                             .foregroundStyle(.secondary)
                     }
@@ -63,7 +64,7 @@ struct CockpitTelemetryHUD: View {
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
                         let speedKmh = (groundSpeed ?? 0.0) * 3.6
-                        Text(speedKmh >= 0 ? speedKmh : 0.0, format: .number.precision(.fractionLength(1)))
+                        Text(max(speedKmh, 0.0), format: .number.precision(.fractionLength(1)))
                             .font(.headline)
                             .bold()
                             .foregroundStyle(.white)
@@ -73,7 +74,7 @@ struct CockpitTelemetryHUD: View {
                     }
 
                     Text("VITESSE")
-                        .font(.system(size: 9))
+                        .font(.caption2)
                         .bold()
                         .foregroundStyle(.secondary)
                 }

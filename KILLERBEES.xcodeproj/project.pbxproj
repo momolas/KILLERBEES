@@ -59,6 +59,15 @@
 		CDD6806E3048551B002AF635 /* GroundSdk in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806B3048551B002AF635 /* GroundSdk */; };
 		CDD6806F3048551B002AF635 /* ArsdkEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806C3048551B002AF635 /* ArsdkEngine */; };
 		CDD680703048551B002AF635 /* SdkCore in Frameworks */ = {isa = PBXBuildFile; productRef = CDD6806D3048551B002AF635 /* SdkCore */; };
+		CD9901012FD5D3AB00D53031 /* Features/Cockpit/Controllers/ModelTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901002FD5D3AB00D53031 /* Features/Cockpit/Controllers/ModelTask.swift */; };
+		CD9901032FD5D3AB00D53031 /* Features/Cockpit/Views/CompositionGridShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901022FD5D3AB00D53031 /* Features/Cockpit/Views/CompositionGridShape.swift */; };
+		CD9901052FD5D3AB00D53031 /* Features/Cockpit/Views/DroneWatermarkSymbolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901042FD5D3AB00D53031 /* Features/Cockpit/Views/DroneWatermarkSymbolView.swift */; };
+		CD9901072FD5D3AB00D53031 /* Features/Cockpit/Views/PitchLadderRungsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901062FD5D3AB00D53031 /* Features/Cockpit/Views/PitchLadderRungsView.swift */; };
+		CD9901092FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitHeadingTapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901082FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitHeadingTapeView.swift */; };
+		CD9901112FD5D3AB00D53031 /* Features/Cockpit/Views/RollPointerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901102FD5D3AB00D53031 /* Features/Cockpit/Views/RollPointerView.swift */; };
+		CD9901132FD5D3AB00D53031 /* Core/Data/FlightLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901122FD5D3AB00D53031 /* Core/Data/FlightLog.swift */; };
+		CD9901152FD5D3AB00D53031 /* Core/Data/MissionWaypointRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901142FD5D3AB00D53031 /* Core/Data/MissionWaypointRecord.swift */; };
+		CD9901172FD5D3AB00D53031 /* Core/Data/TargetDetectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9901162FD5D3AB00D53031 /* Core/Data/TargetDetectionRecord.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +123,15 @@
 		CD6D83D42FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/TacticalCornersShape.swift; sourceTree = "<group>"; };
 		CD6D83D62FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift; sourceTree = "<group>"; };
 		CD6D83D82FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitOrientedBoxView.swift; sourceTree = "<group>"; };
+		CD9901002FD5D3AB00D53031 /* Features/Cockpit/Controllers/ModelTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Controllers/ModelTask.swift; sourceTree = "<group>"; };
+		CD9901022FD5D3AB00D53031 /* Features/Cockpit/Views/CompositionGridShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CompositionGridShape.swift; sourceTree = "<group>"; };
+		CD9901042FD5D3AB00D53031 /* Features/Cockpit/Views/DroneWatermarkSymbolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/DroneWatermarkSymbolView.swift; sourceTree = "<group>"; };
+		CD9901062FD5D3AB00D53031 /* Features/Cockpit/Views/PitchLadderRungsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/PitchLadderRungsView.swift; sourceTree = "<group>"; };
+		CD9901082FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitHeadingTapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/CockpitHeadingTapeView.swift; sourceTree = "<group>"; };
+		CD9901102FD5D3AB00D53031 /* Features/Cockpit/Views/RollPointerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Cockpit/Views/RollPointerView.swift; sourceTree = "<group>"; };
+		CD9901122FD5D3AB00D53031 /* Core/Data/FlightLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Data/FlightLog.swift; sourceTree = "<group>"; };
+		CD9901142FD5D3AB00D53031 /* Core/Data/MissionWaypointRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Data/MissionWaypointRecord.swift; sourceTree = "<group>"; };
+		CD9901162FD5D3AB00D53031 /* Core/Data/TargetDetectionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Data/TargetDetectionRecord.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +205,9 @@
 				CD6D83702FD5D3AB00D53031 /* Core/MissionMode.swift */,
 				CD6D83C02FD5D3AB00D53031 /* Core/SmartRTHAssessment.swift */,
 				CD6D83D02FD5D3AB00D53031 /* Core/TrackingMode.swift */,
+				CD9901122FD5D3AB00D53031 /* Core/Data/FlightLog.swift */,
+				CD9901142FD5D3AB00D53031 /* Core/Data/MissionWaypointRecord.swift */,
+				CD9901162FD5D3AB00D53031 /* Core/Data/TargetDetectionRecord.swift */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -227,6 +248,12 @@
 				CD6D83542FD5D3AB00D53031 /* Features/Connection/Views/DashboardRemoteCard.swift */,
 				CD6D83562FD5D3AB00D53031 /* Features/Connection/Views/DashboardPreflightCard.swift */,
 				CD6D83782FD5D3AB00D53031 /* Features/Connection/Views/DashboardMissionCard.swift */,
+							CD9901002FD5D3AB00D53031 /* Features/Cockpit/Controllers/ModelTask.swift */,
+							CD9901022FD5D3AB00D53031 /* Features/Cockpit/Views/CompositionGridShape.swift */,
+				CD9901042FD5D3AB00D53031 /* Features/Cockpit/Views/DroneWatermarkSymbolView.swift */,
+				CD9901062FD5D3AB00D53031 /* Features/Cockpit/Views/PitchLadderRungsView.swift */,
+				CD9901082FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitHeadingTapeView.swift */,
+				CD9901102FD5D3AB00D53031 /* Features/Cockpit/Views/RollPointerView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -409,6 +436,15 @@
 				CD6D83D52FD5D3AB00D53031 /* Features/Cockpit/Views/TacticalCornersShape.swift in Sources */,
 				CD6D83D72FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitThermalSilhouetteLayer.swift in Sources */,
 				CD6D83D92FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitOrientedBoxView.swift in Sources */,
+							CD9901012FD5D3AB00D53031 /* Features/Cockpit/Controllers/ModelTask.swift in Sources */,
+				CD9901032FD5D3AB00D53031 /* Features/Cockpit/Views/CompositionGridShape.swift in Sources */,
+				CD9901052FD5D3AB00D53031 /* Features/Cockpit/Views/DroneWatermarkSymbolView.swift in Sources */,
+				CD9901072FD5D3AB00D53031 /* Features/Cockpit/Views/PitchLadderRungsView.swift in Sources */,
+				CD9901092FD5D3AB00D53031 /* Features/Cockpit/Views/CockpitHeadingTapeView.swift in Sources */,
+				CD9901112FD5D3AB00D53031 /* Features/Cockpit/Views/RollPointerView.swift in Sources */,
+				CD9901132FD5D3AB00D53031 /* Core/Data/FlightLog.swift in Sources */,
+				CD9901152FD5D3AB00D53031 /* Core/Data/MissionWaypointRecord.swift in Sources */,
+				CD9901172FD5D3AB00D53031 /* Core/Data/TargetDetectionRecord.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
