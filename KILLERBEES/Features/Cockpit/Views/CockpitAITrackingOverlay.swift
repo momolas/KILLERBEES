@@ -14,6 +14,7 @@ struct CockpitAITrackingOverlay: View {
     let isTargetLocked: Bool
     let trackingMode: TrackingMode
     let trackingIssues: [String]
+    var isDroneTrackingActive: Bool = false
     var segmentationMask: CGImage? = nil
     var isThermalMaskEnabled: Bool = true
     let onSelectPoint: (CGPoint) -> Void
@@ -160,7 +161,7 @@ struct CockpitAITrackingOverlay: View {
                 }
 
                 // Sélecteur Tactique Haut : LOOK-AT vs FOLLOW-ME
-                VStack(spacing: 6) {
+                VStack(spacing: 4) {
                     HStack(spacing: 6) {
                         ForEach(TrackingMode.allCases) { mode in
                             Button {
@@ -169,12 +170,12 @@ struct CockpitAITrackingOverlay: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Image(systemName: mode.icon)
-                                        .font(.system(size: 10, weight: .bold))
+                                        .font(.system(size: 9, weight: .bold))
                                     Text(mode.rawValue)
-                                        .font(.system(size: 10, weight: .black))
+                                        .font(.system(size: 9, weight: .black))
                                 }
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3.5)
                                 .background(trackingMode == mode ? (mode == .followMe ? .orange : .green) : .black.opacity(0.65))
                                 .foregroundStyle(trackingMode == mode ? .black : .white)
                                 .clipShape(.capsule)
@@ -187,28 +188,45 @@ struct CockpitAITrackingOverlay: View {
                             }
                         }
                     }
-                    .padding(.top, 58)
+                    .padding(.top, 40)
 
                     // Bandeau de Statut Contextuel de Mission
                     if !isTargetLocked {
-                        HStack(spacing: 5) {
+                        HStack(spacing: 4) {
                             Image(systemName: "hand.tap.fill")
-                                .font(.system(size: 9))
+                                .font(.system(size: 8))
                             Text("TOUCHEZ UNE CIBLE (AIMANTATION AUTO)")
-                                .font(.system(size: 9, weight: .black))
+                                .font(.system(size: 8, weight: .bold))
                         }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(.cyan.opacity(0.85))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.cyan.opacity(0.8))
                         .foregroundStyle(.black)
                         .clipShape(.capsule)
-                        .shadow(radius: 3)
-                    } else if let issue = trackingIssues.first(where: { $0 != "Cible visuelle non détectée" }) {
+                        .shadow(radius: 2)
+                    } else if isDroneTrackingActive {
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(trackingMode == .followMe ? .orange : .green)
+                                .frame(width: 6, height: 6)
+                            Text(trackingMode == .followMe ? "CIBLE ACCROCHÉE (POURSUITE DYNAMIQUE)" : "CIBLE ACCROCHÉE (CADRAGE NACELLE ACTIF)")
+                                .font(.system(size: 8, weight: .bold))
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(.black.opacity(0.75))
+                        .foregroundStyle(.white)
+                        .clipShape(.capsule)
+                        .overlay(
+                            Capsule().strokeBorder((trackingMode == .followMe ? Color.orange : Color.green).opacity(0.7), lineWidth: 1.5)
+                        )
+                        .shadow(radius: 2)
+                    } else if let issue = trackingIssues.first {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .font(.system(size: 9))
+                                .font(.system(size: 8))
                             Text(issue.uppercased())
-                                .font(.system(size: 9, weight: .bold))
+                                .font(.system(size: 8, weight: .bold))
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -217,22 +235,22 @@ struct CockpitAITrackingOverlay: View {
                         .clipShape(.capsule)
                         .shadow(radius: 2)
                     } else {
-                        HStack(spacing: 5) {
+                        HStack(spacing: 4) {
                             Circle()
-                                .fill(trackingMode == .followMe ? .orange : .green)
-                                .frame(width: 6, height: 6)
-                            Text(trackingMode == .followMe ? "POURSUITE DYNAMIQUE EN COURS" : "CADRAGE NACELLE ACTIF")
-                                .font(.system(size: 9, weight: .black))
+                                .fill(.yellow)
+                                .frame(width: 5, height: 5)
+                            Text("ACQUISITION OPTIQUE EN COURS...")
+                                .font(.system(size: 8, weight: .bold))
                         }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
                         .background(.black.opacity(0.75))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.yellow)
                         .clipShape(.capsule)
                         .overlay(
-                            Capsule().strokeBorder(.white.opacity(0.2), lineWidth: 1)
+                            Capsule().strokeBorder(.yellow.opacity(0.4), lineWidth: 1)
                         )
-                        .shadow(radius: 3)
+                        .shadow(radius: 2)
                     }
 
                     Spacer()

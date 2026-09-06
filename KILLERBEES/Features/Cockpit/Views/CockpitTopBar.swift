@@ -23,17 +23,19 @@ struct CockpitTopBar: View {
     let smartRTH: SmartRTHAssessment?
     var isDeclutterMode: Bool = false
     var onToggleDeclutter: (() -> Void)? = nil
+    var isTacticalHUDEnabled: Bool = false
+    var onToggleTacticalHUD: (() -> Void)? = nil
     let onToggleFcc: () -> Void
     let onSelectMissionMode: (MissionMode) -> Void
     let onDismiss: () -> Void
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Button("Retour", systemImage: "chevron.left", action: onDismiss)
                 .labelStyle(.iconOnly)
-                .font(.headline)
+                .font(.subheadline.bold())
                 .foregroundStyle(.white)
-                .padding(12)
+                .frame(width: 36, height: 36)
                 .background(.ultraThinMaterial)
                 .clipShape(.circle)
 
@@ -44,12 +46,27 @@ struct CockpitTopBar: View {
                     action: onToggleDeclutter
                 )
                 .labelStyle(.iconOnly)
-                .font(.headline)
+                .font(.subheadline.bold())
                 .foregroundStyle(isDeclutterMode ? .orange : .white)
-                .padding(12)
+                .frame(width: 36, height: 36)
                 .background(.ultraThinMaterial)
                 .clipShape(.circle)
                 .accessibilityLabel(isDeclutterMode ? "Afficher tous les widgets du HUD" : "Masquer les widgets secondaires (mode HUD épuré)")
+            }
+
+            if let onToggleTacticalHUD {
+                Button(
+                    isTacticalHUDEnabled ? "HUD Standard" : "HUD Tactique",
+                    systemImage: isTacticalHUDEnabled ? "airplane.departure" : "airplane",
+                    action: onToggleTacticalHUD
+                )
+                .labelStyle(.iconOnly)
+                .font(.subheadline.bold())
+                .foregroundStyle(isTacticalHUDEnabled ? .cyan : .white)
+                .frame(width: 36, height: 36)
+                .background(.ultraThinMaterial)
+                .clipShape(.circle)
+                .accessibilityLabel(isTacticalHUDEnabled ? "Désactiver le HUD militaire central (revenir au HUD épuré standard)" : "Activer le HUD militaire central (Pitch Ladder & Heading Tape)")
             }
 
             Spacer()
@@ -224,7 +241,7 @@ struct CockpitTopBar: View {
             .background(.ultraThinMaterial)
             .clipShape(.capsule)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 6)
     }
 
     private func batterySystemImage(for level: Int) -> String {

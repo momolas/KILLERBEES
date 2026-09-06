@@ -24,7 +24,7 @@ struct CockpitMilitaryPitchLadderHUD: View {
                 // 1. Ruban de Cap Boussole Supérieur (Military Heading Tape)
                 VStack {
                     CockpitHeadingTapeView(heading: heading)
-                        .padding(.top, 64)
+                        .padding(.top, 72)
                     Spacer()
                 }
 
@@ -34,7 +34,7 @@ struct CockpitMilitaryPitchLadderHUD: View {
                     PitchLadderRungsView(pitchScale: pitchScale)
                         .offset(y: CGFloat(pitch) * pitchScale)
                         .rotationEffect(.degrees(-roll))
-                        .frame(width: 280, height: 220)
+                        .frame(width: 260, height: 200)
                         .clipped()
 
                     // Réticule central fixe d'axe drone (Boresight Watermark)
@@ -44,12 +44,13 @@ struct CockpitMilitaryPitchLadderHUD: View {
                 // 3. Indicateur d'arc de roulis supérieur (Roll Sky Pointer)
                 VStack {
                     RollPointerView(roll: roll)
-                        .padding(.top, 110)
+                        .padding(.top, 116)
                     Spacer()
                 }
             }
+            .opacity(0.5)
             .allowsHitTesting(false)
-            .shadow(color: .black.opacity(0.6), radius: 2, x: 0, y: 1)
+            .shadow(color: .black.opacity(0.4), radius: 2, x: 0, y: 1)
         }
     }
 }

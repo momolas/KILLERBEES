@@ -79,6 +79,7 @@ class DroneManager {
     var selectedTrackingMode: TrackingMode = .lookAt
     var activeTrackingMode: TrackingMode? = nil
     var isTrackingActive: Bool = false
+    var isPilotingTrackingRequested: Bool = false
     var trackingIssues: [String] = []
 
     var remoteControls: [RemoteControl] = []
@@ -438,8 +439,13 @@ class DroneManager {
         }
 
         // Surveillance du Suivi de Cible Visuel (TargetTracker)
-        targetTrackerRef = drone.getPeripheral(Peripherals.targetTracker) { tracker in
-            guard tracker != nil else { return }
+        targetTrackerRef = drone.getPeripheral(Peripherals.targetTracker) { [weak self] tracker in
+            guard let self, let tracker else { return }
+            if tracker.targetIsController {
+                tracker.disableControllerTracking()
+            }
+            tracker.framing.value = (horizontal: 0.5, vertical: 0.5)
+            self.updateTrackingState()
         }
 
         // Surveillance du Mode Look-At
@@ -768,7 +774,7 @@ class DroneManager {
 
     func selectTrackingMode(_ mode: TrackingMode) {
         selectedTrackingMode = mode
-        if isTrackingActive {
+        if isPilotingTrackingRequested {
             startPilotingTracking(mode: mode)
         } else {
             updateTrackingState()
@@ -777,28 +783,45 @@ class DroneManager {
 
     func startPilotingTracking(mode: TrackingMode? = nil) {
         let targetMode = mode ?? selectedTrackingMode
+        selectedTrackingMode = targetMode
+        isPilotingTrackingRequested = true
+
+        // Forcer le mode cible optique (désactiver le suivi GPS du téléphone) et cadrer au centre
+        if let tracker = targetTrackerRef?.value {
+            tracker.disableControllerTracking()
+            tracker.framing.value = (horizontal: 0.5, vertical: 0.5)
+        }
+
         if targetMode == .lookAt {
             if followMeRef?.value?.state == .active {
                 _ = followMeRef?.value?.deactivate()
             }
-            if let lookAt = lookAtRef?.value, lookAt.state != .active {
-                _ = lookAt.activate()
+            if let lookAt = lookAtRef?.value {
+                if lookAt.lookAtMode.supportedModes.contains(.lookAt) && lookAt.lookAtMode.value != .lookAt {
+                    lookAt.lookAtMode.value = .lookAt
+                }
+                if lookAt.state == .idle {
+                    _ = lookAt.activate()
+                }
             }
         } else {
             if lookAtRef?.value?.state == .active {
                 _ = lookAtRef?.value?.deactivate()
             }
-            if let followMe = followMeRef?.value, followMe.state != .active {
-                if followMe.followMode.supportedModes.contains(.relative) {
+            if let followMe = followMeRef?.value {
+                if followMe.followMode.supportedModes.contains(.relative) && followMe.followMode.value != .relative {
                     followMe.followMode.value = .relative
                 }
-                _ = followMe.activate()
+                if followMe.state == .idle {
+                    _ = followMe.activate()
+                }
             }
         }
         updateTrackingState()
     }
 
     func stopPilotingTracking() {
+        isPilotingTrackingRequested = false
         if lookAtRef?.value?.state == .active {
             _ = lookAtRef?.value?.deactivate()
         }
@@ -819,17 +842,32 @@ class DroneManager {
     ) {
         guard let tracker = targetTrackerRef?.value else { return }
 
-        // Si le mode de pilotage autonome n'est pas encore actif, l'activer
-        if !isTrackingActive {
-            startPilotingTracking()
+        // S'assurer que le suivi est bien requis
+        if !isPilotingTrackingRequested {
+            isPilotingTrackingRequested = true
         }
+
+        // Tenter d'activer l'interface dès qu'elle passe à .idle suite aux premières détections
+        activatePilotingTrackingIfReady()
+
+        // Conversion mathématique des coordonnées angulaires pour GroundSdk :
+        // 1. targetAzimuth : angle horizontal Nord-Drone-Cible en radians
+        let droneHeadingRad = heading * .pi / 180.0
+        var targetAzimuthRad = droneHeadingRad + azimuth
+        while targetAzimuthRad > .pi { targetAzimuthRad -= 2 * .pi }
+        while targetAzimuthRad < -.pi { targetAzimuthRad += 2 * .pi }
+
+        // 2. targetElevation : angle vertical Horizon-Drone-Cible en radians
+        // gimbalPitch négatif vers le bas, elevation positif vers le haut de l'image
+        let gimbalPitchRad = gimbalPitch * .pi / 180.0
+        let targetElevationRad = gimbalPitchRad + elevation
 
         let timestamp = UInt64(Date().timeIntervalSince1970 * 1000)
         let info = TargetDetectionInfo(
-            targetAzimuth: azimuth,
-            targetElevation: elevation,
-            changeOfScale: changeOfScale,
-            confidence: confidence,
+            targetAzimuth: targetAzimuthRad,
+            targetElevation: targetElevationRad,
+            changeOfScale: max(-1.0, min(1.0, changeOfScale)),
+            confidence: min(1.0, max(0.0, confidence)),
             isNewTarget: isNewTarget,
             timestamp: timestamp
         )
@@ -848,6 +886,11 @@ class DroneManager {
             isTrackingActive = false
         }
 
+        // Si l'utilisateur demande le tracking autonome, activer dès que l'interface est prête (.idle)
+        if isPilotingTrackingRequested {
+            activatePilotingTrackingIfReady()
+        }
+
         var issues: [String] = []
         if selectedTrackingMode == .lookAt, let lookAt = lookAtRef?.value {
             for issue in lookAt.availabilityIssues {
@@ -861,6 +904,26 @@ class DroneManager {
         trackingIssues = issues
     }
 
+    private func activatePilotingTrackingIfReady() {
+        if selectedTrackingMode == .lookAt {
+            guard let lookAt = lookAtRef?.value else { return }
+            if lookAt.lookAtMode.supportedModes.contains(.lookAt) && lookAt.lookAtMode.value != .lookAt {
+                lookAt.lookAtMode.value = .lookAt
+            }
+            if lookAt.state == .idle {
+                _ = lookAt.activate()
+            }
+        } else {
+            guard let followMe = followMeRef?.value else { return }
+            if followMe.followMode.supportedModes.contains(.relative) && followMe.followMode.value != .relative {
+                followMe.followMode.value = .relative
+            }
+            if followMe.state == .idle {
+                _ = followMe.activate()
+            }
+        }
+    }
+
     private func issueDescription(_ issue: TrackingIssue) -> String {
         switch issue {
         case .droneNotFlying: return "Drone au sol"
@@ -870,7 +933,7 @@ class DroneManager {
         case .droneTooCloseToGround: return "Trop près du sol"
         case .targetGpsInfoInaccurate: return "GPS cible imprécis"
         case .targetBarometerInfoInaccurate: return "Baromètre imprécis"
-        case .targetDetectionInfoMissing: return "Cible visuelle non détectée"
+        case .targetDetectionInfoMissing: return "Acquisition optique en cours"
         case .droneAboveMaxAltitude: return "Altitude maximale atteinte"
         case .droneOutOfGeofence: return "Hors de la zone de vol"
         case .droneTooFarFromTarget: return "Trop loin de la cible"

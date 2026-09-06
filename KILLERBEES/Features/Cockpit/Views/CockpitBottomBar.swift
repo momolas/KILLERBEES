@@ -41,11 +41,10 @@ struct CockpitBottomBar: View {
                     .bold()
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
         .background(.ultraThinMaterial)
         .clipShape(.capsule)
-        .shadow(color: .black.opacity(0.3), radius: 10, y: 5)
-        .padding(.bottom)
+        .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
     }
 }

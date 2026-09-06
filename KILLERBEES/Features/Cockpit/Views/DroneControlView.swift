@@ -17,6 +17,7 @@ struct DroneControlView: View {
     @State private var isMapExpanded = false
     @State private var isLeisureGridEnabled = false
     @State private var isDeclutterMode = false
+    @State private var isTacticalHUDEnabled = false
     @State private var showErrorAlert = false
 
     init(drone: Drone) {
@@ -40,12 +41,15 @@ struct DroneControlView: View {
             .ignoresSafeArea()
 
             // 2. Horizon Artificiel Militaire Central (Pitch Ladder & Heading Tape HUD)
-            CockpitMilitaryPitchLadderHUD(
-                pitch: droneManager.pitch,
-                roll: droneManager.roll,
-                heading: droneManager.heading
-            )
-            .ignoresSafeArea()
+            // Affiché uniquement si le mode tactique est explicitement activé et que l'écran n'est pas épuré
+            if isTacticalHUDEnabled && !isDeclutterMode {
+                CockpitMilitaryPitchLadderHUD(
+                    pitch: droneManager.pitch,
+                    roll: droneManager.roll,
+                    heading: droneManager.heading
+                )
+                .ignoresSafeArea()
+            }
 
             // 3. Superposition IA Tactile (Réticules & Verrouillage Cible)
             if droneManager.isDroneConnected && visionService.isTrackingActive {
@@ -55,6 +59,7 @@ struct DroneControlView: View {
                     isTargetLocked: visionService.isTargetLocked,
                     trackingMode: droneManager.selectedTrackingMode,
                     trackingIssues: droneManager.trackingIssues,
+                    isDroneTrackingActive: droneManager.isTrackingActive,
                     segmentationMask: visionService.segmentationMaskImage,
                     isThermalMaskEnabled: visionService.isThermalMaskEnabled,
                     onSelectPoint: {
@@ -96,98 +101,132 @@ struct DroneControlView: View {
                             isDeclutterMode.toggle()
                         }
                     },
+                    isTacticalHUDEnabled: isTacticalHUDEnabled,
+                    onToggleTacticalHUD: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            isTacticalHUDEnabled.toggle()
+                        }
+                    },
                     onToggleFcc: { droneManager.toggleFccMode(enabled: !droneManager.isFccMode) },
                     onSelectMissionMode: { droneManager.setMissionMode($0) },
                     onDismiss: { dismiss() }
                 )
-                .padding(.top, 8)
+                .padding(.top, 4)
 
-                // Bannière d'Alerte Vol (si active) - toujours prioritaire même en mode HUD épuré
-                CockpitAlarmBanner(
-                    message: droneManager.activeAlarmText,
-                    isCritical: droneManager.isAlarmCritical
-                )
-                .padding(.top, 2)
-
-                if !isDeclutterMode {
-                    // Badge Smart RTH & Point de Non-Retour (si en vol ou RTH actif)
-                    if droneManager.flyingState == .flying || droneManager.isRthActive {
-                        CockpitSmartRTHBadge(
-                            smartRTH: droneManager.smartRTH,
-                            isRthActive: droneManager.isRthActive,
-                            onTriggerRth: {
-                                HapticFeedback.tap()
-                                droneManager.triggerReturnHome()
-                            },
-                            onCancelRth: {
-                                HapticFeedback.tap()
-                                droneManager.cancelReturnHome()
-                            },
-                            onCancelAutoTrigger: {
-                                HapticFeedback.tap()
-                                droneManager.cancelRthAutoTrigger()
+                // Ligne Supérieure d'Instruments Périmétriques
+                if isDeclutterMode {
+                    HStack {
+                        // En mode épuré : télémétrie ultra-compacte en capsule discrète plaquée à gauche
+                        HStack(spacing: 8) {
+                            if let alt = droneManager.altitude {
+                                Text("ALT \(alt, format: .number.precision(.fractionLength(1)))m")
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                    .foregroundStyle(.white)
                             }
-                        )
-                        .padding(.top, 2)
-                    }
-
-                    // Badges Spécifiques au Mode de Mission (Surveillance, Loisir, Chasse)
-                    switch droneManager.activeMissionMode {
-                    case .chasse:
-                        if visionService.isTargetLocked {
-                            CockpitGameVectorBadge(
-                                headingDeg: visionService.targetHeadingDeg,
-                                speedKmH: visionService.targetSpeedKmH,
-                                cardinal: visionService.targetBearingCardinal,
-                                speciesName: visionService.targetSpeciesName,
-                                speciesIcon: visionService.targetSpeciesIcon,
-                                isProfileActive: droneManager.isGameTrackingProfileActive,
-                                onToggleProfile: {
-                                    droneManager.toggleGameTrackingFlightProfile()
-                                }
-                            )
-                            .padding(.top, 2)
+                            if let spd = droneManager.groundSpeed {
+                                Text("VIT \((spd * 3.6), format: .number.precision(.fractionLength(1)))km/h")
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                    .foregroundStyle(.white.opacity(0.85))
+                            }
                         }
-
-                    case .surveillance:
-                        CockpitSurveillanceBadge(
-                            hasIntruderAlert: visionService.hasIntruderAlert,
-                            detectedHumansCount: visionService.detectedHumansCount,
-                            onCaptureSnapshot: {
-                                droneManager.takePhoto()
-                            }
-                        )
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.capsule)
+                        .padding(.leading, 6)
                         .padding(.top, 2)
 
-                    case .loisir:
-                        CockpitLeisureBadge(
-                            isGridEnabled: $isLeisureGridEnabled,
-                            isRecording: droneManager.isRecording
-                        )
-                        .padding(.top, 2)
+                        Spacer()
                     }
-
-                    // Télémétrie Supérieure (Altitude, Vitesse, Attitude)
-                    HStack(alignment: .top) {
+                } else {
+                    HStack(alignment: .top, spacing: 6) {
+                        // HAUT GAUCHE : Télémétrie (Altitude, Vitesse) plaquée contre le bord gauche
                         CockpitTelemetryHUD(
                             altitude: droneManager.altitude,
                             verticalSpeed: droneManager.verticalSpeed,
                             groundSpeed: droneManager.groundSpeed
                         )
+                        .padding(.leading, 6)
 
-                        Spacer()
+                        Spacer(minLength: 4)
 
-                        // Horizon Artificiel & Boussole
-                        CockpitAttitudeIndicator(
-                            pitch: droneManager.pitch,
-                            roll: droneManager.roll,
-                            heading: droneManager.heading
-                        )
-                        .padding(.trailing)
+                        // HAUT CENTRE : Bannières d'alerte & Badges de statut compacts
+                        VStack(spacing: 3) {
+                            if droneManager.activeAlarmText != nil {
+                                CockpitAlarmBanner(
+                                    message: droneManager.activeAlarmText,
+                                    isCritical: droneManager.isAlarmCritical
+                                )
+                            }
+
+                            if droneManager.flyingState == .flying || droneManager.isRthActive {
+                                CockpitSmartRTHBadge(
+                                    smartRTH: droneManager.smartRTH,
+                                    isRthActive: droneManager.isRthActive,
+                                    onTriggerRth: {
+                                        HapticFeedback.tap()
+                                        droneManager.triggerReturnHome()
+                                    },
+                                    onCancelRth: {
+                                        HapticFeedback.tap()
+                                        droneManager.cancelReturnHome()
+                                    },
+                                    onCancelAutoTrigger: {
+                                        HapticFeedback.tap()
+                                        droneManager.cancelRthAutoTrigger()
+                                    }
+                                )
+                            }
+
+                            switch droneManager.activeMissionMode {
+                            case .chasse:
+                                if visionService.isTargetLocked {
+                                    CockpitGameVectorBadge(
+                                        headingDeg: visionService.targetHeadingDeg,
+                                        speedKmH: visionService.targetSpeedKmH,
+                                        cardinal: visionService.targetBearingCardinal,
+                                        speciesName: visionService.targetSpeciesName,
+                                        speciesIcon: visionService.targetSpeciesIcon,
+                                        isProfileActive: droneManager.isGameTrackingProfileActive,
+                                        onToggleProfile: {
+                                            droneManager.toggleGameTrackingFlightProfile()
+                                        }
+                                    )
+                                }
+
+                            case .surveillance:
+                                CockpitSurveillanceBadge(
+                                    hasIntruderAlert: visionService.hasIntruderAlert,
+                                    detectedHumansCount: visionService.detectedHumansCount,
+                                    onCaptureSnapshot: {
+                                        droneManager.takePhoto()
+                                    }
+                                )
+
+                            case .loisir:
+                                CockpitLeisureBadge(
+                                    isGridEnabled: $isLeisureGridEnabled,
+                                    isRecording: droneManager.isRecording
+                                )
+                            }
+                        }
+
+                        Spacer(minLength: 4)
+
+                        // HAUT DROITE : Horizon Artificiel & Boussole Compact plaqué contre le bord droit
+                        if !isTacticalHUDEnabled {
+                            CockpitAttitudeIndicator(
+                                pitch: droneManager.pitch,
+                                roll: droneManager.roll,
+                                heading: droneManager.heading
+                            )
+                            .padding(.trailing, 6)
+                        }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, 2)
                 }
 
+                // CENTRE : Vaste espace libre garanti pour la visibilité du flux caméra
                 Spacer()
 
                 if !isDeclutterMode {
@@ -204,14 +243,14 @@ struct DroneControlView: View {
                             onPauseMission: { droneManager.pauseFlightPlan() },
                             onClearWaypoints: { droneManager.clearWaypoints() }
                         )
-                        .padding(.bottom, 6)
+                        .padding(.bottom, 4)
                     }
                 }
 
-                // Zone Médiane / Basse : Mini-Carte (Gauche), Commandes Caméra (Droite), Barre de Vol (Centre)
-                HStack(alignment: .bottom, spacing: 12) {
+                // Zone Basse : Mini-Carte (Plaquée Gauche), Contrôles de Vol (Centre Bas), Caméra (Plaquée Droite)
+                HStack(alignment: .bottom, spacing: 8) {
                     if !isDeclutterMode {
-                        // Mini-Carte MapKit PiP (Bas Gauche)
+                        // BAS GAUCHE : Mini-Carte MapKit PiP
                         CockpitMiniMap(
                             droneCoordinate: droneManager.droneCoordinate,
                             homeCoordinate: droneManager.homeCoordinate,
@@ -221,20 +260,22 @@ struct DroneControlView: View {
                             onAddWaypoint: { droneManager.addWaypoint($0) },
                             isExpanded: $isMapExpanded
                         )
-                        .padding(.leading)
+                        .padding(.leading, 6)
 
-                        Spacer()
+                        Spacer(minLength: 4)
 
-                        // Commandes de Vol Décollage / Atterrissage / RTH & Bandeau de Mission
-                        VStack(spacing: 8) {
-                            CockpitMissionStatusBar(
-                                isConnected: droneManager.isDroneConnected,
-                                isTargetLocked: visionService.isTargetLocked,
-                                isTrackingActive: visionService.isTrackingActive,
-                                trackingMode: droneManager.selectedTrackingMode,
-                                flyingState: droneManager.flyingState,
-                                altitude: droneManager.altitude
-                            )
+                        // BAS CENTRE : Commandes de Vol Décollage / Atterrissage / RTH & Statut
+                        VStack(spacing: 4) {
+                            if !droneManager.isDroneConnected || visionService.isTrackingActive || visionService.isTargetLocked {
+                                CockpitMissionStatusBar(
+                                    isConnected: droneManager.isDroneConnected,
+                                    isTargetLocked: visionService.isTargetLocked,
+                                    isTrackingActive: visionService.isTrackingActive,
+                                    trackingMode: droneManager.selectedTrackingMode,
+                                    flyingState: droneManager.flyingState,
+                                    altitude: droneManager.altitude
+                                )
+                            }
 
                             CockpitBottomBar(
                                 flyingState: droneManager.flyingState,
@@ -259,10 +300,10 @@ struct DroneControlView: View {
                         }
                     }
 
-                    Spacer()
+                    Spacer(minLength: 4)
 
-                    // Contrôles IA Tracking & Déclencheurs Médias (Droite) - Slider rigide de nacelle supprimé
-                    HStack(alignment: .center, spacing: 10) {
+                    // BAS DROITE : Contrôles Caméra, Zoom & Bouton IA
+                    HStack(alignment: .center, spacing: 8) {
                         // Bouton IA Tracking
                         Button {
                             HapticFeedback.tap()
@@ -273,14 +314,14 @@ struct DroneControlView: View {
                                 }
                             }
                         } label: {
-                            VStack(spacing: 3) {
+                            VStack(spacing: 2) {
                                 Image(systemName: visionService.isTargetLocked ? "scope" : (visionService.isTrackingActive ? "viewfinder.circle.fill" : "viewfinder"))
-                                    .font(.system(size: 16, weight: .bold))
+                                    .font(.system(size: 15, weight: .bold))
                                 Text(visionService.isTargetLocked ? "LOCK" : (visionService.isTrackingActive ? "IA ON" : "IA"))
                                     .font(.system(size: 8, weight: .black))
                             }
                             .foregroundStyle(visionService.isTargetLocked ? .red : (visionService.isTrackingActive ? .green : .white))
-                            .frame(width: 44, height: 44)
+                            .frame(width: 40, height: 40)
                             .background(.ultraThinMaterial)
                             .clipShape(.circle)
                             .overlay(
@@ -310,9 +351,9 @@ struct DroneControlView: View {
                             onToggleRecording: { droneManager.toggleRecording() }
                         )
                     }
-                    .padding(.trailing)
+                    .padding(.trailing, 6)
                 }
-                .padding(.bottom, 8)
+                .padding(.bottom, 4)
             }
         }
         .toolbar(.hidden, for: .navigationBar)
